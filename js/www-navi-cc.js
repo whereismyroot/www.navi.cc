@@ -1422,7 +1422,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "        </ul>" +
     "        <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">" +
     "            <li class=\"divider-vertical\"></li>" +
-    "            <li><a href=\"#\"><img src=\"/img/spinner.gif\"></a></li>" +
+    "            <li><a href=\"#\"><img src=\"img/spinner.gif\"></a></li>" +
     "        </ul>" +
     "    </div>" +
     "</div>");
