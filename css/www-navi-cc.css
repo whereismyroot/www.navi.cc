@@ -7045,6 +7045,13 @@ body {
   display: none !important;
 }
 
+.notification {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  z-index: 2000;
+}
+
 div.content {
   position: absolute;
   top: 41px;
@@ -7056,6 +7063,7 @@ div.content {
 }
 
 div.contentfixed {
+  padding: 0;
   overflow-y: hidden;
 }
 

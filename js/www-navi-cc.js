@@ -5,7 +5,7 @@
 
 angular.module('resources.account', ['services.i18nNotifications']);
 
-angular.module('resources.account').factory('Account', ['API_SERVER', '$http', 'i18nNotifications', function (API_SERVER, $http, i18nNotifications) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', function (SERVER, $http, i18nNotifications) {
 
   var akey = localStorage.getItem('akey');
   console.log('-- resources.account.Account akey=', akey, i18nNotifications);
@@ -32,7 +32,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
 
   Account.login = function(user, pass){
     console.log('Account.login', user, pass);
-    $http.get(API_SERVER.baseUrl + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
+    $http.get(SERVER.api + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
       "&user=" + encodeURIComponent(user) +
       "&password=" + encodeURIComponent(pass)
     ).success(function(data){
@@ -55,7 +55,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemadd = function(imei){
-    $http.get(API_SERVER.baseUrl + "api/account/systems/add" +
+    $http.get(SERVER.api + "api/account/systems/add" +
       "?akey=" + encodeURIComponent(Account.account.akey) +
       "&imei=" + encodeURIComponent(imei)
     ).success(function(data){
@@ -76,7 +76,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemsort = function(){
-      $http.post(API_SERVER.baseUrl + "api/account/systems/sort" +
+      $http.post(SERVER.api + "api/account/systems/sort" +
       "?akey=" + encodeURIComponent(Account.account.akey), {skeys: Account.account.skeys}
     ).success(function(data){
       console.log('return data=', data);
@@ -84,7 +84,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemdel = function(skey){
-    $http.get(API_SERVER.baseUrl + "api/account/systems/del" +
+    $http.get(SERVER.api + "api/account/systems/del" +
       "?akey=" + encodeURIComponent(Account.account.akey) +
       "&skey=" + encodeURIComponent(skey)
     ).success(function(data){
@@ -96,7 +96,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   if(akey){
-    $http.get(API_SERVER.baseUrl + "api/account/get?akey=" + akey).success(function(data){
+    $http.get(SERVER.api + "api/account/get?akey=" + akey).success(function(data){
       console.log('login data=', data);
       //notify.pushSticky('Hello');
 
@@ -117,9 +117,9 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
 
 angular.module('resources.logs', ['services.connect'])
 
-.factory('Logs', ['API_SERVER', '$http', 'Connect', '$rootScope', function (API_SERVER, $http, Connect, $rootScope) {
+.factory('Logs', ['SERVER', '$http', 'Connect', '$rootScope', function (SERVER, $http, Connect, $rootScope) {
 
-    console.log('-- resources.logs.Logs', API_SERVER, Connect);
+    console.log('-- resources.logs.Logs', SERVER, Connect);
     var Logs = {
         'logs': []
     };
@@ -136,7 +136,7 @@ angular.module('resources.logs', ['services.connect'])
 
     Logs.get = function(skey, akey, callback){
         console.log('Logs.get');
-        $http.get(API_SERVER.baseUrl + "api/logs/get?skey=" + encodeURIComponent(skey) +
+        $http.get(SERVER.api + "api/logs/get?skey=" + encodeURIComponent(skey) +
             "&akey=" + encodeURIComponent(akey)
         ).success(function(data){
             console.log('data=', data);
@@ -491,7 +491,7 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
 }]);
 angular.module('services.connect', [])
 
-.factory('Connect', ["$rootScope", function($rootScope) {
+.factory('Connect', ["$rootScope", 'SERVER', function($rootScope, SERVER) {
     var shared = {};
     shared.updater = {};
     shared.updater.queue = {};
@@ -529,7 +529,10 @@ angular.module('services.connect', [])
 
     //var ws_server = "ws://gpsapi04.navi.cc:8888/socket";
     //var ws_server = "http://gpsapi04.navi.cc:8888/socket";
-    var ws_server = "http://localhost:8888/socket";
+    //baseUrl: ((location.hostname === 'localhost') || (location.hostname === 'bigbrother')) ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/'
+
+    //var ws_server = "http://localhost:8888/socket";
+    var ws_server = SERVER.channel;
 
     var connect = function(timeout){
         if(timeout>60) { timeout = 60; }
@@ -975,9 +978,12 @@ angular.module('app', [
   'templates']);
 
 
+var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
 
-angular.module('app').constant('API_SERVER', {
-  baseUrl: ((location.hostname === 'localhost') || (location.hostname === 'bigbrother')) ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/'
+angular.module('app').constant('SERVER', {
+  api: DEVELOP ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/',
+  point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
+  channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
 
 //TODO: move those messages to a separate module
@@ -1037,10 +1043,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 
 angular.module("map/map.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("map/map.tpl.html",
-    "<h4>Тут будет карта. Да, да!</h4>" +
-    "" +
     "<div gmap=\"main\"></div>" +
-    "В разработке..." +
     "");
 }]);
 
