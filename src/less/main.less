@@ -1,0 +1,196 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.navbar .brand {
+    margin-left: -10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+div.content {
+    position: absolute;
+    top: 41px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+div.contentfixed {
+    overflow-y: hidden;
+}
+
+div#tabpagecontent {
+    position: absolute;
+    overflow: hidden;
+    top: 40px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+div.tabnoscroll {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+div.tabscroll {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+div[gmap] {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+div[gmap] img {
+  max-width: none;
+}
+
+div[gmap] img {
+            width: auto; display:inline;
+            max-width: none;
+        }
+div[gmap] label {
+    width: auto; display:inline;
+}
+
+div.loginform {
+    /*display: inline-block;*/
+    /*float: left;*/
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    /*width: 50%;*/
+    box-shadow: 1px 1px 6px #ccc;
+    padding: 10px;
+}
+
+div.loginlabel {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 2em;
+}
+
+
+ul.config_sys_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 0 0 0;
+}
+
+ul.config_sys_list li {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    margin-top: -1px;
+    background-color: #fff;
+    /*height: 31px;*/
+    /*padding-top: 4px;
+    padding-bottom: 4px;*/
+}
+
+ul.config_sys_list li span:not(.control) {
+    margin-top: 4px;
+}
+
+ul.config_sys_list li.off {
+    opacity: 0.2;
+}
+
+
+ul.config_sys_list li:hover {
+    background-color: #eee;
+}
+
+ul.config_sys_list li i {
+    color: #444;
+    padding: 4px;
+    /*border: 5px solid rgba(0,0,0,0);*/
+    cursor: pointer;
+
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+ul.config_sys_list li i:hover {
+    background-color: #8cf;
+}
+
+ul.config_sys_list li:first-child{
+    border-top: 1px solid black;
+}
+
+span.sysimei, span.sysphone {
+    /*border: 1px solid #ccc;*/
+    /*height: 23px;*/
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+    /*background-color: #eee;*/
+}
+
+span.sysimei {
+    width: 130px;
+}
+
+span.sysphone {
+    width: 110px;
+}
+
+span.sysleftcontrol {
+    float: left;
+}
+
+span.sysrightcontrol {
+    float: right;
+}
+
+span.sysrightcontrol i:hover {
+    background-color: #f44 !important;
+}
+
+.ui-sortable-helper {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+li.ui-sortable-placeholder2 {
+    /*background-color: green !important;*/
+    background-color: rgba(0, 255, 0, 0.05) !important;
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+    /*opacity: 0.5;*/
+    height: 27px;
+}
+
+i.cmd {
+    cursor: pointer;
+    padding: 4px;
+}
+
+i.cmd:hover {
+    background-color: #8cf;
+}

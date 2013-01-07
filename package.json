@@ -1,0 +1,29 @@
+{
+  "author": "Batrak Denis",
+  "name": "www-navi-cc",
+  "homepage": "https://github.com/baden/www.navi.cc",
+  "version": "0.0.1-SNAPSHOT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:baden/www.navi.cc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/baden/www.navi.cc/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/baden/www.navi.cc/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.4"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.3.17",
+    "grunt-recess": "~0.1.0",
+    "grunt-contrib-clean": "~0.3.0",
+    "grunt-contrib-copy": "~0.3.0"
+  }
+}
