@@ -441,16 +441,28 @@ angular.module('directives.lists', [])
                 return;
             }
             ngModel.$render = function() {
-                return element.html(ngModel.$viewValue);
+                return element.text(ngModel.$viewValue);
             };
             element.bind('blur', function() {
-                if (ngModel.$viewValue !== $.trim(element.html())) {
+                //console.log("blur", ngModel.$viewValue, element.html());
+                if($.trim(element.text()) === '') {
+                    element.text(ngModel.$viewValue);
+                    //scope.$apply();
+                }
+                if (ngModel.$viewValue !== $.trim(element.text())) {
                     return scope.$apply(read);
+                }
+            });
+            element.bind('keypress', function(ev) {
+                //console.log("keypress", ev);
+                if(ev.which === 13){
+                    element.trigger('blur');
+                    return false;
                 }
             });
             read = function() {
                 //console.log("read()", scope, ngModel);
-                ngModel.$setViewValue($.trim(element.html()));
+                ngModel.$setViewValue($.trim(element.text()));
                 element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
                 /*if(scope.onChange) {
                     scope.onChange();
