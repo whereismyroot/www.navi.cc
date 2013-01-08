@@ -50,11 +50,13 @@ module.exports = function (grunt) {
         dest: '<%= distdir %>/js/angular.js'
       },
       bootstrap: {
-        src:['vendor/bootstrap/*.js'],
+        src:['vendor/bootstrap/*.js', 'vendor/bootstrap/locales/*.js'],
         dest: '<%= distdir %>/js/bootstrap.js'
       },
       jquery: {
-        src:['vendor/jquery/jquery-1.7.2.js', 'vendor/jquery/jquery-ui.min.js', 'vendor/jquery/jquery.ui.datepicker-ru.js'],
+        /*src:['vendor/jquery/jquery-1.7.2.js', 'vendor/jquery/jquery-ui.min.js', 'vendor/jquery/jquery.ui.datepicker-ru.js'],*/
+        src:['vendor/jquery/jquery-1.8.3.js', 'vendor/jquery/jquery-ui-1.9.2.custom.js'],
+        /*src:['vendor/jquery/jquery-1.7.2.js'],*/
         dest: '<%= distdir %>/js/jquery.js'
       },
       moment: {

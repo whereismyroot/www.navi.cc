@@ -1,6 +1,6 @@
 angular.module('services.connect', [])
 
-.factory('Connect', ["$rootScope", function($rootScope) {
+.factory('Connect', ["$rootScope", 'SERVER', function($rootScope, SERVER) {
     var shared = {};
     shared.updater = {};
     shared.updater.queue = {};
@@ -38,7 +38,10 @@ angular.module('services.connect', [])
 
     //var ws_server = "ws://gpsapi04.navi.cc:8888/socket";
     //var ws_server = "http://gpsapi04.navi.cc:8888/socket";
-    var ws_server = "http://localhost:8888/socket";
+    //baseUrl: ((location.hostname === 'localhost') || (location.hostname === 'bigbrother')) ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/'
+
+    //var ws_server = "http://localhost:8888/socket";
+    var ws_server = SERVER.channel;
 
     var connect = function(timeout){
         if(timeout>60) { timeout = 60; }

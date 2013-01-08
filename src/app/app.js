@@ -12,9 +12,12 @@ angular.module('app', [
   'templates']);
 
 
+var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
 
-angular.module('app').constant('API_SERVER', {
-  baseUrl: ((location.hostname === 'localhost') || (location.hostname === 'bigbrother')) ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/'
+angular.module('app').constant('SERVER', {
+  api: DEVELOP ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/',
+  point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
+  channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
 
 //TODO: move those messages to a separate module

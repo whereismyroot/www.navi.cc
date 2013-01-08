@@ -1,18 +1,48 @@
-angular.module('directives.gmap', ['services.connect'])
+angular.module('directives.gmap', ['services.connect', 'ui'])
 
 .directive('gmap', ["Connect", function(C_onnect) {
     console.log('gmap:directive');
+
+
     var link = function(s_cope, e_lement, a_ttrs) {
         console.log('map directive: link', s_cope, e_lement, C_onnect);
         //element.innerHTML="<div>map</div>";
+
+        var prev_config = localStorage.getItem('map.config');
+        if(prev_config){
+            prev_config = JSON.parse(prev_config);
+        } else {
+            prev_config = {
+                zoom: 6,
+                center: [48.370848, 32.717285],
+                typeId: google.maps.MapTypeId.ROADMAP
+            };
+        }
+
         var latlng = new google.maps.LatLng(48.397, 34.644);
         var myOptions = {
-          zoom: 10,
-          center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+            center: new google.maps.LatLng(prev_config.center[0], prev_config.center[1]),
+            mapTypeId: prev_config.typeId,
+            zoom: prev_config.zoom
         };
         var map = new google.maps.Map(e_lement[0],
             myOptions);
+
+        var saveMapState = function() {
+            localStorage.setItem('map.config', JSON.stringify({
+                center: [map.getCenter().lat(), map.getCenter().lng()],
+                zoom: map.getZoom(),
+                typeId: map.getMapTypeId()
+            }));
+        };
+
+        google.maps.event.addListener(map, 'idle', saveMapState);
+        google.maps.event.addListener(map, 'maptypeid_changed', saveMapState);
+
+        google.maps.event.addListener(map, 'zoom_changed', function(){
+            console.log('zoom_changed');
+            //PathRebuild();
+        });
 
         var lastpos = new google.maps.Marker({
           map: map,

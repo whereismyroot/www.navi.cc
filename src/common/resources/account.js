@@ -1,6 +1,6 @@
 angular.module('resources.account', ['services.i18nNotifications']);
 
-angular.module('resources.account').factory('Account', ['API_SERVER', '$http', 'i18nNotifications', function (API_SERVER, $http, i18nNotifications) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', function (SERVER, $http, i18nNotifications) {
 
   var akey = localStorage.getItem('akey');
   console.log('-- resources.account.Account akey=', akey, i18nNotifications);
@@ -27,7 +27,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
 
   Account.login = function(user, pass){
     console.log('Account.login', user, pass);
-    $http.get(API_SERVER.baseUrl + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
+    $http.get(SERVER.api + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
       "&user=" + encodeURIComponent(user) +
       "&password=" + encodeURIComponent(pass)
     ).success(function(data){
@@ -50,7 +50,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemadd = function(imei){
-    $http.get(API_SERVER.baseUrl + "api/account/systems/add" +
+    $http.get(SERVER.api + "api/account/systems/add" +
       "?akey=" + encodeURIComponent(Account.account.akey) +
       "&imei=" + encodeURIComponent(imei)
     ).success(function(data){
@@ -71,7 +71,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemsort = function(){
-      $http.post(API_SERVER.baseUrl + "api/account/systems/sort" +
+      $http.post(SERVER.api + "api/account/systems/sort" +
       "?akey=" + encodeURIComponent(Account.account.akey), {skeys: Account.account.skeys}
     ).success(function(data){
       console.log('return data=', data);
@@ -79,7 +79,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   Account.systemdel = function(skey){
-    $http.get(API_SERVER.baseUrl + "api/account/systems/del" +
+    $http.get(SERVER.api + "api/account/systems/del" +
       "?akey=" + encodeURIComponent(Account.account.akey) +
       "&skey=" + encodeURIComponent(skey)
     ).success(function(data){
@@ -91,7 +91,7 @@ angular.module('resources.account').factory('Account', ['API_SERVER', '$http', '
   };
 
   if(akey){
-    $http.get(API_SERVER.baseUrl + "api/account/get?akey=" + akey).success(function(data){
+    $http.get(SERVER.api + "api/account/get?akey=" + akey).success(function(data){
       console.log('login data=', data);
       //notify.pushSticky('Hello');
 

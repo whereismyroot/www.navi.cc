@@ -1,8 +1,8 @@
 angular.module('resources.logs', ['services.connect'])
 
-.factory('Logs', ['API_SERVER', '$http', 'Connect', '$rootScope', function (API_SERVER, $http, Connect, $rootScope) {
+.factory('Logs', ['SERVER', '$http', 'Connect', '$rootScope', function (SERVER, $http, Connect, $rootScope) {
 
-    console.log('-- resources.logs.Logs', API_SERVER, Connect);
+    console.log('-- resources.logs.Logs', SERVER, Connect);
     var Logs = {
         'logs': []
     };
@@ -19,7 +19,7 @@ angular.module('resources.logs', ['services.connect'])
 
     Logs.get = function(skey, akey, callback){
         console.log('Logs.get');
-        $http.get(API_SERVER.baseUrl + "api/logs/get?skey=" + encodeURIComponent(skey) +
+        $http.get(SERVER.api + "api/logs/get?skey=" + encodeURIComponent(skey) +
             "&akey=" + encodeURIComponent(akey)
         ).success(function(data){
             console.log('data=', data);

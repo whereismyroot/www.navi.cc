@@ -1,4 +1,27 @@
-<h4>Тут будет карта. Да, да!</h4>
-
 <div gmap="main"></div>
-В разработке...
+<div class="map-control">
+    <ul class="mapsyslist">
+        <li ng-repeat="s in account.account.skeys">
+            <span class="desc">
+                {{ account.account.systems[s].desc }}
+            </span>
+            <span class="imei">
+                {{ account.account.systems[s].imei }}
+            </span>
+            <span class="status">
+                Стоит
+            </span>
+        </li>
+    </ul>
+    <div class="mapcalendar">
+      <!--div ng-model="date" value="02-16-2012" data-date="12-02-2012" data-date-format="dd-mm-yyyy" ui-date regional="ru"></div-->
+      <div id="datepicker" data-date-language="ru" data-date-weekstart="1"></div>
+      <!--div class="input-append date" id="datepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+            <input size="16" type="text" value="12-02-2012" readonly>
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div-->
+    </div>
+
+
+
+</div>

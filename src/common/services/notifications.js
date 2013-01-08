@@ -12,6 +12,12 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
       throw new Error("Only object can be added to the notification service");
     }
     notificationsArray.push(notificationObj);
+    setTimeout(function(){
+      console.log('notification time');
+      $rootScope.$apply(function(){
+        notificationsService.remove(notificationObj);
+      });
+    }, 10000);
     return notificationObj;
   };
 

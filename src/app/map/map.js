@@ -16,4 +16,11 @@ angular.module('map', ['resources.account', 'directives.gmap'])
 .controller('MapCtrl', ['$scope', '$location', 'account', function ($scope, $location, account) {
   $scope.account = account;
 
+  /*setTimeout(function(){
+    console.log('+++++++++', $('#datepicker'));*/
+    $('#datepicker').datepicker({
+        format: 'mm-dd-yyyy'
+    });
+  /*}, 1000);*/
+
 }]);
