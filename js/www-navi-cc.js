@@ -5,10 +5,10 @@
 
 angular.module('resources.account', ['services.i18nNotifications']);
 
-angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', function (SERVER, $http, i18nNotifications) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
 
   var akey = localStorage.getItem('akey');
-  console.log('-- resources.account.Account akey=', akey, i18nNotifications);
+  console.log('-- resources.account.Account akey=', akey, i18nNotifications, $q);
   var Account = {
     'name': 'noname-noface-nonumber',
     'akey': akey,
@@ -16,6 +16,16 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     'hint': null,
     'isAuthenticated': false
   };
+
+
+  i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тест"});
+  var deffered = $q.defer();
+
+  //console.log('deffered', deffered, $timeout);
+
+  $timeout(function(){
+    i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тоже тест. Не обращайте внимания."});
+  }, 1000);
 
   /*Account.isAuthenticated = function(){
     return (Account.akey != null);
@@ -166,6 +176,23 @@ angular.module('resources.logs', ['services.connect'])
 
 }]);
 
+
+angular.module('resources.system', ['services.i18nNotifications'])
+
+.factory('System', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+    var System = {};
+
+    System.change_desc = function(skey, desc){
+        console.log(['System.change_desc', skey, desc]);
+        $http.get(SERVER.api + "api/system/changedesc?skey=" + encodeURIComponent(skey) +
+          "&desc=" + encodeURIComponent(desc)
+        ).success(function(data){
+          console.log('login data=', data);
+        });
+    };
+
+    return System;
+}]);
 
 angular.module('directives.modal', []).directive('modal', ['$parse',function($parse) {
   var backdropEl;
@@ -401,8 +428,39 @@ angular.module('directives.lists', [])
             $scope._addMyData = "Hoo";
         }]*/
     };
-});
+})
 
+.directive('contenteditable', function() {
+    return {
+        restrict: 'A',
+        require: '?ngModel',
+        link: function(scope, element, attr, ngModel) {
+            var read;
+            //console.log('===contenteditable', scope, element, attr, ngModel);
+            if (!ngModel) {
+                return;
+            }
+            ngModel.$render = function() {
+                return element.html(ngModel.$viewValue);
+            };
+            element.bind('blur', function() {
+                if (ngModel.$viewValue !== $.trim(element.html())) {
+                    return scope.$apply(read);
+                }
+            });
+            read = function() {
+                //console.log("read()", scope, ngModel);
+                ngModel.$setViewValue($.trim(element.html()));
+                element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                /*if(scope.onChange) {
+                    scope.onChange();
+                }*/
+                //return ngModel.$setViewValue($.trim(element.html()));
+            };
+            //return read;
+        }
+    };
+});
 
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
@@ -431,7 +489,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', ['
     }
   };
 }]);
-angular.module('services.notifications', []).factory('notifications', ['$rootScope', function ($rootScope) {
+angular.module('services.notifications', []).factory('notifications', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
   var notifications = {
     'STICKY' : [],
@@ -445,11 +503,11 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
       throw new Error("Only object can be added to the notification service");
     }
     notificationsArray.push(notificationObj);
-    setTimeout(function(){
-      console.log('notification time');
-      $rootScope.$apply(function(){
-        notificationsService.remove(notificationObj);
-      });
+    $timeout(function(){
+      //console.log('notification time');
+      //$rootScope.$apply(function(){
+      notificationsService.remove(notificationObj);
+      //});
     }, 10000);
     return notificationObj;
   };
@@ -788,7 +846,7 @@ angular.module('help', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('config', ['resources.account', 'ui', 'config.system.params'])
+angular.module('config', ['resources.account', 'resources.system', 'ui', 'config.system.params', 'directives.lists'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
@@ -798,12 +856,17 @@ angular.module('config', ['resources.account', 'ui', 'config.system.params'])
       account:['Account', function (Account) {
         //TODO: sure for fetch only one for the current user
         return Account;
+      }],
+      system: ['System', function (System) {
+        return System;
       }]
     }
   });
 }])
 
-.controller('ConfigViewCtrl', ['$scope', '$location', 'account', function ($scope, $location, account) {
+.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', function ($scope, $location, account, system) {
+  console.log(["ConfigViewCtrl:", system]);
+
   $scope.account = account;
 
   $scope.deleteenable = false;
@@ -818,10 +881,17 @@ angular.module('config', ['resources.account', 'ui', 'config.system.params'])
     console.log('onSort');
     account.systemsort();
   };
+
+  $scope.onChange = function(el){
+    console.log('onChange', el, $scope.account.account.systems[el].desc);
+    system.change_desc(el, $scope.account.account.systems[el].desc);
+  };
+
   $scope.onoff = function(el){
     $scope.account.account.systems[el].off = !$scope.account.account.systems[el].off;
     console.log('onoff', el);
   };
+
   $scope.del = function(el){
     //delete el;
     console.log('del', el);
@@ -836,8 +906,10 @@ angular.module('config', ['resources.account', 'ui', 'config.system.params'])
     placeholder: 'ui-sortable-placeholder2',
     stop: $scope.onSort
   });
-  console.log("===", $('ul.config_sys_list'));
 
+  /*$scope.$watch('account', function(){
+    console.log('$watch:account');
+  }, true);*/
 
   $scope.manageSystem = function (skey) {
     $location.path('/config/' + skey);
@@ -850,7 +922,7 @@ angular.module('config', ['resources.account', 'ui', 'config.system.params'])
   $scope.manageSystemParams = function (skey) {
     $location.path('/config/' + skey + '/params');
   };
-  $("[rel=tooltip]").tooltip();
+  //$("[rel=tooltip]").tooltip();
 }]);
 
 angular.module('config.system.params', ['resources.account', 'app.filters'])
@@ -871,6 +943,7 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', function ($scope, $route, $routeParams, account) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account);
   $scope.account = account;
+  //$scope.route = route;
   $scope.skey = $routeParams['skey'];
   $scope.filtered = true;
   //$scope.system = account.account.systems[$scope.skey];
@@ -1082,6 +1155,15 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   $scope.hasPendingRequests = function () {
     return httpRequestTracker.hasPendingRequests();
   };
+
+  $scope.collapse = function() {
+    $(".collapse").collapse('toggle');
+  };
+  $scope.$on('$routeChangeSuccess', function (scope, next, current) {
+    $(".collapse").collapse('hide');
+  });
+  $(".collapse").collapse({toggle: false});
+
 }]);
 
 angular.module("map/map.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1133,7 +1215,7 @@ angular.module("logs/logs.tpl.html", []).run(["$templateCache", function($templa
     "    <option value=\"\">Выберите систему</option>" +
     "    <option ng-repeat=\"s in account.account.skeys\" value=\"{{s}}\">{{account.account.systems[s].desc}}</option>" +
     "</select>" +
-    "<button class=\"btn\" ng-show=\"skey\" ng-click=\"onReload()\"><i class=\"icon-refresh icon-spin\"></i> Обновить</button>" +
+    "<button class=\"btn\" ng-show=\"skey\" ng-click=\"onReload()\"><i class=\"icon-refresh\"></i> Обновить</button>" +
     "</div>" +
     "" +
     "    <table class=\"table table-bordered table-condensed table-striped table-hover\">" +
@@ -1225,6 +1307,21 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "        <button class=\"btn btn-small\" ng-click=\"update()\">Обновить</button>" +
     "    </div>" +
     "" +
+    "    <div class=\"well well-small span4\">" +
+    "        <h4>Информация о транспортном средстве</h4>" +
+    "" +
+    "        <dl class=\"dl-horizontal\">" +
+    "            <dt>Наименование</dt><dd>-</dd>" +
+    "            <dt>Гос номер</dt><dd>AA 0000 AA</dd>" +
+    "            <dt>Год выпуска</dt><dd>-</dd>" +
+    "            <dt>№ двигателя</dt><dd>-</dd>" +
+    "            <dt>№ кузова</dt><dd>-</dd>" +
+    "            <dt>№ страхового полиса</dt><dd>-</dd>" +
+    "        </dl>" +
+    "" +
+    "        <a class=\"btn btn-small\" href=\"#drivers\">Водители</a>" +
+    "    </div>" +
+    "" +
     "</div>" +
     "" +
     "<div class=\"well well-small\">" +
@@ -1306,7 +1403,7 @@ angular.module("config/config.tpl.html", []).run(["$templateCache", function($te
     "        <span class=\"sysimei canselect\" title=\"IMEI\">{{ account.account.systems[s].imei }}</span>" +
     "        <span class=\"sysphone\" title=\"номер телефона\">{{ account.account.systems[s].phone }}</span>" +
     "        <span class=\"control\"><i class=\"icon-edit\" title=\"Редактировать описание системы\" ng-click=\"edit(s)\"></i></span>" +
-    "        <span class=\"sysname canselect\">{{ account.account.systems[s].desc }}</span>" +
+    "        <span class=\"sysname canselect\" contenteditable ng-model=\"account.account.systems[s].desc\" ng-change=\"onChange(s)\"></span>" +
     "        <span class=\"sysrightcontrol control\">" +
     "            <i class=\"systag icon-off icon-large\" title=\"Временно отключить наблюдение за системой\" ng-click=\"onoff(s)\"></i>" +
     "            <i class=\"systag icon-trash icon-large\" ng-class=\"{hidden: !deleteenable}\" title=\"Удалить систему из списка наблюдения (без подтверждения)\" ng-click=\"del(s)\"></i>" +
@@ -1445,7 +1542,8 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "<div class=\"navbar\" ng-controller=\"HeaderCtrl\">" +
     "    <div class=\"navbar-inner\">" +
     "        <div class=\"container\">" +
-    "            <a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\">" +
+    "            <!--a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\"-->" +
+    "            <a class=\"btn btn-navbar\" ng-click=\"collapse()\">" +
     "                <span class=\"icon-bar\"></span>" +
     "                <span class=\"icon-bar\"></span>" +
     "                <span class=\"icon-bar\"></span>" +

@@ -42,15 +42,23 @@
         <script src="scripts/vendor/json3.min.js"></script>
     <![endif]-->
 
-    <div ng-include="'header.tpl.html'"></div>
+    <div ng-include="'header.tpl.html'" style="z-index: 1001; position: absolute;top:0px;right:0px;left:0px;"></div>
 
     <div ng-view class="content" ng-class="{contentfixed: location.path().match('^/map')}"></div>
     <div ng-include="'notifications.tpl.html'" class="container-fluid notification" ng-show="notifications.getCurrent().length"></div>
 
     <script type="text/javascript">
-        window.document.onselectstart = function(ev) {
+        /*window.document.onselectstart = function(ev) {
           return false;
-        };
+        };*/
+
+        window.document.onselectstart = function(ev){
+            if((ev.target.getAttribute && ev.target.getAttribute('contenteditable')) || (ev.target.parentNode && ev.target.parentNode.getAttribute('contenteditable')!=null)) {
+                return true;
+            }
+            return false;
+        }   // Запретим выделение (внимание решение может быть не кроссбраузерно)
+
         $("[rel=tooltip]").tooltip();
         //angular.bootstrap(document, ['app']);
     </script>
