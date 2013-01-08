@@ -1,4 +1,4 @@
-/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-01-07
+/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-01-08
 * https://github.com/baden/www.navi.cc
 * Copyright (c) 2013 Batrak Denis;
  Licensed MIT */
@@ -243,21 +243,51 @@ angular.module('directives.modal', []).directive('modal', ['$parse',function($pa
   };
 }]);
 
-angular.module('directives.gmap', ['services.connect'])
+angular.module('directives.gmap', ['services.connect', 'ui'])
 
 .directive('gmap', ["Connect", function(C_onnect) {
     console.log('gmap:directive');
+
+
     var link = function(s_cope, e_lement, a_ttrs) {
         console.log('map directive: link', s_cope, e_lement, C_onnect);
         //element.innerHTML="<div>map</div>";
+
+        var prev_config = localStorage.getItem('map.config');
+        if(prev_config){
+            prev_config = JSON.parse(prev_config);
+        } else {
+            prev_config = {
+                zoom: 6,
+                center: [48.370848, 32.717285],
+                typeId: google.maps.MapTypeId.ROADMAP
+            };
+        }
+
         var latlng = new google.maps.LatLng(48.397, 34.644);
         var myOptions = {
-          zoom: 10,
-          center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+            center: new google.maps.LatLng(prev_config.center[0], prev_config.center[1]),
+            mapTypeId: prev_config.typeId,
+            zoom: prev_config.zoom
         };
         var map = new google.maps.Map(e_lement[0],
             myOptions);
+
+        var saveMapState = function() {
+            localStorage.setItem('map.config', JSON.stringify({
+                center: [map.getCenter().lat(), map.getCenter().lng()],
+                zoom: map.getZoom(),
+                typeId: map.getMapTypeId()
+            }));
+        };
+
+        google.maps.event.addListener(map, 'idle', saveMapState);
+        google.maps.event.addListener(map, 'maptypeid_changed', saveMapState);
+
+        google.maps.event.addListener(map, 'zoom_changed', function(){
+            console.log('zoom_changed');
+            //PathRebuild();
+        });
 
         var lastpos = new google.maps.Marker({
           map: map,
@@ -415,6 +445,12 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
       throw new Error("Only object can be added to the notification service");
     }
     notificationsArray.push(notificationObj);
+    setTimeout(function(){
+      console.log('notification time');
+      $rootScope.$apply(function(){
+        notificationsService.remove(notificationObj);
+      });
+    }, 10000);
     return notificationObj;
   };
 
@@ -621,6 +657,13 @@ angular.module('map', ['resources.account', 'directives.gmap'])
 
 .controller('MapCtrl', ['$scope', '$location', 'account', function ($scope, $location, account) {
   $scope.account = account;
+
+  /*setTimeout(function(){
+    console.log('+++++++++', $('#datepicker'));*/
+    $('#datepicker').datepicker({
+        format: 'mm-dd-yyyy'
+    });
+  /*}, 1000);*/
 
 }]);
 angular.module('reports', ['resources.account'])
@@ -1044,6 +1087,32 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 angular.module("map/map.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("map/map.tpl.html",
     "<div gmap=\"main\"></div>" +
+    "<div class=\"map-control\">" +
+    "    <ul class=\"mapsyslist\">" +
+    "        <li ng-repeat=\"s in account.account.skeys\">" +
+    "            <span class=\"desc\">" +
+    "                {{ account.account.systems[s].desc }}" +
+    "            </span>" +
+    "            <span class=\"imei\">" +
+    "                {{ account.account.systems[s].imei }}" +
+    "            </span>" +
+    "            <span class=\"status\">" +
+    "                Стоит" +
+    "            </span>" +
+    "        </li>" +
+    "    </ul>" +
+    "    <div class=\"mapcalendar\">" +
+    "      <!--div ng-model=\"date\" value=\"02-16-2012\" data-date=\"12-02-2012\" data-date-format=\"dd-mm-yyyy\" ui-date regional=\"ru\"></div-->" +
+    "      <div id=\"datepicker\" data-date-language=\"ru\" data-date-weekstart=\"1\"></div>" +
+    "      <!--div class=\"input-append date\" id=\"datepicker\" data-date=\"12-02-2012\" data-date-format=\"dd-mm-yyyy\">" +
+    "            <input size=\"16\" type=\"text\" value=\"12-02-2012\" readonly>" +
+    "            <span class=\"add-on\"><i class=\"icon-th\"></i></span>" +
+    "        </div-->" +
+    "    </div>" +
+    "" +
+    "" +
+    "" +
+    "</div>" +
     "");
 }]);
 
@@ -1373,60 +1442,70 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"navbar navbar-fixed-top\" ng-controller=\"HeaderCtrl\">" +
+    "<div class=\"navbar\" ng-controller=\"HeaderCtrl\">" +
     "    <div class=\"navbar-inner\">" +
-    "        <a class=\"brand\" href=\"#/login\">newgps.navi.cc</a>" +
-    "        <ul class=\"nav\" ng-class=\"{hidden: !account.isAuthenticated}\">" +
-    "            <li ng-class=\"{active:isNavbarActive('map')}\">" +
-    "                <a href=\"#/map\">" +
-    "                    <i class=\"icon-map-marker\"></i>" +
-    "                    Карта" +
-    "                </a>" +
-    "            </li>" +
-    "            <li ng-class=\"{active:isNavbarActive('logs')}\">" +
-    "                <a href=\"#/logs\">" +
-    "                    <i class=\"icon-eye-open\"></i>" +
-    "                    События" +
-    "                </a>" +
-    "            </li>" +
-    "            <li ng-class=\"{active:isNavbarActive('reports')}\">" +
-    "                <a href=\"#/reports\">" +
-    "                    <i class=\"icon-table\"></i>" +
-    "                    Отчеты" +
-    "                </a>" +
-    "            </li>" +
-    "            <li ng-class=\"{active:isNavbarActive('gps')}\">" +
-    "                <a href=\"#/gps\">" +
-    "                    <i class=\"icon-film\"></i>" +
-    "                    Экспорт GPS" +
-    "                </a>" +
-    "            </li>" +
-    "            <li ng-class=\"{active:isNavbarActive('config')}\">" +
-    "                <a href=\"#/config\">" +
-    "                    <i class=\"icon-cogs\"></i>" +
-    "                    Настройки" +
-    "                </a>" +
-    "            </li>" +
-    "            <li ng-class=\"{active:isNavbarActive('help')}\">" +
-    "                <a href=\"#/help\">" +
-    "                    <i class=\"icon-medkit\"></i>" +
-    "                    Помощь" +
-    "                </a>" +
-    "            </li>" +
+    "        <div class=\"container\">" +
+    "            <a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\">" +
+    "                <span class=\"icon-bar\"></span>" +
+    "                <span class=\"icon-bar\"></span>" +
+    "                <span class=\"icon-bar\"></span>" +
+    "            </a>" +
     "" +
-    "            <!-- Admin items -->" +
-    "            <li class=\"dropdown\" ng-class=\"{active:isNavbarActive('admin'), open:isAdminOpen}\" ng-show=\"currentUser.isAdmin()\">" +
-    "                <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\" ng-click=\"isAdminOpen=!isAdminOpen\">Admin<b class=\"caret\"></b></a>" +
-    "                <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">" +
-    "                    <li><a tabindex=\"-1\" href=\"/admin/projects\" ng-click=\"isAdminOpen=false\">Projects</a></li>" +
-    "                    <li><a tabindex=\"-1\" href=\"/admin/users\" ng-click=\"isAdminOpen=false\">Users</a></li>" +
+    "            <a class=\"brand\" href=\"#/login\">newgps.navi.cc</a>" +
+    "            <div class=\"nav-collapse collapse\">" +
+    "                <ul class=\"nav\" ng-class=\"{hidden: !account.isAuthenticated}\">" +
+    "                    <li ng-class=\"{active:isNavbarActive('map')}\">" +
+    "                        <a href=\"#/map\">" +
+    "                            <i class=\"icon-map-marker\"></i>" +
+    "                            Карта" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('logs')}\">" +
+    "                        <a href=\"#/logs\">" +
+    "                            <i class=\"icon-eye-open\"></i>" +
+    "                            События" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('reports')}\">" +
+    "                        <a href=\"#/reports\">" +
+    "                            <i class=\"icon-table\"></i>" +
+    "                            Отчеты" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('gps')}\">" +
+    "                        <a href=\"#/gps\">" +
+    "                            <i class=\"icon-film\"></i>" +
+    "                            Экспорт GPS" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('config')}\">" +
+    "                        <a href=\"#/config\">" +
+    "                            <i class=\"icon-cogs\"></i>" +
+    "                            Настройки" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('help')}\">" +
+    "                        <a href=\"#/help\">" +
+    "                            <i class=\"icon-medkit\"></i>" +
+    "                            Помощь" +
+    "                        </a>" +
+    "                    </li>" +
+    "" +
+    "                    <!-- Admin items -->" +
+    "                    <li class=\"dropdown\" ng-class=\"{active:isNavbarActive('admin'), open:isAdminOpen}\" ng-show=\"currentUser.isAdmin()\">" +
+    "                        <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\" ng-click=\"isAdminOpen=!isAdminOpen\">Admin<b class=\"caret\"></b></a>" +
+    "                        <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">" +
+    "                            <li><a tabindex=\"-1\" href=\"/admin/projects\" ng-click=\"isAdminOpen=false\">Projects</a></li>" +
+    "                            <li><a tabindex=\"-1\" href=\"/admin/users\" ng-click=\"isAdminOpen=false\">Users</a></li>" +
+    "                        </ul>" +
+    "                    </li>" +
     "                </ul>" +
-    "            </li>" +
-    "        </ul>" +
-    "        <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">" +
-    "            <li class=\"divider-vertical\"></li>" +
-    "            <li><a href=\"#\"><img src=\"img/spinner.gif\"></a></li>" +
-    "        </ul>" +
+    "                <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">" +
+    "                    <li class=\"divider-vertical\"></li>" +
+    "                    <li><a href=\"#\"><img src=\"img/spinner.gif\"></a></li>" +
+    "                </ul>" +
+    "            </div>" +
+    "        </div>" +
     "    </div>" +
     "</div>");
 }]);
