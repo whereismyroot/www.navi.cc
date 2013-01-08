@@ -12,9 +12,9 @@
     html { height: 100% }
     body { height: 100%; margin: 0px; padding: 0px }
     #map_canvas { height: 100% }
-    div.cmdbtnpanel { position: absolute; top: 20px; left: 0; right: 0; text-align: center; }
-    a.cmdbtn { text-decoration: none; color: black; border: 1px solid black; background-color: white; padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5);}
-    span.info { color: black; border: 1px solid black; background-color: white; padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5);}
+    div.cmdbtnpanel { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; }
+    span.info { color: black; border: 1px solid white; background-color: rgba(255,255,255,0.6); padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5); display: inline-block; text-align: left;}
+    a.cmdbtn { text-decoration: none; color: black; padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5);}
     a.cmdbtn:hover { background-color: #def; }
   </style>
   <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false">
@@ -23,7 +23,11 @@
 <body onload="initialize()">
   <div id="map_canvas" style="width:100%; height:100%"></div>
   <div class="cmdbtnpanel">
-    <span class="info">IMEI: <input id="imei" value="test-01"></input></span>
+    <span class="info" style="">
+      IMEI: <input id="imei" value="test-01"></input><br/>
+      <input type="checkbox" name="fast" id="fast"></input><label for="fast">Ускорить в 20 раз</label><br/>
+      <input type="checkbox" name="pack" id="pack"></input><label for="pack">Отправка по 100 точек</label>
+    </span>
     <span class="info">
       <select name="server" id="server" value="http://localhost:8181">
         <option value="http://localhost:8181">Локальный</option>
@@ -31,8 +35,9 @@
         <!--option value="http://point.gps.navi.cc">За деньги!!!</option-->
       </select>
     </span>
-    <a id="rebuild" class="cmdbtn" href="#">Новый трек</a>
-    <span class="info">Длина трека: <span id="tracklen"></span> </span>
+    <span class="info">
+    <a id="rebuild" class="cmdbtn" href="#">Новый трек</a><br/>
+    Длина трека: <span id="tracklen"></span> </span>
     <a id="download" class="cmdbtn" href="#">Загрузить...</a>
     <a id="run" class="cmdbtn" href="#">Запустить!</a>
   </div>
@@ -130,23 +135,19 @@
     var out2 = [];
     var rabbit_pos = null;
     var runner_id;
-    var runner = function(){
+
+    var BuildPacket = function(){
       if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
-        clearInterval(runner_id);
-        rabbit.setAnimation(null);
-        document.getElementById("run").innerHTML = "Запустить!"
-        document.getElementById("run").onclick = cmd_run;
         return;
       }
+
       var p = out2[rabbit_pos];
       var lat = p[0];
       var lon = p[1];
-      var pos = new google.maps.LatLng(lat, lon);
-      //rabbit.position = pos;
-      rabbit.setPosition(pos);
-      //var blob = new Blob();
-      var packet = new ArrayBuffer(32 + 2);
-      var dv = new DataView(packet);
+
+      //var packet = new ArrayBuffer(32 + 2);
+      //var dv = new DataView(packet);
+      var packet = new Uint8Array(32);
 
       var lat_s = 0;
       if(lat < 0) {
@@ -169,78 +170,125 @@
       var lon_t = Math.floor((lon_f - Math.floor(lon_f)) * 10000);
 
 // D0: Заголовок (должен быть == 0xFF)
-      dv.setUint8(0, 0xFF);
+      packet[0] = 0xFF;
 // D1: Идентификатор пакета (должен быть == 0xF2)
-      dv.setUint8(1, 0xF2);
+      packet[1] = 0xF2;
 // D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
-      dv.setUint8(2, 32);
+      packet[2] = 32;
 // D3    день    День месяца = 1..31
-      dv.setUint8(3, dt.getUTCDate());
+      packet[3] = dt.getUTCDate();
 // D4 месяц | ((год-2010) << 4)   Месяц = 1..12 год = 0..14 → 2010..2024
-      dv.setUint8(4, dt.getUTCMonth()+1 + (dt.getUTCFullYear() - 2010) * 16);
+      packet[4] = dt.getUTCMonth()+1 + (dt.getUTCFullYear() - 2010) * 16;
 // D5    Часы    Часы = 0..23
-      dv.setUint8(5, dt.getUTCHours());
+      packet[5] = dt.getUTCHours();
 // D6   Минуты  Минуты = 0..59
-      dv.setUint8(6, dt.getUTCMinutes());
+      packet[6] = dt.getUTCMinutes();
 // D7  Cекунды Cекунды = 0..59
-      dv.setUint8(7, dt.getUTCSeconds());
+      packet[7] = dt.getUTCSeconds();
 // D8 Широта (LL) Градусы широты = 0..89
-      dv.setUint8(8, lat_i);
+      packet[8] = lat_i;
 // D9    Широта (ll) Минуты целая часть = 0..59
-      dv.setUint8(9, Math.floor(lat_f));
+      packet[9] = Math.floor(lat_f);
 // D10  Широта (mm) Минуты дробная часть1 = 0..99
-      dv.setUint8(10, Math.floor(lat_t / 100));
+      packet[10] = Math.floor(lat_t / 100);
 // D11 Широта (nn) Минуты дробная часть2 = 0..99
-      dv.setUint8(11, lat_t % 100);
+      packet[11] = lat_t % 100;
 // D12    Долгота (LLL)   Градусы долготы = 0..179
-      dv.setUint8(12, lon_i);
+      packet[12] = lon_i;
 // D13   Долгота (ll)    Минуты целая часть = 0..59
-      dv.setUint8(13, Math.floor(lon_f));
+      packet[13] = Math.floor(lon_f);
 // D14  Долгота (mm)    Минуты дробная часть1 = 0..99
-      dv.setUint8(14, Math.floor(lon_t / 100));
+      packet[14] = Math.floor(lon_t / 100);
 // D15 Долгота (nn)    Минуты дробная часть2 = 0..99
-      dv.setUint8(15, lon_t % 100);
+      packet[15] = lon_t % 100;
 // D16    D16.0 = NS  D16.1 = EW  D16.2 = (Course & 1)    D16.0=0 для N   D16.0=1 для S   D16.1=0 для E   D16.1=1 для W   D16.2=0 для четных Course   D16.2=1 для нечетных Course
-      dv.setUint8(16, lat_s + lon_s);
+      packet[16] = lat_s + lon_s;
 // D17   Спутники    Кол-во спутников 3..12
-      dv.setUint8(17, Math.floor(Math.random() * 10) + 3);
+      packet[17] = Math.floor(Math.random() * 10) + 3;
 // D18  Скорость    Скорость в узлах 0..239
-      dv.setUint8(18, 50);
+      packet[18] = 50;
 // D19 Скорость дробная часть  Дробная часть скорости 0..99
-      dv.setUint8(19, 20);
+      packet[19] = 20;
 // D20    Направление Направление/2 = 0..179
-      dv.setUint8(20, Math.floor(Math.random() * 180));
+      packet[20] = Math.floor(Math.random() * 180);
 // D21   Направление дробная часть   Дробная часть направления 0..99
-      dv.setUint8(21, 0);
+      packet[21] = 0;
 // D22, D23 Напряжение внешнего питания Напряжение/100 = 0..2000    D22 – младшая часть D23 – старшая часть
-      dv.setUint16(22, 1200, true);
+      packet[22] = 1200 % 256;
+      packet[23] = 1200 / 256;
 // D24, D25   Напряжение внутреннего аккумулятора Напряжение/100 = 0..5000    D24 – младшая часть D25 – старшая часть
-      dv.setUint16(24, 420, true);
+      packet[24] = 420 % 256;
+      packet[25] = 420 / 256;
 // D26  Зарезервировано =0
-      dv.setUint8(26, 0);
+      packet[26] = 0;
 // D27 Тип точки   Причина фиксации точки
-      dv.setUint8(27, FSOURCE["ANGLE"]);
+      packet[27] = FSOURCE["ANGLE"];
 // D28, D29   Неточное смещение   Смещение относительно точного времени в секундах. Значение 0xFFFF означает превышение лимита и должно игнорироваться если это возможно.
-      dv.setUint16(28, 0, true);
+      packet[28] = 0;
+      packet[29] = 0;
 // D30  Зарезервировано =0
-      dv.setUint8(30, 0);
+      packet[30] = 0;
 // D31 Зарезервировано =0
-      dv.setUint8(31, 0);
+      packet[31] = 0;
+      rabbit_pos += 1;
+      dt.setUTCSeconds(dt.getUTCSeconds()+1);
+
+      return packet;
+    }
+
+    var runner = function(){
+      if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
+        clearInterval(runner_id);
+        rabbit.setAnimation(null);
+        document.getElementById("run").innerHTML = "Запустить!"
+        document.getElementById("run").onclick = cmd_run;
+        return;
+      }
+      var p = out2[rabbit_pos];
+      var lat = p[0];
+      var lon = p[1];
+      var pos = new google.maps.LatLng(lat, lon);
+      //rabbit.position = pos;
+      rabbit.setPosition(pos);
+      //var blob = new Blob();
+
+      var multi = document.getElementById("pack").checked?100:1;
+      console.log('multi=', multi);
+      var uInt8Array = new Uint8Array(multi * 32 + 2); // Это максимальный размер, но может быть меньше в конце трека
+      var pack_len = 0;
+
+      for(var i=0; i<multi; i++) {
+        var packet = BuildPacket();
+        //console.log('packet=', packet);
+        if(packet) {
+          uInt8Array.set(packet, pack_len);
+          pack_len += 32;
+          //console.log('uInt8Array=', uInt8Array);
+        } else {
+          console.log('finish');
+        }
+      }
 
       var crc = 0;
-      for(var i=0; i<32; i++) {
-        var data = dv.getUint8(i);
+      for(var i=0; i<pack_len; i++) {
+        //var data = dv.getUint8(i);
+        var data = uInt8Array[i];
         crc = CRC16(crc, data);
       }
-      dv.setUint16(32, crc, true);
+      //dv.setUint16(32, crc, true);
+      console.log(' crc of ' + pack_len + ' bytes = ' + crc + ' (' + uInt8Array.length);
+      uInt8Array[pack_len] = crc % 256;
+      uInt8Array[pack_len + 1] = crc / 256;
 
-      var uInt8Array = new Uint8Array(packet);
+      var uInt8Array = new Uint8Array(uInt8Array.subarray(0, pack_len + 2));
+
+      console.log(' sending '+ uInt8Array.length + ' bytes');
 
       var req = new XMLHttpRequest();
       var url = document.getElementById("server").value;
       req.open("POST", url + "/bingps?imei=" + IMEI, true);
       // set headers and mime-type appropriately
-      req.setRequestHeader("Content-Length", 34);
+      req.setRequestHeader("Content-Length", pack_len + 2);
       req.setRequestHeader('Content-Type', 'application/octet-stream')
       //req.send(packet);
       req.send(uInt8Array);
@@ -248,14 +296,13 @@
 
       //console.log("step", rabbit_pos, p, IMEI, packet, dv, crc, uInt8Array);
 
-      rabbit_pos += 1;
-      dt.setUTCSeconds(dt.getUTCSeconds()+1);
     }
 
     var cmd_run = function() {
-      //console.log("run", out2);
+      var fast = document.getElementById("fast").checked;
+      console.log("run", fast);
       clearInterval(runner_id);
-      runner_id = setInterval(runner, 1000);
+      runner_id = setInterval(runner, fast?50:1000);
       //rabbit.setAnimation(google.maps.Animation.BOUNCE);
       this.innerHTML = "Остановить."
       this.onclick = cmd_stop;
