@@ -1419,15 +1419,15 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "        Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
     "    </div>" +
     "    <div class=\"modal-body\">" +
-    "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" >" +
+    "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
     "            <div class=\"input-prepend\">" +
     "                <span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
-    "                <input class=\"span6\" type=\"text\" placeholder=\"Имя пользователя\" ng-model=\"user.name\" required autofocus>" +
+    "                <input class=\"\" type=\"text\" placeholder=\"Имя пользователя\" ng-model=\"user.name\" required autofocus>" +
     "            </div>" +
     "" +
     "            <div class=\"input-prepend\">" +
     "                <span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
-    "                <input class=\"span6\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
+    "                <input class=\"\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
     "            </div>" +
     "        </form>" +
     "    </div>" +
