@@ -5,7 +5,7 @@
     <option value="">Выберите систему</option>
     <option ng-repeat="s in account.account.skeys" value="{{s}}">{{account.account.systems[s].desc}}</option>
 </select>
-<button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh icon-spin"></i> Обновить</button>
+<button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
 </div>
 
     <table class="table table-bordered table-condensed table-striped table-hover">

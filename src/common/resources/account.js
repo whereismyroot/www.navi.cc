@@ -1,9 +1,9 @@
 angular.module('resources.account', ['services.i18nNotifications']);
 
-angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', function (SERVER, $http, i18nNotifications) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
 
   var akey = localStorage.getItem('akey');
-  console.log('-- resources.account.Account akey=', akey, i18nNotifications);
+  console.log('-- resources.account.Account akey=', akey, i18nNotifications, $q);
   var Account = {
     'name': 'noname-noface-nonumber',
     'akey': akey,
@@ -11,6 +11,16 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     'hint': null,
     'isAuthenticated': false
   };
+
+
+  i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тест"});
+  var deffered = $q.defer();
+
+  console.log('deffered', deffered, $timeout);
+
+  $timeout(function(){
+    i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тоже тест. Не обращайте внимания."});
+  }, 1000);
 
   /*Account.isAuthenticated = function(){
     return (Account.akey != null);

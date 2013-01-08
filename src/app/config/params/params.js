@@ -16,6 +16,7 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', function ($scope, $route, $routeParams, account) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account);
   $scope.account = account;
+  //$scope.route = route;
   $scope.skey = $routeParams['skey'];
   $scope.filtered = true;
   //$scope.system = account.account.systems[$scope.skey];
