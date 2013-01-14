@@ -1,4 +1,4 @@
-/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-01-08
+/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-01-14
 * https://github.com/baden/www.navi.cc
 * Copyright (c) 2013 Batrak Denis;
  Licensed MIT */
@@ -7,17 +7,47 @@ angular.module('resources.account', ['services.i18nNotifications']);
 
 angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
 
-  var akey = localStorage.getItem('akey');
-  console.log('-- resources.account.Account akey=', akey, i18nNotifications, $q);
   var Account = {
     'name': 'noname-noface-nonumber',
-    'akey': akey,
+    'access_token': null,
+    'withCredentials': SERVER.api_withCredentials,
     'account': null,
     'hint': null,
     'isAuthenticated': false
   };
 
+  if(!SERVER.api_withCredentials) {
+    Account.access_token = localStorage.getItem('access_token');
+    if(Account.access_token){
+      $http.defaults.headers.common["Authorization"] = Account.access_token;
+    } else {
+      delete $http.defaults.headers.common["Authorization"];
+    }
+  }
 
+  if(Account.access_token || SERVER.api_withCredentials){
+    //$http.defaults.headers.common["Authorization"] = Account.access_token;
+    $http({
+      method: 'GET',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account"
+    }).success(function(data){
+      console.log('login data=', data);
+      //notify.pushSticky('Hello');
+
+      if(data.account) {
+        Account.account = data.account;
+        Account.access_token = data.access_token;
+        Account.isAuthenticated = true;
+      }
+    });
+  } else {
+    //i18nNotifications.pushSticky('login.error.notAuthenticated', 'error', {}, {rejection: 'aaa'});
+  }
+
+  //console.log('-- resources.account.Account access_token=', Account.access_token, i18nNotifications, $q);
+
+  /*
   i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тест"});
   var deffered = $q.defer();
 
@@ -26,33 +56,54 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
   $timeout(function(){
     i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тоже тест. Не обращайте внимания."});
   }, 1000);
+  */
 
   /*Account.isAuthenticated = function(){
-    return (Account.akey != null);
+    return (Account.access_token != null);
   };*/
 
   Account.logout = function(){
     console.log('Account.logout');
-    Account.akey = null;
+    Account.access_token = null;
     Account.account = null;
     Account.isAuthenticated = false;
-    localStorage.removeItem('akey');
+
+    if(SERVER.api_withCredentials) {
+      $http({
+        method: "POST",
+        withCredentials: SERVER.api_withCredentials,
+        url: SERVER.api + "/logout"
+      }).success(function(data){});
+    } else {
+      localStorage.removeItem('access_token');
+      if($http.defaults.headers.common["Authorization"]){
+        delete $http.defaults.headers.common["Authorization"];
+      }
+    }
+
     //location.reload();
   };
 
-  Account.login = function(user, pass){
-    console.log('Account.login', user, pass);
-    $http.get(SERVER.api + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
-      "&user=" + encodeURIComponent(user) +
-      "&password=" + encodeURIComponent(pass)
-    ).success(function(data){
-      console.log('login data=', data);
-      localStorage.setItem('akey', data.account.akey);
-      Account.akey = data.account.akey;
+  Account.login = function(username, password){
+    console.log('Account.login', username, password);
+    $http({
+      method: "POST",
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/login",
+      params: {username: username, password: password}
+    }).success(function(data){
+      console.log('login data=', data, $http.defaults.headers);
+
+      if(!SERVER.api_withCredentials) {
+        localStorage.setItem('access_token', data.access_token);
+        $http.defaults.headers.common["Authorization"] = access_token;
+      }
+
+      Account.access_token = data.access_token;
       Account.account = data.account;
       Account.isAuthenticated = true;
       if(data.result === "created") {
-        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.name});
+        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
         //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
         //setTimeout(function(){location.reload();}, 3000);
       } else {
@@ -64,40 +115,54 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     });
   };
 
-  Account.systemadd = function(imei){
-    $http.get(SERVER.api + "api/account/systems/add" +
-      "?akey=" + encodeURIComponent(Account.account.akey) +
-      "&imei=" + encodeURIComponent(imei)
-    ).success(function(data){
+  Account.systemadd = function(imeis){
+    $http({
+      method: 'POST',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems",
+      data: {cmd: 'add', imeis: imeis}
+    }).success(function(data){
       console.log('return data=', data);
-      if(data.result === "already"){
-        alert('Вы уже наблюдаете за этой системой.');
-        return;
+      var systems = data.systems;
+      if(systems.length === 1) {
+        if(data.systems[0].result === "already"){
+          alert('Вы уже наблюдаете за этой системой.');
+          return;
+        }
+        if(data.systems[0].result === "notfound"){
+          alert('Система на найдена. Возможные причины: \n1. Система еще не выходила на связь.\n2. Проверте правильность ввода IMEI.');
+          return;
+        }
       }
-      if(data.result === "notfound"){
-        alert('Система на найдена. Возможные причины: \n1. Система еще не выходила на связь.\n2. Проверте правильность ввода IMEI.');
-        return;
+      for(var i=0; i<systems.length; i++) {
+        var item = systems[i];
+        if(item.result === "added") {
+          Account.account.skeys.push(item.system.key);
+          Account.account.systems[item.system.key] = angular.copy(item.system);
+        }
       }
-      Account.account.skeys.push(data.system.key);
-      Account.account.systems[data.system.key] = angular.copy(data.system);
       //$scope.addform = false;
       //alert('Система ни разу не выходила на связь. Но она все равно была добавлена в список наблюдения.');
     });
   };
 
   Account.systemsort = function(){
-      $http.post(SERVER.api + "api/account/systems/sort" +
-      "?akey=" + encodeURIComponent(Account.account.akey), {skeys: Account.account.skeys}
-    ).success(function(data){
+    $http({
+      method: 'POST',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems",
+      data: {cmd: 'sort', skeys: Account.account.skeys}
+    }).success(function(data){
       console.log('return data=', data);
     });
   };
 
   Account.systemdel = function(skey){
-    $http.get(SERVER.api + "api/account/systems/del" +
-      "?akey=" + encodeURIComponent(Account.account.akey) +
-      "&skey=" + encodeURIComponent(skey)
-    ).success(function(data){
+    $http({
+      method: 'DELETE',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems/" + encodeURIComponent(skey)
+    }).success(function(data){
       console.log('return data=', data);
       var i = Account.account.skeys.indexOf(skey);
       Account.account.skeys.splice(i, 1);
@@ -105,25 +170,84 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     });
   };
 
-  if(akey){
-    $http.get(SERVER.api + "api/account/get?akey=" + akey).success(function(data){
-      console.log('login data=', data);
-      //notify.pushSticky('Hello');
-
-      if(data.account) {
-        Account.account = data.account;
-        Account.akey = data.account.akey;
-        Account.isAuthenticated = true;
-      }
-    });
-  } else {
-    //i18nNotifications.pushSticky('login.error.notAuthenticated', 'error', {}, {rejection: 'aaa'});
-  }
-
-  //$scope.akey = akey;
+  //$scope.access_token = access_token;
 
   return Account;
 }]);
+
+angular.module('resources.params', ['services.connect', 'ngResource'])
+
+.factory('Params', ['SERVER', '$resource', 'Connect', function (SERVER, $resource, Connect) {
+
+    console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+
+    var Params = $resource(SERVER.api.replace(/:\d/, '\\$&') + "api/params/:skey/:controller",
+    {
+        skey: "@skey",
+        controller: "@controller",
+        apikey: "4f679234645"
+    },
+    {
+        set: {
+            method: "POST",
+            params: {
+                controller: "set"
+            }
+        }
+    });
+
+    //return $resource(SERVER.api.replace(/:\d.*\//, ':port/') + "api/params/:skey/:controller",
+    //return $resource('http://localhost\\:8183/' + "api/params/:skey/:controller",
+    return Params;
+}]);
+
+if(0){
+    var Params = {
+        'params': []
+    };
+
+    /*
+    // Подпишемся на события изменения параметров
+    var updater = Connect.updater.on('add_log', function(msg) {
+        //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
+        Logs.logs.push(msg.log);
+        console.log(['Logs add_log message:', msg, Logs]);
+        $rootScope.$apply();
+        //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
+        //lastpos.setPosition(newpos);
+    });*/
+
+
+    Params.get = function(skey, akey, callback){
+        console.log('Params.get');
+        $http.get(SERVER.api + "api/params/get/" + encodeURIComponent(skey) +
+            "&akey=" + encodeURIComponent(akey)
+        ).success(function(data){
+            console.log('data=', data);
+            /*Logs.logs = data.logs;
+
+            if(data.logs.length === 0){
+                callback(0);
+            } else {
+                callback(-1);
+            }*/
+            /*
+            if(data.result === "created") {
+            //i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.name});
+            //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
+            //setTimeout(function(){location.reload();}, 3000);
+            } else {
+            //$scope.label = "Вход в учетную запись...";
+            //setTimeout(function(){location.reload();}, 1000);
+            }
+            */
+
+            //$rootScope.account = data;
+        });
+    };
+
+    return Params;
+}
 
 angular.module('resources.logs', ['services.connect'])
 
@@ -146,8 +270,8 @@ angular.module('resources.logs', ['services.connect'])
 
     Logs.get = function(skey, akey, callback){
         console.log('Logs.get');
-        $http.get(SERVER.api + "api/logs/get?skey=" + encodeURIComponent(skey) +
-            "&akey=" + encodeURIComponent(akey)
+        $http.get(SERVER.api + "api/logs/get/" + encodeURIComponent(skey) +
+            "?akey=" + encodeURIComponent(akey)
         ).success(function(data){
             console.log('data=', data);
             Logs.logs = data.logs;
@@ -184,8 +308,8 @@ angular.module('resources.system', ['services.i18nNotifications'])
 
     System.change_desc = function(skey, desc){
         console.log(['System.change_desc', skey, desc]);
-        $http.get(SERVER.api + "api/system/changedesc?skey=" + encodeURIComponent(skey) +
-          "&desc=" + encodeURIComponent(desc)
+        $http.get(SERVER.api + "api/system/changedesc/" + encodeURIComponent(skey) +
+          "?desc=" + encodeURIComponent(desc)
         ).success(function(data){
           console.log('login data=', data);
         });
@@ -472,7 +596,67 @@ angular.module('directives.lists', [])
             //return read;
         }
     };
+})
+
+.directive('fileload', function() {
+    return {
+        restrict: 'E',
+        require: '?ngModel',
+        template: '<span class="btn btn-success fileinput-button">' +
+                  '  <i class="icon-plus icon-white"></i>' +
+                  '  <span>Из файла...</span>' +
+//                  ' <input type="file" name="files[]" multiple="" ng-model="files" ng-change="onFileAdd()">' +
+                  ' <input type="file">' +
+                  '</span>',
+        replace: true,
+        link: function(scope, element, attr, ngModel) {
+            scope.onFileAdd = function(){
+                console.log('onFileAdd');
+            };
+            /*var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            //input.type = 'file';
+            element.appendChild(input);*/
+            element[0].querySelector('input').addEventListener('change', function (ev) {
+                //var filename = ev.target.value;
+                if((ev.target.value === null)||(ev.target.value === '')) {
+                    return;
+                }
+                var file = ev.target.files[0];
+                console.log('onChange', file);
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var list = e.target.result.replace(/[\r\t\n]/g, ' ').replace(/ {2}/g, ' ').split(' ').filter(function(el){return (el !== '') && (el !== ' ');});
+                    console.log(['  onload', e, list]);
+                    scope.$apply(function(){
+                        ngModel.$setViewValue(list);
+                        element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                        ev.target.value = null;
+                    });
+                };
+                reader.readAsBinaryString(file);
+
+            }, false);
+            /*
+            element.bind('change', function(ev){
+                console.log('onChange', this, ev.target);
+                scope.$apply(function(){
+                    scope.files = ['1', '2', '3'];
+                    ngModel.$setViewValue(['1', '2', '232']);
+                    element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                });
+            });
+            */
+
+            /*
+            element.querySelector('input').addEventListener('change', function(){
+                console.log('onChange');
+            }, false);*/
+            console.log(['fileload', scope, element, attr, ngModel]);
+        }
+    };
 });
+
 
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
@@ -882,13 +1066,20 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
   $scope.account = account;
 
   $scope.deleteenable = false;
-  $scope.addform = false;
+  //$scope.addform = false;
   $scope.onAdd = function(imei){
-    console.log('onAdd', imei, account);
+    console.log('onAdd', imei, account, document.getElementById('config_add_file'));
 
-    account.systemadd(imei);
+    account.systemadd([imei]);
     $scope.addform = false;
   };
+
+  $scope.onFromFiles = function(){
+    console.log('multiple add', $scope.files);
+    account.systemadd($scope.files);
+    $scope.addform = false;
+  };
+
   $scope.onSort = function(){
     console.log('onSort');
     account.systemsort();
@@ -937,9 +1128,14 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
   //$("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('config.system.params', ['resources.account', 'app.filters'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
+  var skey = ['$route', function($route){
+    console.log(['=== route', route]);
+    return $route.current.params.skey;
+  }];
+  console.log(['=== skey', skey]);
   $routeProvider.when('/config/:skey/params', {
     templateUrl:'config/params/params.tpl.html',
     controller:'ConfigParamsCtrl',
@@ -947,18 +1143,22 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
       account:['Account', function (Account) {
         //TODO: sure for fetch only one for the current user
         return Account;
+      }],
+      params:['Params', '$route', function (Params, $route) {
+        return Params.get({skey:$route.current.params.skey});
       }]
     }
   });
 }])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', function ($scope, $route, $routeParams, account) {
-  console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account);
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
+  console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
   $scope.account = account;
-  //$scope.route = route;
   $scope.skey = $routeParams['skey'];
+  $scope.params = params;
   $scope.filtered = true;
   //$scope.system = account.account.systems[$scope.skey];
+  /*
   $scope.params = [];
   for(var i=0; i<100; i++) {
     $scope.params.push({
@@ -971,7 +1171,7 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
       'queue': null,
       'filter': (i%10) === 1
     });
-  }
+  }*/
   $scope.isFiltered = function(item) {
     if(!$scope.filtered) {
       return true;
@@ -1107,9 +1307,12 @@ angular.module('app', [
 
 
 var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
+var API_VERSION = "1.0";
 
 angular.module('app').constant('SERVER', {
-  api: DEVELOP ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/',
+  api: (DEVELOP ? 'http://api.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
+  api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
+  //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
   channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
@@ -1301,6 +1504,7 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }}</dd>" +
     "            <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>" +
     "            <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>" +
+    "            <dt>Версия ПО</dt><dd>3021 <i class=\"icon-question-sign cmd\" title=\"Проверить доступность обновления\"></i></dd>" +
     "        </dl>" +
     "" +
     "        <button class=\"btn btn-small\" ng-click=\"new()\">Добавить произвольное поле</button>" +
@@ -1353,9 +1557,9 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "        </thead>" +
     "        <tbody>" +
     "        <!--tr ng-repeat=\"p in params | isFiltered:filtered\"-->" +
-    "        <tr ng-repeat=\"p in params | filter:isFiltered\">" +
+    "        <tr ng-repeat=\"(k, p) in params.value | filter:isFiltered\">" +
     "            <td>{{p.index}}</td>" +
-    "            <td>{{p.name}}</td>" +
+    "            <td>{{k}}</td>" +
     "            <td>{{p.desc}}</td>" +
     "            <td>{{p.type}}</td>" +
     "            <td>{{p.value}}</td>" +
@@ -1395,12 +1599,19 @@ angular.module("config/config.tpl.html", []).run(["$templateCache", function($te
     "" +
     "<div>" +
     "    <button class=\"btn\" ng-click=\"addform=!addform;\"><i class=\"icon-plus-sign\"></i> Добавить систему</button>" +
-    "    <span ng-class=\"{hidden: !addform}\">" +
+    "    <!--span ng-class=\"{hidden: !addform}\"-->" +
+    "    <span ng-show=\"addform\">" +
     "        <form class=\"form-inline\" style=\"display: inline-block; margin:0;\" name=\"form\" ng-submit=\"onAdd(newimei)\">" +
     "            <label style=\"display:inline\">IMEI</label>" +
     "            <input type=\"text\" ng-model=\"newimei\" required autofocus></input>" +
     "            <button class=\"btn btn-primary login\" id=\"login\" ng-show='!form.$invalid'>Добавить</button>" +
+    "            <fileload ng-model=\"files\" ng-change=\"onFromFiles()\"></fileload>" +
     "        </form>" +
+    "            <!--div class=\"add_by_files\">" +
+    "                <ul>" +
+    "                    <li ng-repeat=\"f in files\">{{f}}</li>" +
+    "                </ul>" +
+    "            </div-->" +
     "    </span>" +
     "    <span style=\"display:inline-block; float:right; margin-right: 8px;\" title=\"Удаление систем\">" +
     "        <label style=\"display: inline-block\" for=\"config_delete\">Удаление</label> <input id=\"config_delete\" type=\"checkbox\" ng-model=\"deleteenable\" ></input>" +
@@ -1409,13 +1620,13 @@ angular.module("config/config.tpl.html", []).run(["$templateCache", function($te
     "<ul class=\"config_sys_list\" ui-sortable ng-model=\"account.account.skeys\" ng-update=\"onUpdate()\">" +
     "    <li ng-repeat=\"s in account.account.skeys\" ng-class=\"{off: account.account.systems[s].off}\">" +
     "        <i class=\"msp icon-move icon-large\" title=\"Нажмите и тяните чтобы изменить порядок отображения объектов\"></i" +
-    "        ><i class=\"syspicto icon-globe icon-large\" title=\"Нажмите чтобы задать значок\" ng-click=\"icon(s)\"></i" +
+    "        ><!--i class=\"syspicto icon-globe icon-large\" title=\"Нажмите чтобы задать значок\" ng-click=\"icon(s)\"></i" +
     "        ><i class=\"systag icon-tags icon-large\" title=\"Нажмите чтобы назначить ярлыки\" ng-click=\"tags(s)\"></i" +
-    "        ><i class=\"icon-wrench icon-large\" title=\"Нажмите чтобы настроить трекер\" ng-click=\"manageSystemParams(s)\"></i>" +
+    "        --><i class=\"icon-wrench icon-large\" title=\"Нажмите чтобы настроить трекер\" ng-click=\"manageSystemParams(s)\"></i>" +
     "        <span class=\"sysimei canselect\" title=\"IMEI\">{{ account.account.systems[s].imei }}</span>" +
     "        <span class=\"sysphone\" title=\"номер телефона\">{{ account.account.systems[s].phone }}</span>" +
-    "        <span class=\"control\"><i class=\"icon-edit\" title=\"Редактировать описание системы\" ng-click=\"edit(s)\"></i></span>" +
-    "        <span class=\"sysname canselect\" contenteditable ng-model=\"account.account.systems[s].desc\" ng-change=\"onChange(s)\"></span>" +
+    "        <!--span class=\"control\"><i class=\"icon-edit\" title=\"Редактировать описание системы\" ng-click=\"edit(s)\"></i></span-->" +
+    "        <span class=\"sysname canselect\" contenteditable ng-model=\"account.account.systems[s].desc\" ng-change=\"onChange(s)\" title=\"Для изменения описания поместите курсор в поле\"></span>" +
     "        <span class=\"sysrightcontrol control\">" +
     "            <i class=\"systag icon-off icon-large\" title=\"Временно отключить наблюдение за системой\" ng-click=\"onoff(s)\"></i>" +
     "            <i class=\"systag icon-trash icon-large\" ng-class=\"{hidden: !deleteenable}\" title=\"Удалить систему из списка наблюдения (без подтверждения)\" ng-click=\"del(s)\"></i>" +
@@ -1493,12 +1704,12 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
   $templateCache.put("login/login.tpl.html",
     "<div class=\"row\">" +
     "<div class=\"well span4\">" +
-    "    <div ng-class=\"{hidden: account.akey}\">" +
+    "    <div ng-class=\"{hidden: account.isAuthenticated}\">" +
     "        Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
     "        Введите имя пользователя и пароль своей учетной записи.<br>" +
     "        Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
     "    </div>" +
-    "    <div ng-class=\"{hidden: !account.akey}\">" +
+    "    <div ng-class=\"{hidden: !account.isAuthenticated}\">" +
     "        <h4>Вы вошли как <i>{{ account.account.title }}</i></h4>" +
     "        <dl class=\"dl-horizontal\">" +
     "            <dt>Имя входа</dt><dd>{{ account.account.name }}</dd>" +
@@ -1520,7 +1731,7 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "</div>" +
     "" +
     "" +
-    "<div modal=\"!account.akey\" close=\"cancelLogin()\">" +
+    "<div modal=\"!account.isAuthenticated\" close=\"cancelLogin()\">" +
     "    <div class=\"modal-header\">" +
     "        <h4>Вход</h4>" +
     "        Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +

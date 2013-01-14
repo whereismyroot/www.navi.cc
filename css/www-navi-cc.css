@@ -10261,6 +10261,10 @@ body {
   box-shadow: 2px 2px 12px #444;
 }
 
+.navbar {
+  margin-bottom: 0;
+}
+
 div.content {
   position: absolute;
   top: 42px;
@@ -10513,4 +10517,116 @@ div.mapcalendar {
   left: 0;
   width: 100%;
   height: 230px;
+}
+
+/* Закладка Настройки */
+
+.sysname {
+  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  cursor: pointer;
+}
+
+.sysname:hover:after {
+  display: inline-block;
+  padding-left: 4px;
+  font-family: FontAwesome;
+  content: '\f044';
+}
+
+.sysname:hover {
+  background-color: #ffe;
+}
+
+/* Кнопка input(type='file') */
+
+.fileinput-button {
+  position: relative;
+  margin-right: 4px;
+  overflow: hidden;
+}
+
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  font-size: 23px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transform: translate(-300px, 0) scale(4);
+  direction: ltr;
+}
+
+.fileupload-buttonbar .btn,
+.fileupload-buttonbar .toggle {
+  margin-bottom: 5px;
+}
+
+.files .progress {
+  width: 200px;
+}
+
+.progress-animated .bar {
+  background: url(../img/progressbar.gif) !important;
+  filter: none;
+}
+
+.fileupload-loading {
+  position: absolute;
+  left: 50%;
+  display: none;
+  width: 128px;
+  height: 128px;
+  background: url(../img/loading.gif) center no-repeat;
+}
+
+.fileupload-processing .fileupload-loading {
+  display: block;
+}
+
+/* Fix for IE 6: */
+
+* html .fileinput-button {
+  margin: 1px -3px 0 0;
+  line-height: 24px;
+}
+
+/* Fix for IE 7: */
+
+* + html .fileinput-button {
+  padding: 2px 15px;
+  margin: 1px 0 0 0;
+}
+
+@media (max-width: 767px) {
+  .files .btn span {
+    display: none;
+  }
+  .files .preview * {
+    width: 40px;
+  }
+  .files .name * {
+    display: inline-block;
+    width: 80px;
+    word-wrap: break-word;
+  }
+  .files .progress {
+    width: 20px;
+  }
+  .files .delete {
+    width: 60px;
+  }
+}
+
+.add_by_files {
+  top: 0;
+  left: 0;
+  display: block;
+  width: 200px;
+  height: 200px;
+  overflow-y: auto;
+  box-shadow: 1px 1px 6px #888;
 }
