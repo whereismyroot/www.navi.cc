@@ -2,52 +2,103 @@ angular.module('resources.account', ['services.i18nNotifications']);
 
 angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
 
-  var akey = localStorage.getItem('akey');
-  console.log('-- resources.account.Account akey=', akey, i18nNotifications, $q);
   var Account = {
     'name': 'noname-noface-nonumber',
-    'akey': akey,
+    'access_token': null,
+    'withCredentials': SERVER.api_withCredentials,
     'account': null,
     'hint': null,
     'isAuthenticated': false
   };
 
+  if(!SERVER.api_withCredentials) {
+    Account.access_token = localStorage.getItem('access_token');
+    if(Account.access_token){
+      $http.defaults.headers.common["Authorization"] = Account.access_token;
+    } else {
+      delete $http.defaults.headers.common["Authorization"];
+    }
+  }
 
+  if(Account.access_token || SERVER.api_withCredentials){
+    //$http.defaults.headers.common["Authorization"] = Account.access_token;
+    $http({
+      method: 'GET',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account"
+    }).success(function(data){
+      console.log('login data=', data);
+      //notify.pushSticky('Hello');
+
+      if(data.account) {
+        Account.account = data.account;
+        Account.access_token = data.access_token;
+        Account.isAuthenticated = true;
+      }
+    });
+  } else {
+    //i18nNotifications.pushSticky('login.error.notAuthenticated', 'error', {}, {rejection: 'aaa'});
+  }
+
+  //console.log('-- resources.account.Account access_token=', Account.access_token, i18nNotifications, $q);
+
+  /*
   i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тест"});
   var deffered = $q.defer();
 
-  console.log('deffered', deffered, $timeout);
+  //console.log('deffered', deffered, $timeout);
 
   $timeout(function(){
     i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тоже тест. Не обращайте внимания."});
   }, 1000);
+  */
 
   /*Account.isAuthenticated = function(){
-    return (Account.akey != null);
+    return (Account.access_token != null);
   };*/
 
   Account.logout = function(){
     console.log('Account.logout');
-    Account.akey = null;
+    Account.access_token = null;
     Account.account = null;
     Account.isAuthenticated = false;
-    localStorage.removeItem('akey');
+
+    if(SERVER.api_withCredentials) {
+      $http({
+        method: "POST",
+        withCredentials: SERVER.api_withCredentials,
+        url: SERVER.api + "/logout"
+      }).success(function(data){});
+    } else {
+      localStorage.removeItem('access_token');
+      if($http.defaults.headers.common["Authorization"]){
+        delete $http.defaults.headers.common["Authorization"];
+      }
+    }
+
     //location.reload();
   };
 
-  Account.login = function(user, pass){
-    console.log('Account.login', user, pass);
-    $http.get(SERVER.api + "api/account/new?domain=" + encodeURIComponent(location.hostname) +
-      "&user=" + encodeURIComponent(user) +
-      "&password=" + encodeURIComponent(pass)
-    ).success(function(data){
-      console.log('login data=', data);
-      localStorage.setItem('akey', data.account.akey);
-      Account.akey = data.account.akey;
+  Account.login = function(username, password){
+    console.log('Account.login', username, password);
+    $http({
+      method: "POST",
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/login",
+      params: {username: username, password: password}
+    }).success(function(data){
+      console.log('login data=', data, $http.defaults.headers);
+
+      if(!SERVER.api_withCredentials) {
+        localStorage.setItem('access_token', data.access_token);
+        $http.defaults.headers.common["Authorization"] = access_token;
+      }
+
+      Account.access_token = data.access_token;
       Account.account = data.account;
       Account.isAuthenticated = true;
       if(data.result === "created") {
-        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.name});
+        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
         //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
         //setTimeout(function(){location.reload();}, 3000);
       } else {
@@ -59,40 +110,54 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     });
   };
 
-  Account.systemadd = function(imei){
-    $http.get(SERVER.api + "api/account/systems/add" +
-      "?akey=" + encodeURIComponent(Account.account.akey) +
-      "&imei=" + encodeURIComponent(imei)
-    ).success(function(data){
+  Account.systemadd = function(imeis){
+    $http({
+      method: 'POST',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems",
+      data: {cmd: 'add', imeis: imeis}
+    }).success(function(data){
       console.log('return data=', data);
-      if(data.result === "already"){
-        alert('Вы уже наблюдаете за этой системой.');
-        return;
+      var systems = data.systems;
+      if(systems.length === 1) {
+        if(data.systems[0].result === "already"){
+          alert('Вы уже наблюдаете за этой системой.');
+          return;
+        }
+        if(data.systems[0].result === "notfound"){
+          alert('Система на найдена. Возможные причины: \n1. Система еще не выходила на связь.\n2. Проверте правильность ввода IMEI.');
+          return;
+        }
       }
-      if(data.result === "notfound"){
-        alert('Система на найдена. Возможные причины: \n1. Система еще не выходила на связь.\n2. Проверте правильность ввода IMEI.');
-        return;
+      for(var i=0; i<systems.length; i++) {
+        var item = systems[i];
+        if(item.result === "added") {
+          Account.account.skeys.push(item.system.key);
+          Account.account.systems[item.system.key] = angular.copy(item.system);
+        }
       }
-      Account.account.skeys.push(data.system.key);
-      Account.account.systems[data.system.key] = angular.copy(data.system);
       //$scope.addform = false;
       //alert('Система ни разу не выходила на связь. Но она все равно была добавлена в список наблюдения.');
     });
   };
 
   Account.systemsort = function(){
-      $http.post(SERVER.api + "api/account/systems/sort" +
-      "?akey=" + encodeURIComponent(Account.account.akey), {skeys: Account.account.skeys}
-    ).success(function(data){
+    $http({
+      method: 'POST',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems",
+      data: {cmd: 'sort', skeys: Account.account.skeys}
+    }).success(function(data){
       console.log('return data=', data);
     });
   };
 
   Account.systemdel = function(skey){
-    $http.get(SERVER.api + "api/account/systems/del" +
-      "?akey=" + encodeURIComponent(Account.account.akey) +
-      "&skey=" + encodeURIComponent(skey)
-    ).success(function(data){
+    $http({
+      method: 'DELETE',
+      withCredentials: SERVER.api_withCredentials,
+      url: SERVER.api + "/account/systems/" + encodeURIComponent(skey)
+    }).success(function(data){
       console.log('return data=', data);
       var i = Account.account.skeys.indexOf(skey);
       Account.account.skeys.splice(i, 1);
@@ -100,22 +165,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     });
   };
 
-  if(akey){
-    $http.get(SERVER.api + "api/account/get?akey=" + akey).success(function(data){
-      console.log('login data=', data);
-      //notify.pushSticky('Hello');
-
-      if(data.account) {
-        Account.account = data.account;
-        Account.akey = data.account.akey;
-        Account.isAuthenticated = true;
-      }
-    });
-  } else {
-    //i18nNotifications.pushSticky('login.error.notAuthenticated', 'error', {}, {rejection: 'aaa'});
-  }
-
-  //$scope.akey = akey;
+  //$scope.access_token = access_token;
 
   return Account;
 }]);

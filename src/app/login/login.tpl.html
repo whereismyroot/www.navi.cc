@@ -1,11 +1,11 @@
 <div class="row">
 <div class="well span4">
-    <div ng-class="{hidden: account.akey}">
+    <div ng-class="{hidden: account.isAuthenticated}">
         Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>
         Введите имя пользователя и пароль своей учетной записи.<br>
         Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.
     </div>
-    <div ng-class="{hidden: !account.akey}">
+    <div ng-class="{hidden: !account.isAuthenticated}">
         <h4>Вы вошли как <i>{{ account.account.title }}</i></h4>
         <dl class="dl-horizontal">
             <dt>Имя входа</dt><dd>{{ account.account.name }}</dd>
@@ -27,7 +27,7 @@
 </div>
 
 
-<div modal="!account.akey" close="cancelLogin()">
+<div modal="!account.isAuthenticated" close="cancelLogin()">
     <div class="modal-header">
         <h4>Вход</h4>
         Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>

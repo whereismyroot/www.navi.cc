@@ -19,8 +19,8 @@ angular.module('resources.logs', ['services.connect'])
 
     Logs.get = function(skey, akey, callback){
         console.log('Logs.get');
-        $http.get(SERVER.api + "api/logs/get?skey=" + encodeURIComponent(skey) +
-            "&akey=" + encodeURIComponent(akey)
+        $http.get(SERVER.api + "api/logs/get/" + encodeURIComponent(skey) +
+            "?akey=" + encodeURIComponent(akey)
         ).success(function(data){
             console.log('data=', data);
             Logs.logs = data.logs;

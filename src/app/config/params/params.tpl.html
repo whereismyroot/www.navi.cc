@@ -12,6 +12,7 @@
             <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }}</dd>
             <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>
             <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
+            <dt>Версия ПО</dt><dd>3021 <i class="icon-question-sign cmd" title="Проверить доступность обновления"></i></dd>
         </dl>
 
         <button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button>
@@ -64,9 +65,9 @@
         </thead>
         <tbody>
         <!--tr ng-repeat="p in params | isFiltered:filtered"-->
-        <tr ng-repeat="p in params | filter:isFiltered">
+        <tr ng-repeat="(k, p) in params.value | filter:isFiltered">
             <td>{{p.index}}</td>
-            <td>{{p.name}}</td>
+            <td>{{k}}</td>
             <td>{{p.desc}}</td>
             <td>{{p.type}}</td>
             <td>{{p.value}}</td>

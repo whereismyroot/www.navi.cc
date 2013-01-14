@@ -1,6 +1,11 @@
-angular.module('config.system.params', ['resources.account', 'app.filters'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
+  var skey = ['$route', function($route){
+    console.log(['=== route', route]);
+    return $route.current.params.skey;
+  }];
+  console.log(['=== skey', skey]);
   $routeProvider.when('/config/:skey/params', {
     templateUrl:'config/params/params.tpl.html',
     controller:'ConfigParamsCtrl',
@@ -8,18 +13,22 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
       account:['Account', function (Account) {
         //TODO: sure for fetch only one for the current user
         return Account;
+      }],
+      params:['Params', '$route', function (Params, $route) {
+        return Params.get({skey:$route.current.params.skey});
       }]
     }
   });
 }])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', function ($scope, $route, $routeParams, account) {
-  console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account);
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
+  console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
   $scope.account = account;
-  //$scope.route = route;
   $scope.skey = $routeParams['skey'];
+  $scope.params = params;
   $scope.filtered = true;
   //$scope.system = account.account.systems[$scope.skey];
+  /*
   $scope.params = [];
   for(var i=0; i<100; i++) {
     $scope.params.push({
@@ -32,7 +41,7 @@ angular.module('config.system.params', ['resources.account', 'app.filters'])
       'queue': null,
       'filter': (i%10) === 1
     });
-  }
+  }*/
   $scope.isFiltered = function(item) {
     if(!$scope.filtered) {
       return true;

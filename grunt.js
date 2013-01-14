@@ -46,7 +46,7 @@ module.exports = function (grunt) {
         dest:'<%= distdir %>/js/<%= pkg.name %>.js'
       },
       angular: {
-        src:['vendor/angular/angular.js', 'vendor/angular/angular-ui.js'],
+        src:['vendor/angular/angular.js', 'vendor/angular/angular-resource.js', 'vendor/angular/angular-ui.js'],
         dest: '<%= distdir %>/js/angular.js'
       },
       bootstrap: {

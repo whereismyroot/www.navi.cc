@@ -60,5 +60,108 @@ angular.module('directives.lists', [])
             $scope._addMyData = "Hoo";
         }]*/
     };
+})
+
+.directive('contenteditable', function() {
+    return {
+        restrict: 'A',
+        require: '?ngModel',
+        link: function(scope, element, attr, ngModel) {
+            var read;
+            //console.log('===contenteditable', scope, element, attr, ngModel);
+            if (!ngModel) {
+                return;
+            }
+            ngModel.$render = function() {
+                return element.text(ngModel.$viewValue);
+            };
+            element.bind('blur', function() {
+                //console.log("blur", ngModel.$viewValue, element.html());
+                if($.trim(element.text()) === '') {
+                    element.text(ngModel.$viewValue);
+                    //scope.$apply();
+                }
+                if (ngModel.$viewValue !== $.trim(element.text())) {
+                    return scope.$apply(read);
+                }
+            });
+            element.bind('keypress', function(ev) {
+                //console.log("keypress", ev);
+                if(ev.which === 13){
+                    element.trigger('blur');
+                    return false;
+                }
+            });
+            read = function() {
+                //console.log("read()", scope, ngModel);
+                ngModel.$setViewValue($.trim(element.text()));
+                element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                /*if(scope.onChange) {
+                    scope.onChange();
+                }*/
+                //return ngModel.$setViewValue($.trim(element.html()));
+            };
+            //return read;
+        }
+    };
+})
+
+.directive('fileload', function() {
+    return {
+        restrict: 'E',
+        require: '?ngModel',
+        template: '<span class="btn btn-success fileinput-button">' +
+                  '  <i class="icon-plus icon-white"></i>' +
+                  '  <span>Из файла...</span>' +
+//                  ' <input type="file" name="files[]" multiple="" ng-model="files" ng-change="onFileAdd()">' +
+                  ' <input type="file">' +
+                  '</span>',
+        replace: true,
+        link: function(scope, element, attr, ngModel) {
+            scope.onFileAdd = function(){
+                console.log('onFileAdd');
+            };
+            /*var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            //input.type = 'file';
+            element.appendChild(input);*/
+            element[0].querySelector('input').addEventListener('change', function (ev) {
+                //var filename = ev.target.value;
+                if((ev.target.value === null)||(ev.target.value === '')) {
+                    return;
+                }
+                var file = ev.target.files[0];
+                console.log('onChange', file);
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var list = e.target.result.replace(/[\r\t\n]/g, ' ').replace(/ {2}/g, ' ').split(' ').filter(function(el){return (el !== '') && (el !== ' ');});
+                    console.log(['  onload', e, list]);
+                    scope.$apply(function(){
+                        ngModel.$setViewValue(list);
+                        element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                        ev.target.value = null;
+                    });
+                };
+                reader.readAsBinaryString(file);
+
+            }, false);
+            /*
+            element.bind('change', function(ev){
+                console.log('onChange', this, ev.target);
+                scope.$apply(function(){
+                    scope.files = ['1', '2', '3'];
+                    ngModel.$setViewValue(['1', '2', '232']);
+                    element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                });
+            });
+            */
+
+            /*
+            element.querySelector('input').addEventListener('change', function(){
+                console.log('onChange');
+            }, false);*/
+            console.log(['fileload', scope, element, attr, ngModel]);
+        }
+    };
 });
 

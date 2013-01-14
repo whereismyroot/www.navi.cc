@@ -13,9 +13,12 @@ angular.module('app', [
 
 
 var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
+var API_VERSION = "1.0";
 
 angular.module('app').constant('SERVER', {
-  api: DEVELOP ? 'http://localhost:8183/' : 'http://api.newgps.navi.cc/',
+  api: (DEVELOP ? 'http://api.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
+  api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
+  //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
   channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
@@ -73,4 +76,13 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   $scope.hasPendingRequests = function () {
     return httpRequestTracker.hasPendingRequests();
   };
+
+  $scope.collapse = function() {
+    $(".collapse").collapse('toggle');
+  };
+  $scope.$on('$routeChangeSuccess', function (scope, next, current) {
+    $(".collapse").collapse('hide');
+  });
+  $(".collapse").collapse({toggle: false});
+
 }]);
