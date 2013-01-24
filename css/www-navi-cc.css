@@ -10528,15 +10528,23 @@ div.mapcalendar {
   cursor: pointer;
 }
 
-.sysname:hover:after {
+*[contenteditable] {
+  cursor: pointer;
+}
+
+*[contenteditable]:hover {
+  padding-left: 2px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  background-color: #ffe;
+  border: 1px solid black;
+}
+
+*[contenteditable]:hover:after {
   display: inline-block;
   padding-left: 4px;
   font-family: FontAwesome;
   content: '\f044';
-}
-
-.sysname:hover {
-  background-color: #ffe;
 }
 
 /* Кнопка input(type='file') */
