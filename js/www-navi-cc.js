@@ -1518,11 +1518,20 @@ angular.module("map/map.tpl.html", []).run(["$templateCache", function($template
     "            <span class=\"desc\">" +
     "                {{ account.account.systems[s].desc }}" +
     "            </span>" +
-    "            <span class=\"imei\">" +
+    "            <!--span class=\"imei\">" +
     "                {{ account.account.systems[s].imei }}" +
-    "            </span>" +
+    "            </span-->" +
     "            <span class=\"status\">" +
     "                Стоит" +
+    "            </span>" +
+    "            <span class=\"signal\">" +
+    "                24/05/2013 24:55" +
+    "            </span>" +
+    "            <br>" +
+    "            <span class=\"status\">" +
+    "                <span title=\"Основное питание\"><i class=\"icon-ambulance\"></i><strong>12В</strong></span>" +
+    "                <span title=\"Резервное питание\"><i class=\"icon-bolt\"></i><strong>4.2В</strong></span>" +
+    "                <span title=\"Сигнал GPS\"><i class=\"icon-signal\"></i><strong>9(20%)</strong></span>" +
     "            </span>" +
     "        </li>" +
     "    </ul>" +
@@ -1617,7 +1626,7 @@ angular.module("config/config.tpl.html", []).run(["$templateCache", function($te
     "</div>" +
     "<ul class=\"config_sys_list\" ui-sortable ng-model=\"account.account.skeys\" ng-update=\"onUpdate()\">" +
     "    <li ng-repeat=\"s in account.account.skeys\" ng-class=\"{off: account.account.systems[s].off}\">" +
-    "        <i class=\"msp icon-move icon-large\" title=\"Нажмите и тяните чтобы изменить порядок отображения объектов\"></i" +
+    "        <i class=\"msp icon-reorder icon-large\" title=\"Нажмите и тяните чтобы изменить порядок отображения объектов\"></i" +
     "        ><!--i class=\"syspicto icon-globe icon-large\" title=\"Нажмите чтобы задать значок\" ng-click=\"icon(s)\"></i" +
     "        ><i class=\"systag icon-tags icon-large\" title=\"Нажмите чтобы назначить ярлыки\" ng-click=\"tags(s)\"></i" +
     "        --><i class=\"icon-wrench icon-large\" title=\"Нажмите чтобы настроить трекер\" ng-click=\"manageSystemParams(s)\"></i>" +
