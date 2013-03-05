@@ -1456,11 +1456,10 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "" +
     "" +
     "<div modal=\"!account.isAuthenticated\" close=\"cancelLogin()\">" +
-    "    <div class=\"modal-header\">" +
+    "    <div class=\"modal-header wide\">" +
     "        <h4>Вход</h4>" +
     "        Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
     "        Введите имя пользователя и пароль своей учетной записи.<br>" +
-    "        Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
     "    </div>" +
     "    <div class=\"modal-body\">" +
     "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
@@ -1474,6 +1473,9 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "                <input class=\"\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
     "            </div>" +
     "        </form>" +
+    "        <div class=\"wide\">" +
+    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
+    "        </div>" +
     "    </div>" +
     "    <div class=\"modal-footer\">" +
     "        <button class=\"btn clear\" ng-click=\"clearForm()\">Очистить</button>" +
