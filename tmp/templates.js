@@ -1,0 +1,1 @@
+angular.module('templates', ['header.tpl.html', 'login/login.tpl.html', 'login/login-orig.tpl.html', 'login/toolbar.tpl.html', 'map/map.tpl.html', 'logs/logs.tpl.html', 'config/params/params.tpl.html', 'config/config.tpl.html', 'config/data/data.tpl.html', 'help/help.tpl.html', 'notifications.tpl.html', 'reports/reports.tpl.html', 'gps/gps.tpl.html']);

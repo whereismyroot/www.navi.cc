@@ -1,0 +1,19 @@
+angular.module("login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("login/toolbar.tpl.html",
+    "<ul class=\"nav pull-right\">" +
+    "  <li class=\"divider-vertical\"></li>" +
+    "  <li ng-show=\"currentUser\">" +
+    "      <a href=\"#\">{{userInfo().firstName}} {{userInfo().lastName}}</a>" +
+    "  </li>" +
+    "  <li ng-show=\"isAuthenticated()\">" +
+    "      <form class=\"navbar-form\">" +
+    "          <button class=\"btn\" ng-click=\"logout()\">Log out</button>" +
+    "      </form>" +
+    "  </li>" +
+    "  <li ng-hide=\"isAuthenticated()\">" +
+    "      <form class=\"navbar-form\">" +
+    "          <button class=\"btn\" ng-click=\"login()\">Log in</button>" +
+    "      </form>" +
+    "  </li>" +
+    "</ul>");
+}]);

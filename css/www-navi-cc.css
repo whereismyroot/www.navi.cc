@@ -10239,6 +10239,18 @@ body {
   overflow: hidden;
 }
 
+@font-face {
+  font-family: 'badensampleregular';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../font/font-webfont.eot');
+  src: url('../font/font-webfont.eot?#iefix') format('embedded-opentype'), url('../font/font-webfont.woff') format('woff'), url('../font/font-webfont.ttf') format('truetype'), url('../font/font-webfont.svg#badensampleregular') format('svg');
+}
+
+.fonticon {
+  font-family: badensampleregular;
+}
+
 /*.navbar .brand {
     margin-left: -10px;
 }*/
@@ -10448,8 +10460,8 @@ div[gmap="main"] {
   position: absolute;
   top: 0;
   right: 220px;
+  bottom: 48px;
   left: 0;
-  height: 100%;
   padding: 0;
   margin: 0;
   -webkit-transition: all 0.3s ease-in-out;
@@ -10470,6 +10482,19 @@ div[gmap="main"] {
      -moz-transition: all 0.3s ease-in-out;
        -o-transition: all 0.3s ease-in-out;
           transition: all 0.3s ease-in-out;
+}
+
+.map-timeline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 99%;
+  height: 48px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background-color: white;
+  border: 1px solid grey;
 }
 
 ul.mapsyslist {

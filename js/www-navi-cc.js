@@ -1,4 +1,4 @@
-/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-01-24
+/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-03-05
 * https://github.com/baden/www.navi.cc
 * Copyright (c) 2013 [object Object];
  Licensed MIT, GPL */
@@ -1439,6 +1439,7 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "            <dt>Дата регистрации</dt><dd>{{ account.account.date | fromnow }}</dd>" +
     "            <dt>Администратор</dt><dd>{{ account.account.admin | yesno }}</dd>" +
     "            <dt>Наблюдаемых систем</dt><dd>{{ account.account.skeys.length }}</dd>" +
+    "            <dt title=\"Для восстановления пароля\">email</dt><dd>{{ account.account.email }}</dd>" +
     "        </dl>" +
     "        <div style=\"text-align: center;\">" +
     "            <button class=\"btn btn-warning\" ng-click=\"onLogout();\">" +
@@ -1531,7 +1532,8 @@ angular.module("map/map.tpl.html", []).run(["$templateCache", function($template
     "            <span class=\"status\">" +
     "                <span title=\"Основное питание\"><i class=\"icon-ambulance\"></i><strong>12В</strong></span>" +
     "                <span title=\"Резервное питание\"><i class=\"icon-bolt\"></i><strong>4.2В</strong></span>" +
-    "                <span title=\"Сигнал GPS\"><i class=\"icon-signal\"></i><strong>9(20%)</strong></span>" +
+    "                <span title=\"Сигнал GSM\"><i class=\"icon-signal\"></i></span>" +
+    "                <i title=\"Сигнал GPS\" class=\"fonticon\">e</i>" +
     "            </span>" +
     "        </li>" +
     "    </ul>" +
@@ -1545,6 +1547,12 @@ angular.module("map/map.tpl.html", []).run(["$templateCache", function($template
     "    </div>" +
     "" +
     "" +
+    "</div>" +
+    "" +
+    "<div class=\"map-timeline\">" +
+    "    Шкала" +
+    "    <div style=\"width: 40000px;\">uu</div>" +
+    "</div>" +
     "" +
     "</div>" +
     "");
