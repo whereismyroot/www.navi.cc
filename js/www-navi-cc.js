@@ -1789,7 +1789,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "        <div class=\"container\">" +
     "            <!--a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\"-->" +
     "" +
-    "" +
     "            <span class=\"wide\"><a class=\"brand\" href=\"#/login\">newgps.navi.cc</a></span>" +
     "            <div class=\"\">" +
     "                <ul class=\"nav\" ng-class=\"{hidden: !account.isAuthenticated}\">" +
@@ -1827,6 +1826,12 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "                        <a href=\"#/help\">" +
     "                            <i class=\"icon-medkit\"></i>" +
     "                            <span class=\"wide\">Помощь</span>" +
+    "                        </a>" +
+    "                    </li>" +
+    "                    <li ng-class=\"{active:isNavbarActive('login)}\">" +
+    "                        <a href=\"#/login\">" +
+    "                            <i class=\"icon-off\"></i>" +
+    "                            <span class=\"wide\">Пользователь</span>" +
     "                        </a>" +
     "                    </li>" +
     "" +
