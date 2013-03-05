@@ -6,7 +6,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "            <!--a class=\"btn btn-navbar\" data-toggle=\"collapse\" data-target=\".nav-collapse\"-->" +
     "" +
     "" +
-    "            <a class=\"brand\" href=\"#/login\">newgps.navi.cc</a>" +
+    "            <span class=\"wide\"><a class=\"brand\" href=\"#/login\">newgps.navi.cc</a></span>" +
     "            <div class=\"\">" +
     "                <ul class=\"nav\" ng-class=\"{hidden: !account.isAuthenticated}\">" +
     "                    <li ng-class=\"{active:isNavbarActive('map')}\">" +
