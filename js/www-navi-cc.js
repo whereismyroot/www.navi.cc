@@ -1,4 +1,4 @@
-/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-03-05
+/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-03-10
 * https://github.com/baden/www.navi.cc
 * Copyright (c) 2013 [object Object];
  Licensed MIT, GPL */
@@ -66,7 +66,8 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
-angular.module('services.localizedMessages', []).factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
+angular.module('services.localizedMessages', [])
+.factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
   var handleNotFound = function (msg, msgKey) {
     return msg || '?' + msgKey + '?';
@@ -916,6 +917,11 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal']
   $scope.test = "Hello, it's test.";
   $scope.showLoginForm = true;
   $scope.user = {};
+  $scope.langs = [
+    {id: 'ru', title: 'Русский'},
+    {id: 'en', title: 'English'},
+    {id: 'po', title: 'Poland'}
+  ];
 
   $scope.clearForm = function() {
     $scope.user = {};
@@ -1071,7 +1077,7 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   $("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'i18n'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){
@@ -1094,8 +1100,9 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
   });
 }])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'I18N.TRASLATES', function ($scope, $route, $routeParams, account, params, i18n) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
+  $scope.i18n = i18n;
   $scope.account = account;
   $scope.skey = $routeParams['skey'];
   $scope.params = params;
@@ -1264,6 +1271,13 @@ angular.module('help', ['resources.account'])
   $scope.account = account;
 }]);
 
+console.log('----------------------');
+angular.module('i18n', [])
+.constant('I18N.TRASLATES', {
+  'copy_to_buffer':'Копировать в буффер обмена'
+});
+
+
 angular.module('reports', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -1425,16 +1439,38 @@ angular.module("login/toolbar.tpl.html", []).run(["$templateCache", function($te
 
 angular.module("login/login.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("login/login.tpl.html",
-    "<div class=\"row\">" +
-    "<div class=\"well span4\">" +
+    "<div>" +
     "    <div ng-class=\"{hidden: account.isAuthenticated}\">" +
-    "        Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
-    "        Введите имя пользователя и пароль своей учетной записи.<br>" +
-    "        Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
+    "        <h4>Вход</h4>" +
+    "        <div class=\"wide\">" +
+    "            Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
+    "            Введите имя пользователя и пароль своей учетной записи.<br>" +
+    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
+    "        </div>" +
+    "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
+    "            <div class=\"input-prepend\">" +
+    "                <span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
+    "                <input class=\"\" type=\"text\" placeholder=\"Имя пользователя\" ng-model=\"user.name\" required autofocus>" +
+    "            </div>" +
+    "" +
+    "            <div class=\"input-prepend\">" +
+    "                <span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
+    "                <input class=\"\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
+    "            </div>" +
+    "            <button class=\"btn clear\" ng-click=\"clearForm()\">Очистить</button>" +
+    "            <button class=\"btn btn-primary login\" ng-click=\"onLogin(user.name, user.password)\" ng-disabled='form.$invalid'>Войти</button>" +
+    "" +
+    "        </form>" +
+    "        <div class=\"wide\">" +
+    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
+    "        </div>" +
+    "" +
+    "" +
     "    </div>" +
     "    <div ng-class=\"{hidden: !account.isAuthenticated}\">" +
     "        <h4>Вы вошли как <i>{{ account.account.title }}</i></h4>" +
     "        <dl class=\"dl-horizontal\">" +
+    "            <dt>Язык (language)</dt><dd><select style=\"max-width:100px;\" ng-model=\"blah\" ng-options=\"item.id as item.title for item in langs\"></select></dd>" +
     "            <dt>Имя входа</dt><dd contenteditable ng-model=\"account.account.name\" ng-change=\"onChange(account.account.name)\"></dd>" +
     "            <dt>Дата регистрации</dt><dd>{{ account.account.date | fromnow }}</dd>" +
     "            <dt>Администратор</dt><dd>{{ account.account.admin | yesno }}</dd>" +
@@ -1449,40 +1485,8 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
     "        </div>" +
     "    </div>" +
     "</div>" +
-    "<div class=\"well span4\">" +
-    "    Состояние сервера" +
-    "</div>" +
-    "</div>" +
     "" +
     "" +
-    "<div modal=\"!account.isAuthenticated\" close=\"cancelLogin()\">" +
-    "    <div class=\"modal-header wide\">" +
-    "        <h4>Вход</h4>" +
-    "        Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
-    "        Введите имя пользователя и пароль своей учетной записи.<br>" +
-    "    </div>" +
-    "    <div class=\"modal-body\">" +
-    "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
-    "            <div class=\"input-prepend\">" +
-    "                <span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
-    "                <input class=\"\" type=\"text\" placeholder=\"Имя пользователя\" ng-model=\"user.name\" required autofocus>" +
-    "            </div>" +
-    "" +
-    "            <div class=\"input-prepend\">" +
-    "                <span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
-    "                <input class=\"\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
-    "            </div>" +
-    "        </form>" +
-    "        <div class=\"wide\">" +
-    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
-    "        </div>" +
-    "    </div>" +
-    "    <div class=\"modal-footer\">" +
-    "        <button class=\"btn clear\" ng-click=\"clearForm()\">Очистить</button>" +
-    "        <button class=\"btn btn-primary login\" ng-click=\"onLogin(user.name, user.password)\" ng-disabled='form.$invalid'>Войти</button>" +
-    "        <!--button class=\"btn btn-warning cancel\" ng-click=\"cancelLogin()\">Cancel</button-->" +
-    "    </div>" +
-    "</div>" +
     "");
 }]);
 
@@ -1684,7 +1688,7 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "" +
     "        <dl class=\"dl-horizontal\">" +
     "            <dt>Наименование</dt><dd>{{ account.account.systems[skey].desc }}</dd>" +
-    "            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }}</dd>" +
+    "            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }} <i class=\"icon-copy cmd\" title=\"{{ i18n.copy_to_buffer }}\"></i></dd>" +
     "            <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>" +
     "            <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>" +
     "            <dt>Версия ПО</dt><dd>3021 <i class=\"icon-question-sign cmd\" title=\"Проверить доступность обновления\"></i></dd>" +
@@ -1698,9 +1702,21 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "" +
     "        <dl class=\"dl-horizontal\">" +
     "            <dt>Выход на связь</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>" +
-    "            <dt>Качество GSM</dt><dd>неизвестно</dd>" +
-    "            <dt>Качество GPS</dt><dd>неизвестно</dd>" +
-    "            <dt>Состояние</dt><dd>неизвестно</dd>" +
+    "            <dt>Текущее состояние</dt><dd>Стоит</dd>" +
+    "            <dt>Уровень GSM</dt><dd>неизвестно</dd>" +
+    "            <dt>Уровень GPS</dt><dd>неизвестно</dd>" +
+    "            <dt>Основное питание</dt><dd>-</dd>" +
+    "            <dt>Резервное питание</dt><dd>-</dd>" +
+    "            <dt>Координаты</dt><dd>35.4, 46.2<i class=\"icon-copy cmd\" title=\"{{ i18n.copy_to_buffer }}\"></i></dd>" +
+    "            <dt>Высота над ур.моря</dt><dd>256м</dd>" +
+    "            <dt>Температура</dt><dd>52гЦ</dd>" +
+    "            <dt>Корпус</dt><dd>закрыт</dd>" +
+    "            <dt>Вход 1</dt><dd>активен</dd>" +
+    "            <dt>Вход 2</dt><dd>не активен</dd>" +
+    "            <dt>Вход 3</dt><dd>не активен</dd>" +
+    "            <dt>Выход 1</dt><dd>не активен</dd>" +
+    "            <dt>Выход 2</dt><dd>не активен</dd>" +
+    "            <dt>Уровень топлива</dt><dd>25л</dd>" +
     "        </dl>" +
     "" +
     "        <button class=\"btn btn-small\" ng-click=\"update()\">Обновить</button>" +
@@ -1719,6 +1735,9 @@ angular.module("config/params/params.tpl.html", []).run(["$templateCache", funct
     "        </dl>" +
     "" +
     "        <a class=\"btn btn-small\" href=\"#drivers\">Водители</a>" +
+    "        <a class=\"btn btn-small\" href=\"#fuel\">Расход топлива</a>" +
+    "        <a class=\"btn btn-small\" href=\"#tags\">Ярлыки</a>" +
+    "        <a class=\"btn btn-small\" href=\"#zones\">Привязка к зонам</a>" +
     "    </div>" +
     "" +
     "</div>" +
@@ -1830,7 +1849,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "                            <span class=\"wide\">Помощь</span>" +
     "                        </a>" +
     "                    </li>" +
-    "                    <li ng-class=\"{active:isNavbarActive('login)}\">" +
+    "                    <li ng-class=\"{active:isNavbarActive('login')}\">" +
     "                        <a href=\"#/login\">" +
     "                            <i class=\"icon-off\"></i>" +
     "                            <span class=\"wide\">Пользователь</span>" +
