@@ -1,7 +1,80 @@
-/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-03-10
+/*! www-navi-cc - v0.0.1-SNAPSHOT - 2013-03-11
 * https://github.com/baden/www.navi.cc
 * Copyright (c) 2013 [object Object];
  Licensed MIT, GPL */
+
+(function(window, I18n){
+'use strict';
+
+I18n.translations = I18n.translations || {};
+
+I18n.translations.ru = {
+    enter: 'Вход',
+    enter_help: 'Введите имя пользователя и пароль своей учетной записи.',
+    enter_comment: 'Чтобы пользоваться сервисом необходимо авторизоваться в системе.',
+    enter_comment2: 'Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.',
+    user_name: 'Имя пользователя',
+    user_password: 'Пароль',
+    enter_cmd: 'Войти'
+  };
+
+window.console.log('i18n.ru init', I18n);
+})(this, I18n);
+
+(function(window, I18n){
+'use strict';
+
+I18n.translations = I18n.translations || {};
+
+I18n.translations.pl = {
+    enter: 'Entrance',
+    enter_help: 'Wpisz nazwę użytkownika i hasło do swojego konta.',
+    enter_comment: 'Aby skorzystać z usługi, aby zalogować się do systemu.',
+    enter_comment2: 'Aby utworzyć nowe konto, uzupełnić nazwę i hasło, konto zostanie utworzone automatycznie.',
+    user_name: 'Nazwa użytkownika',
+    user_password: 'Hasło',
+    enter_cmd: 'Wpisać'
+  };
+
+window.console.log('i18n.pl init', I18n);
+})(this, I18n);
+
+(function(window, I18n){
+'use strict';
+
+I18n.translations = I18n.translations || {};
+
+I18n.translations.ua = {
+    enter: 'Вхiд',
+    enter_help: 'Введіть ім\'я користувача і пароль свого облікового запису.',
+    enter_comment: 'Щоб користуватися сервісом необхідно авторизуватися в системі.',
+    enter_comment2: 'Для створення нового облікового запису придумайте ім\'я користувача та пароль, обліковий запис буде створена автоматично.',
+    user_name: 'Ім\'я користувача.',
+    user_password: 'Пароль',
+    enter_cmd: 'Увійти'
+  };
+
+window.console.log('i18n.ua init', I18n);
+})(this, I18n);
+
+(function(window, I18n){
+'use strict';
+
+I18n.translations = I18n.translations || {};
+
+I18n.translations.en = {
+    enter: 'Enter',
+    enter_help: 'Enter the user name and password of your account.',
+    enter_comment: 'To use the service to log into the system.',
+    enter_comment2: 'To create a new account, make up a name and password, your account is automatically created.',
+    user_name: 'User name',
+    user_password: 'Password',
+    enter_cmd: 'Confirm'
+  };
+
+window.console.log('i18n.en init', I18n);
+
+})(this, I18n);
 
 angular.module('services.notifications', []).factory('notifications', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
@@ -115,6 +188,33 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
 
   return I18nNotifications;
 }]);
+angular.module('services.i18n', [])
+
+.factory('i18n', ['$location', '$route', function($location, $route) {
+    var i18n = {
+        active: localStorage.getItem('language')
+    };
+
+    if(!i18n.active) {
+        i18n.active = 'ru';
+    }
+
+    i18n.set = function(code){
+        //console.log('i18n onSet', code, $location, $route);
+        localStorage.setItem('language', code);
+        i18n.active = code;
+        I18n.defaultLocale = i18n.active;
+        //$rootScope.$apply();
+        //$location.path($location.$$path);
+        //$route.reload();
+        //location.reload();
+    };
+
+    I18n.defaultLocale = i18n.active;
+
+    return i18n;
+}]);
+
 angular.module('services.connect', [])
 
 .factory('Connect', ["$rootScope", 'SERVER', function($rootScope, SERVER) {
@@ -217,6 +317,31 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 
   return httpRequestTracker;
 }]);
+angular.module('directives.language', ['services.i18n'])
+
+.directive('language', ['i18n', function(i18n) {
+    return {
+        restrict: 'A',
+        replace: true,
+        template: '<div class="btn-group" data-toggle="buttons-radio"><button type="button" class="btn btn-small" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
+        link: function(scope, element, attrs) {
+            scope.langs = [
+                {code: 'ru', text: 'RU', title: "Русский"},
+                {code: 'en', text: 'EN', title: "English"},
+                {code: 'ua', text: 'UA', title: "Українська"},
+                {code: 'pl', text: 'PL', title: "Polski"}
+            ];
+            scope.active = i18n.active;
+            scope.onSet = function(l){
+                i18n.set(l.code);
+            };
+            console.log('language directive: link', scope, element, i18n);
+        }
+        //, controller: ["account", function(account){console.log("account=", account)}]
+    };
+}]);
+
+
 angular.module('directives.lists', [])
 
 .directive('mylist', function() {
@@ -585,6 +710,15 @@ angular.module('app.filters', [])
     };
 });
 
+angular.module('app.filters.i18n', [])
+
+.filter('translate', ['globals', function(globals){
+    return function (text, length, end) {
+        console.log('i18n globals=', globals);
+        return I18n.t(text);
+    };
+}]);
+
 angular.module('resources.account', ['services.i18nNotifications']);
 
 angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
@@ -897,7 +1031,7 @@ angular.module('resources.logs', ['services.connect'])
 }]);
 
 
-angular.module('login', ['resources.account', 'app.filters', 'directives.modal'])
+angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/login', {
@@ -917,11 +1051,6 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal']
   $scope.test = "Hello, it's test.";
   $scope.showLoginForm = true;
   $scope.user = {};
-  $scope.langs = [
-    {id: 'ru', title: 'Русский'},
-    {id: 'en', title: 'English'},
-    {id: 'po', title: 'Poland'}
-  ];
 
   $scope.clearForm = function() {
     $scope.user = {};
@@ -947,7 +1076,7 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal']
   };
   $scope.onLogin = function(user, pass){
     $scope.loginform = false;
-    console.log('Login;', $scope, user, pass);
+    console.log('Login:', $scope, user, pass);
 
     if((user === "")||(!user)) {
       return;
@@ -983,7 +1112,7 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal']
     }
   });
 
-  //console.log('LoginViewCtrl controller', $scope, $location, account);
+  //console.log('LoginViewCtrl controller', $scope, $location, account, i18n);
 }]);
 
 angular.module('map', ['resources.account', 'directives.gmap'])
@@ -1077,7 +1206,7 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   $("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'i18n'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){
@@ -1100,7 +1229,7 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
   });
 }])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'I18N.TRASLATES', function ($scope, $route, $routeParams, account, params, i18n) {
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
   $scope.i18n = i18n;
   $scope.account = account;
@@ -1271,13 +1400,6 @@ angular.module('help', ['resources.account'])
   $scope.account = account;
 }]);
 
-console.log('----------------------');
-angular.module('i18n', [])
-.constant('I18N.TRASLATES', {
-  'copy_to_buffer':'Копировать в буффер обмена'
-});
-
-
 angular.module('reports', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -1299,6 +1421,8 @@ angular.module('reports', ['resources.account'])
 
 angular.module('app', [
   'resources.account',
+  'app.filters',
+  'app.filters.i18n',
   'login',
   'map',
   'logs',
@@ -1306,6 +1430,7 @@ angular.module('app', [
   'reports',
   'config',
   'help',
+  'services.i18n',
   'services.i18nNotifications',
   'services.httpRequestTracker',
   'templates']);
@@ -1320,6 +1445,10 @@ angular.module('app').constant('SERVER', {
   //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
   channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
+});
+
+angular.module('app').constant('globals', {
+  locale: 'ru'
 });
 
 //TODO: move those messages to a separate module
@@ -1350,8 +1479,10 @@ angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', function($scope, location, i18nNotifications) {
+angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
 //angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
+  console.log('app:AppCtrl', i18n);
+  $scope.i18n = i18n;
 
   $scope.notifications = i18nNotifications;
   $scope.location = location;
@@ -1441,28 +1572,25 @@ angular.module("login/login.tpl.html", []).run(["$templateCache", function($temp
   $templateCache.put("login/login.tpl.html",
     "<div>" +
     "    <div ng-class=\"{hidden: account.isAuthenticated}\">" +
-    "        <h4>Вход</h4>" +
-    "        <div class=\"wide\">" +
-    "            Чтобы пользоваться сервисом необходимо авторизоваться в системе.<br>" +
-    "            Введите имя пользователя и пароль своей учетной записи.<br>" +
-    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
-    "        </div>" +
+    "        <h4>{{ 'enter' | translate }}</h4>" +
+    "        <span language></span>" +
+    "        <div>{{ 'enter_help' | translate }}<br></div>" +
+    "        <div class=\"wide\">{{ 'enter_comment' | translate }}<br></div>" +
     "        <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
     "            <div class=\"input-prepend\">" +
     "                <span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
-    "                <input class=\"\" type=\"text\" placeholder=\"Имя пользователя\" ng-model=\"user.name\" required autofocus>" +
+    "                <input class=\"\" type=\"text\" placeholder=\"{{'user_name' | translate }}\" ng-model=\"user.name\" required autofocus>" +
     "            </div>" +
     "" +
     "            <div class=\"input-prepend\">" +
     "                <span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
-    "                <input class=\"\" type=\"password\" placeholder=\"Пароль\" ng-model=\"user.password\">" +
+    "                <input class=\"\" type=\"password\" placeholder=\"{{ 'user_password' | translate }}\" ng-model=\"user.password\" required>" +
     "            </div>" +
-    "            <button class=\"btn clear\" ng-click=\"clearForm()\">Очистить</button>" +
-    "            <button class=\"btn btn-primary login\" ng-click=\"onLogin(user.name, user.password)\" ng-disabled='form.$invalid'>Войти</button>" +
+    "            <button class=\"btn btn-primary login\" ng-click=\"onLogin(user.name, user.password)\" ng-disabled='form.$invalid'>{{ 'enter_cmd' | translate }}</button>" +
     "" +
     "        </form>" +
-    "        <div class=\"wide\">" +
-    "            Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически." +
+    "        <div class=\"wide\">{{ 'enter_comment2' | translate }}" +
+    "" +
     "        </div>" +
     "" +
     "" +

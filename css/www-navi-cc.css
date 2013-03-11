@@ -1,3 +1,25 @@
+ul.language {
+  display: inline;
+  padding: 0 0 0 0;
+  margin: 0;
+  list-style-type: none;
+  border: 1px solid red;
+}
+
+ul.language li {
+  display: inline;
+}
+
+ul.language li a {
+  padding: 3px 10px 3px 40px;
+  text-decoration: none;
+  border: 1px solid green;
+}
+
+ul.language li a:hover {
+  background-color: #c62;
+}
+
 /*!
  * Bootstrap v2.1.1
  *
@@ -10234,6 +10256,28 @@ ul.icons li [class*=" icon-"] {
   cursor: pointer;
 }
 
+ul.language {
+  display: inline;
+  padding: 0 0 0 0;
+  margin: 0;
+  list-style-type: none;
+  border: 1px solid red;
+}
+
+ul.language li {
+  display: inline;
+}
+
+ul.language li a {
+  padding: 3px 10px 3px 40px;
+  text-decoration: none;
+  border: 1px solid green;
+}
+
+ul.language li a:hover {
+  background-color: #c62;
+}
+
 html,
 body {
   width: 100%;
@@ -10672,3 +10716,465 @@ div.mapcalendar {
   overflow-y: auto;
   box-shadow: 1px 1px 6px #888;
 }
+
+ul.language {
+  display: inline;
+  padding: 0 0 0 0;
+  margin: 0;
+  list-style-type: none;
+  border: 1px solid red;
+}
+
+ul.language li {
+  display: inline;
+}
+
+ul.language li a {
+  padding: 3px 10px 3px 40px;
+  text-decoration: none;
+  border: 1px solid green;
+}
+
+ul.language li a:hover {
+  background-color: #c62;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@font-face {
+  font-family: 'badensampleregular';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../font/font-webfont.eot');
+  src: url('../font/font-webfont.eot?#iefix') format('embedded-opentype'), url('../font/font-webfont.woff') format('woff'), url('../font/font-webfont.ttf') format('truetype'), url('../font/font-webfont.svg#badensampleregular') format('svg');
+}
+
+.fonticon {
+  font-family: badensampleregular;
+}
+
+/*.navbar .brand {
+    margin-left: -10px;
+}*/
+
+.hidden {
+  display: none !important;
+}
+
+.notification {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  z-index: 2000;
+}
+
+.alert {
+  margin-bottom: 5px;
+  color: black;
+  opacity: 0.9;
+  box-shadow: 2px 2px 12px #444;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+div.content {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+div.contentfixed {
+  padding: 0;
+  overflow-y: hidden;
+}
+
+div#tabpagecontent {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+div.tabnoscroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+div.tabscroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+div.loginform {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 1px 1px 6px #ccc;
+}
+
+div.loginlabel {
+  margin-top: 100px;
+  font-size: 2em;
+  text-align: center;
+}
+
+ul.config_sys_list {
+  padding: 10px 0 0 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+ul.config_sys_list li {
+  margin-top: -1px;
+  background-color: #fff;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+ul.config_sys_list li span:not(.control) {
+  margin-top: 4px;
+}
+
+ul.config_sys_list li.off {
+  opacity: 0.2;
+}
+
+ul.config_sys_list li:hover {
+  background-color: #eee;
+}
+
+ul.config_sys_list li i {
+  padding: 4px;
+  color: #666;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease-in-out;
+     -moz-transition: all 0.3s ease-in-out;
+       -o-transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
+}
+
+ul.config_sys_list li i:hover {
+  background-color: #8cf;
+}
+
+ul.config_sys_list li:first-child {
+  border-top: 1px solid black;
+}
+
+span.sysimei,
+span.sysphone {
+  display: inline-block;
+  padding-right: 5px;
+  padding-left: 5px;
+  margin-right: 2px;
+  margin-left: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+span.sysimei {
+  width: 130px;
+}
+
+span.sysphone {
+  width: 110px;
+}
+
+span.sysleftcontrol {
+  float: left;
+}
+
+span.sysrightcontrol {
+  float: right;
+}
+
+span.sysrightcontrol i:hover {
+  background-color: #f44 !important;
+}
+
+.ui-sortable-helper {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+li.ui-sortable-placeholder2 {
+  height: 27px;
+  background-color: rgba(0, 255, 0, 0.05) !important;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+ul.config_sys_list li i.msp {
+  color: #ccc;
+}
+
+i.cmd {
+  padding: 4px;
+  cursor: pointer;
+}
+
+i.cmd:hover {
+  background-color: #8cf;
+}
+
+/* Map */
+
+/*div[gmap] {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}*/
+
+div[gmap] img {
+  max-width: none;
+}
+
+div[gmap] img {
+  display: inline;
+  width: auto;
+  max-width: none;
+}
+
+div[gmap] label {
+  display: inline;
+  width: auto;
+}
+
+div[gmap="main"] {
+  position: absolute;
+  top: 0;
+  right: 220px;
+  bottom: 48px;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+     -moz-transition: all 0.3s ease-in-out;
+       -o-transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
+}
+
+.map-control {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  width: 220px;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.1), -1px 0 8px rgba(0, 0, 0, 0.2);
+  -webkit-transition: all 0.3s ease-in-out;
+     -moz-transition: all 0.3s ease-in-out;
+       -o-transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
+}
+
+.map-timeline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 99%;
+  height: 48px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background-color: white;
+  border: 1px solid grey;
+}
+
+ul.mapsyslist {
+  position: absolute;
+  top: 30px;
+  bottom: 230px;
+  left: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style-type: none;
+}
+
+ul.mapsyslist li {
+  padding: 2px 2px 2px 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+ul.mapsyslist li span.desc {
+  display: block;
+  overflow-x: hidden;
+  font-weight: bold;
+  color: #666;
+  text-overflow: ellipsis;
+}
+
+ul.mapsyslist li span.status {
+  float: left;
+}
+
+ul.mapsyslist li span.signal {
+  float: right;
+}
+
+ul.mapsyslist li:first-child {
+  border-top: 1px solid #ccc;
+}
+
+ul.mapsyslist li:hover {
+  background-color: #EEE;
+}
+
+div.mapcalendar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 230px;
+}
+
+/* Закладка Настройки */
+
+.sysname {
+  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  cursor: pointer;
+}
+
+*[contenteditable] {
+  cursor: pointer;
+}
+
+*[contenteditable]:hover {
+  padding-left: 2px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  background-color: #ffe;
+  border: 1px solid black;
+}
+
+*[contenteditable]:hover:after {
+  display: inline-block;
+  padding-left: 4px;
+  font-family: FontAwesome;
+  content: '\f044';
+}
+
+/* Кнопка input(type='file') */
+
+.fileinput-button {
+  position: relative;
+  margin-right: 4px;
+  overflow: hidden;
+}
+
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  font-size: 23px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transform: translate(-300px, 0) scale(4);
+  direction: ltr;
+}
+
+.fileupload-buttonbar .btn,
+.fileupload-buttonbar .toggle {
+  margin-bottom: 5px;
+}
+
+.files .progress {
+  width: 200px;
+}
+
+.progress-animated .bar {
+  background: url(../img/progressbar.gif) !important;
+  filter: none;
+}
+
+.fileupload-loading {
+  position: absolute;
+  left: 50%;
+  display: none;
+  width: 128px;
+  height: 128px;
+  background: url(../img/loading.gif) center no-repeat;
+}
+
+.fileupload-processing .fileupload-loading {
+  display: block;
+}
+
+/* Fix for IE 6: */
+
+* html .fileinput-button {
+  margin: 1px -3px 0 0;
+  line-height: 24px;
+}
+
+/* Fix for IE 7: */
+
+* + html .fileinput-button {
+  padding: 2px 15px;
+  margin: 1px 0 0 0;
+}
+
+@media (max-width: 767px) {
+  .files .btn span {
+    display: none;
+  }
+  .files .preview * {
+    width: 40px;
+  }
+  .files .name * {
+    display: inline-block;
+    width: 80px;
+    word-wrap: break-word;
+  }
+  .files .progress {
+    width: 20px;
+  }
+  .files .delete {
+    width: 60px;
+  }
+}
+
+.add_by_files {
+  top: 0;
+  left: 0;
+  display: block;
+  width: 200px;
+  height: 200px;
+  overflow-y: auto;
+  box-shadow: 1px 1px 6px #888;
+}
+
