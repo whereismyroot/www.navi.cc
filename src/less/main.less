@@ -1,7 +1,26 @@
+@import "common.less"; // Has to be last to override when necessary
+
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+
+@font-face {
+    font-family: 'badensampleregular';
+    src: url('../font/font-webfont.eot');
+    src: url('../font/font-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/font-webfont.woff') format('woff'),
+         url('../font/font-webfont.ttf') format('truetype'),
+         url('../font/font-webfont.svg#badensampleregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.fonticon {
+    font-family: badensampleregular;
 }
 
 /*.navbar .brand {
@@ -121,7 +140,7 @@ ul.config_sys_list li:hover {
 }
 
 ul.config_sys_list li i {
-    color: #444;
+    color: #666;
     padding: 4px;
     /*border: 5px solid rgba(0,0,0,0);*/
     cursor: pointer;
@@ -186,6 +205,10 @@ li.ui-sortable-placeholder2 {
     height: 27px;
 }
 
+ul.config_sys_list li i.msp {
+    color: #ccc;
+}
+
 i.cmd {
     cursor: pointer;
     padding: 4px;
@@ -229,7 +252,8 @@ div[gmap="main"] {
     top: 0px;
     left: 0px;
     right: 220px;
-    height: 100%;
+    //height: 100%;
+    bottom:48px;
     margin: 0;
     padding: 0;
     //border: 1px solid grey;
@@ -246,6 +270,20 @@ div[gmap="main"] {
     overflow: hidden;
     box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.1), -1px 0 8px rgba(0, 0, 0, 0.2);
     .transition-all();
+}
+
+.map-timeline {
+    z-index: 1;
+    position: absolute;
+    left: 0px;
+    //rigth: 200px;
+    width: 99%;
+    bottom: 0px;
+    height: 48px;
+    border: 1px solid grey;
+    background-color: white;
+    overflow-x: scroll;
+    overflow-y: hidden;
 }
 
 div.mapsyslist {
@@ -278,7 +316,7 @@ ul.mapsyslist li {
 }
 
 ul.mapsyslist li span.desc{
-    font-size: 1.2em;
+    //font-size: 1.2em;
     font-weight: bold;
     display: block;
     color: #666;
@@ -287,6 +325,10 @@ ul.mapsyslist li span.desc{
 }
 
 ul.mapsyslist li span.status{
+    float: left;
+}
+
+ul.mapsyslist li span.signal{
     float: right;
 }
 
@@ -298,7 +340,8 @@ ul.mapsyslist li:first-child {
 ul.mapsyslist li:hover {
     //border: 1px solid blue;
     //border-bottom: 1px solid blue;
-    box-shadow: inset 1px 1px 8px 2px rgba(0, 0, 0, 0.2), 0px 0px 2px rgba(0, 0, 0, 0.2);
+    //box-shadow: inset 1px 1px 8px 2px rgba(0, 0, 0, 0.1), 0px 0px 2px rgba(0, 0, 0, 0.1);
+    background-color: #EEE;
 }
 
 
@@ -323,17 +366,28 @@ div.mapcalendar {
     cursor: pointer;
 }
 
-.sysname:hover:after {
+*[contenteditable] {
+    cursor: pointer;
+}
+
+//.sysname:hover {
+*[contenteditable]:hover {
+    background-color: #ffe;
+    border: 1px solid black;
+    margin-top: -1px;
+    margin-bottom: -1px;
+    padding-left: 2px;
+}
+
+//.sysname:hover:after {
+*[contenteditable]:hover:after {
     content: '\f044';
     font-family: FontAwesome;
     display: inline-block;
     /*width: 25px;
     height: 25px;*/
     padding-left: 4px;
-}
-
-.sysname:hover {
-    background-color: #ffe;
+    //float: right;
 }
 
 

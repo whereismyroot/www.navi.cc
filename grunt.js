@@ -17,10 +17,11 @@ module.exports = function (grunt) {
         ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
     },
     src: {
-      js: ['src/**/*.js', 'dist/tmp/**/*.js'],
+      js: ['src/i18n/**/*.js', 'src/common/**/*.js', 'src/app/**/*.js', 'dist/tmp/**/*.js'],
       html: ['src/index.html'],
       tpl: ['src/app/**/*.tpl.html'],
-      less: ['src/less/stylesheet.less'] // recess:build doesn't accept ** in its file patterns
+      // less: ['src/less/stylesheet.less'] // recess:build doesn't accept ** in its file patterns
+      less: ['src/less/*.less'] // recess:build doesn't accept ** in its file patterns
     },
     clean: ['<%= distdir %>/*'],
     copy: {
@@ -46,7 +47,7 @@ module.exports = function (grunt) {
         dest:'<%= distdir %>/js/<%= pkg.name %>.js'
       },
       angular: {
-        src:['vendor/angular/angular.js', 'vendor/angular/angular-resource.js', 'vendor/angular/angular-ui.js'],
+        src:['vendor/angular/angular-1.1.1.js', 'vendor/angular/angular-resource-1.1.1.js', 'vendor/angular/angular-ui.js'],
         dest: '<%= distdir %>/js/angular.js'
       },
       bootstrap: {
@@ -66,6 +67,10 @@ module.exports = function (grunt) {
       sockjs: {
         src:['vendor/sockjs/sockjs-0.3.min.js'],
         dest: '<%= distdir %>/js/sockjs.js'
+      },
+      i18n: {
+        src:['vendor/i18n/i18n.js'],
+        dest: '<%= distdir %>/js/i18n.js'
       }
     },
     min: {
@@ -92,6 +97,10 @@ module.exports = function (grunt) {
       sockjs: {
         src:['<config:concat.sockjs.src>'],
         dest: '<%= distdir %>/js/sockjs.js'
+      },
+      i18n: {
+        src:['<config:concat.i18n.src>'],
+        dest: '<%= distdir %>/js/i18ns.js'
       }
     },
     recess: {
@@ -137,6 +146,9 @@ module.exports = function (grunt) {
   grunt.registerTask('default', 'lint build');
   grunt.registerTask('build', 'clean html2js concat recess:build index copy');
   grunt.registerTask('release', 'clean html2js min lint test recess:min index copy e2e');
+
+  // Test task
+  grunt.registerTask('travis', 'lint test:unit');
 
   // HTML stuff
   grunt.registerTask('index', 'Process index.html', function(){

@@ -1,5 +1,7 @@
 angular.module('app', [
   'resources.account',
+  'app.filters',
+  'app.filters.i18n',
   'login',
   'map',
   'logs',
@@ -7,6 +9,7 @@ angular.module('app', [
   'reports',
   'config',
   'help',
+  'services.i18n',
   'services.i18nNotifications',
   'services.httpRequestTracker',
   'templates']);
@@ -23,6 +26,10 @@ angular.module('app').constant('SERVER', {
   channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
 
+angular.module('app').constant('globals', {
+  locale: 'ru'
+});
+
 //TODO: move those messages to a separate module
 angular.module('app').constant('I18N.MESSAGES', {
   'errors.route.changeError':'Route change error',
@@ -34,13 +41,27 @@ angular.module('app').constant('I18N.MESSAGES', {
   'login.newUser':'Создана новая учетная запись {{name}}.'
 });
 
-angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvider', 'SERVER', function ($routeProvider, $locationProvider, $httpProvider, SERVER) {
+  console.log(['! App CONFIG !', $httpProvider, SERVER]);
+  $httpProvider.defaults.withCredentials = SERVER.api_withCredentials;
+
+  if(!$httpProvider.defaults.headers.patch) {
+    $httpProvider.defaults.headers.patch = {};
+  }
+  $httpProvider.defaults.headers.patch["Content-Type"] = 'application/json; charset=utf-8';
+
   //$locationProvider.html5Mode(true);
   $routeProvider.otherwise({redirectTo:'/login'});
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', function($scope, location, i18nNotifications) {
+angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
+  console.log(['! App RUN ! ', $http.defaults, SERVER]);
+}]);
+
+angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
 //angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
+  console.log('app:AppCtrl', i18n);
+  $scope.i18n = i18n;
 
   $scope.notifications = i18nNotifications;
   $scope.location = location;
@@ -77,12 +98,12 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
     return httpRequestTracker.hasPendingRequests();
   };
 
-  $scope.collapse = function() {
+  /*$scope.collapse = function() {
     $(".collapse").collapse('toggle');
-  };
+  };*/
   $scope.$on('$routeChangeSuccess', function (scope, next, current) {
     $(".collapse").collapse('hide');
   });
-  $(".collapse").collapse({toggle: false});
+  /*$(".collapse").collapse({toggle: false});*/
 
 }]);

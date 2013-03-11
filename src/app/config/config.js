@@ -10,7 +10,7 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
         return Account;
       }],
       system: ['System', function (System) {
-        return System;
+        return  System;
       }]
     }
   });

@@ -93,9 +93,14 @@ angular.module('directives.lists', [])
                 }
             });
             read = function() {
-                //console.log("read()", scope, ngModel);
+                console.log("read()", scope, ngModel);
                 ngModel.$setViewValue($.trim(element.text()));
                 element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
+                /*
+                if(scope._update){
+                    scope._update();
+                }
+                */
                 /*if(scope.onChange) {
                     scope.onChange();
                 }*/

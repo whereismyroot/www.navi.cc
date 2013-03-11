@@ -1,3 +1,5 @@
 #!/bin/sh
 
-grunt test
+#grunt test
+grunt travis --verbose
+

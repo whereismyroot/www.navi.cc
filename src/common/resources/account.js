@@ -24,11 +24,9 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     //$http.defaults.headers.common["Authorization"] = Account.access_token;
     $http({
       method: 'GET',
-      withCredentials: SERVER.api_withCredentials,
       url: SERVER.api + "/account"
     }).success(function(data){
       console.log('login data=', data);
-      //notify.pushSticky('Hello');
 
       if(data.account) {
         Account.account = data.account;
@@ -42,21 +40,6 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
 
   //console.log('-- resources.account.Account access_token=', Account.access_token, i18nNotifications, $q);
 
-  /*
-  i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тест"});
-  var deffered = $q.defer();
-
-  //console.log('deffered', deffered, $timeout);
-
-  $timeout(function(){
-    i18nNotifications.pushSticky('login.newUser', 'warning', {name: "Это тоже тест. Не обращайте внимания."});
-  }, 1000);
-  */
-
-  /*Account.isAuthenticated = function(){
-    return (Account.access_token != null);
-  };*/
-
   Account.logout = function(){
     console.log('Account.logout');
     Account.access_token = null;
@@ -66,7 +49,6 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     if(SERVER.api_withCredentials) {
       $http({
         method: "POST",
-        withCredentials: SERVER.api_withCredentials,
         url: SERVER.api + "/logout"
       }).success(function(data){});
     } else {
@@ -76,14 +58,12 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
       }
     }
 
-    //location.reload();
   };
 
   Account.login = function(username, password){
     console.log('Account.login', username, password);
     $http({
       method: "POST",
-      withCredentials: SERVER.api_withCredentials,
       url: SERVER.api + "/login",
       params: {username: username, password: password}
     }).success(function(data){
@@ -113,7 +93,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
   Account.systemadd = function(imeis){
     $http({
       method: 'POST',
-      withCredentials: SERVER.api_withCredentials,
+      //withCredentials: SERVER.api_withCredentials,
       url: SERVER.api + "/account/systems",
       data: {cmd: 'add', imeis: imeis}
     }).success(function(data){
@@ -144,7 +124,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
   Account.systemsort = function(){
     $http({
       method: 'POST',
-      withCredentials: SERVER.api_withCredentials,
+      //withCredentials: SERVER.api_withCredentials,
       url: SERVER.api + "/account/systems",
       data: {cmd: 'sort', skeys: Account.account.skeys}
     }).success(function(data){
@@ -155,13 +135,25 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
   Account.systemdel = function(skey){
     $http({
       method: 'DELETE',
-      withCredentials: SERVER.api_withCredentials,
+      //withCredentials: SERVER.api_withCredentials,
       url: SERVER.api + "/account/systems/" + encodeURIComponent(skey)
     }).success(function(data){
       console.log('return data=', data);
       var i = Account.account.skeys.indexOf(skey);
       Account.account.skeys.splice(i, 1);
       delete Account.account.systems[skey];
+    });
+  };
+
+
+  Account.update = function(param){
+    //console.log('Account.update', param);
+    $http({
+      method: 'PATCH',
+      url: SERVER.api + "/account",
+      data: JSON.stringify(param)
+    }).success(function(data){
+      console.log('return data=', data);
     });
   };
 

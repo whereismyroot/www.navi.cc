@@ -19,9 +19,11 @@ angular.module('resources.logs', ['services.connect'])
 
     Logs.get = function(skey, akey, callback){
         console.log('Logs.get');
-        $http.get(SERVER.api + "api/logs/get/" + encodeURIComponent(skey) +
-            "?akey=" + encodeURIComponent(akey)
-        ).success(function(data){
+        $http({
+            method: 'GET',
+            //withCredentials: SERVER.api_withCredentials,
+            url: SERVER.api + "/logs/" + encodeURIComponent(skey)
+        }).success(function(data){
             console.log('data=', data);
             Logs.logs = data.logs;
 
@@ -30,18 +32,6 @@ angular.module('resources.logs', ['services.connect'])
             } else {
                 callback(-1);
             }
-            /*
-            if(data.result === "created") {
-            //i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.name});
-            //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
-            //setTimeout(function(){location.reload();}, 3000);
-            } else {
-            //$scope.label = "Вход в учетную запись...";
-            //setTimeout(function(){location.reload();}, 1000);
-            }
-            */
-
-            //$rootScope.account = data;
         });
     };
 

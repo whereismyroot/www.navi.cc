@@ -9,7 +9,7 @@
 
         <dl class="dl-horizontal">
             <dt>Наименование</dt><dd>{{ account.account.systems[skey].desc }}</dd>
-            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }}</dd>
+            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }} <i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
             <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>
             <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
             <dt>Версия ПО</dt><dd>3021 <i class="icon-question-sign cmd" title="Проверить доступность обновления"></i></dd>
@@ -23,9 +23,21 @@
 
         <dl class="dl-horizontal">
             <dt>Выход на связь</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
-            <dt>Качество GSM</dt><dd>неизвестно</dd>
-            <dt>Качество GPS</dt><dd>неизвестно</dd>
-            <dt>Состояние</dt><dd>неизвестно</dd>
+            <dt>Текущее состояние</dt><dd>Стоит</dd>
+            <dt>Уровень GSM</dt><dd>неизвестно</dd>
+            <dt>Уровень GPS</dt><dd>неизвестно</dd>
+            <dt>Основное питание</dt><dd>-</dd>
+            <dt>Резервное питание</dt><dd>-</dd>
+            <dt>Координаты</dt><dd>35.4, 46.2<i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
+            <dt>Высота над ур.моря</dt><dd>256м</dd>
+            <dt>Температура</dt><dd>52гЦ</dd>
+            <dt>Корпус</dt><dd>закрыт</dd>
+            <dt>Вход 1</dt><dd>активен</dd>
+            <dt>Вход 2</dt><dd>не активен</dd>
+            <dt>Вход 3</dt><dd>не активен</dd>
+            <dt>Выход 1</dt><dd>не активен</dd>
+            <dt>Выход 2</dt><dd>не активен</dd>
+            <dt>Уровень топлива</dt><dd>25л</dd>
         </dl>
 
         <button class="btn btn-small" ng-click="update()">Обновить</button>
@@ -44,6 +56,9 @@
         </dl>
 
         <a class="btn btn-small" href="#drivers">Водители</a>
+        <a class="btn btn-small" href="#fuel">Расход топлива</a>
+        <a class="btn btn-small" href="#tags">Ярлыки</a>
+        <a class="btn btn-small" href="#zones">Привязка к зонам</a>
     </div>
 
 </div>

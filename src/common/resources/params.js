@@ -4,7 +4,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
     console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
-    var Params = $resource(SERVER.api.replace(/:\d/, '\\$&') + "api/params/:skey/:controller",
+    var Params = $resource(SERVER.api.replace(/:\d/, '\\$&') + "/params/:skey/:controller",
     {
         skey: "@skey",
         controller: "@controller",

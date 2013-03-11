@@ -22,7 +22,7 @@
 </div>
 <ul class="config_sys_list" ui-sortable ng-model="account.account.skeys" ng-update="onUpdate()">
     <li ng-repeat="s in account.account.skeys" ng-class="{off: account.account.systems[s].off}">
-        <i class="msp icon-move icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i
+        <i class="msp icon-reorder icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i
         ><!--i class="syspicto icon-globe icon-large" title="Нажмите чтобы задать значок" ng-click="icon(s)"></i
         ><i class="systag icon-tags icon-large" title="Нажмите чтобы назначить ярлыки" ng-click="tags(s)"></i
         --><i class="icon-wrench icon-large" title="Нажмите чтобы настроить трекер" ng-click="manageSystemParams(s)"></i>

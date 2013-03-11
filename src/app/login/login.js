@@ -1,4 +1,4 @@
-angular.module('login', ['resources.account', 'app.filters', 'directives.modal'])
+angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/login', {
@@ -43,33 +43,41 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal']
   };
   $scope.onLogin = function(user, pass){
     $scope.loginform = false;
-    console.log('Login;', $scope, user, pass);
+    console.log('Login:', $scope, user, pass);
 
     if((user === "")||(!user)) {
       return;
     }
     account.login(user, pass);
-    /*
-    $http.get(apiserver + "/api/account/new?domain=" + encodeURIComponent(location.hostname) +
-      "&user=" + encodeURIComponent($scope.account.newusername) +
-      "&password=" + encodeURIComponent($scope.account.newpass)
-    ).success(function(data){
-      console.log('login data=', data);
-      localStorage.setItem('akey', data.account.akey);
-      if(data.result === "created") {
-        $scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
-        setTimeout(function(){location.reload();}, 3000);
-      } else {
-        $scope.label = "Вход в учетную запись...";
-        setTimeout(function(){location.reload();}, 1000);
-      }
 
-
-      //$rootScope.account = data;
-    });
-    */
     return false;
   };
 
-  //console.log('LoginViewCtrl controller', $scope, $location, account);
+  $scope.onChange = function(model) {
+    console.log('onChange', model);
+  };
+
+  /*
+  $scope.$watch(function(){
+      if($scope.account.account) {
+        return $scope.account.account.name;
+      } else {
+        return null;
+      }
+    }, function(el, old){
+      if(!$scope.account.account) {
+        return;
+      }
+      console.log('bind fire', el, $scope.account.account.name, old);
+    }
+  );
+  */
+  $scope.$watch('account.account.name', function(newValue, oldValue){
+    console.log(['bind fire', newValue, oldValue]);
+    if(newValue && oldValue) {
+      $scope.account.update({"$set": {name: newValue}});
+    }
+  });
+
+  //console.log('LoginViewCtrl controller', $scope, $location, account, i18n);
 }]);

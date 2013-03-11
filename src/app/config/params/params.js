@@ -23,6 +23,7 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
 
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
+  $scope.i18n = i18n;
   $scope.account = account;
   $scope.skey = $routeParams['skey'];
   $scope.params = params;

@@ -1,15 +1,30 @@
-angular.module('resources.system', ['services.i18nNotifications'])
+angular.module('resources.system', [])
 
-.factory('System', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+.factory('System', ['SERVER', '$http', function (SERVER, $http) {
     var System = {};
 
     System.change_desc = function(skey, desc){
         console.log(['System.change_desc', skey, desc]);
-        $http.get(SERVER.api + "api/system/changedesc/" + encodeURIComponent(skey) +
-          "?desc=" + encodeURIComponent(desc)
-        ).success(function(data){
+        $http({
+            method: 'PATCH',
+            withCredentials: SERVER.api_withCredentials,
+            url: SERVER.api + "/system/" + encodeURIComponent(skey),
+            data: JSON.stringify({desc: desc})
+        }).success(function(data){
           console.log('login data=', data);
         });
+
+        /*
+        $http({
+            method: 'GET',
+            withCredentials: SERVER.api_withCredentials,
+            url: SERVER.api + "/system/changedesc/" + encodeURIComponent(skey) +
+          "?desc=" + encodeURIComponent(desc)
+        }).success(function(data){
+          console.log('login data=', data);
+        });
+        */
+
     };
 
     return System;

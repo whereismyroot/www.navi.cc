@@ -1,11 +1,14 @@
 {
-  "author": "Batrak Denis",
+  "author": {
+    "name": "Batrak Denis",
+    "email": "baden.i.ua@gmail.com"
+  },
   "name": "www-navi-cc",
   "homepage": "https://github.com/baden/www.navi.cc",
   "version": "0.0.1-SNAPSHOT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:baden/www.navi.cc.git"
+    "url": "git://github.com/baden/www.navi.cc.git"
   },
   "bugs": {
     "url": "https://github.com/baden/www.navi.cc/issues"
@@ -14,16 +17,25 @@
     {
       "type": "MIT",
       "url": "https://raw.github.com/baden/www.navi.cc/master/LICENSE"
+    },
+    {
+      "type": "GPL",
+      "url": "https://raw.github.com/baden/www.navi.cc/master/LICENSE-GPL"
     }
   ],
   "engines": {
-    "node": ">= 0.8.4"
+    "node": ">= 0.8"
   },
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.3.17",
     "grunt-recess": "~0.1.0",
     "grunt-contrib-clean": "~0.3.0",
-    "grunt-contrib-copy": "~0.3.0"
-  }
+    "grunt-contrib-copy": "~0.3.0",
+    "i18n-js": "git://github.com/fnando/i18n-js"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
+  "keywords": []
 }
