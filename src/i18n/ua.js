@@ -13,5 +13,5 @@ I18n.translations.ua = {
     enter_cmd: 'Увійти'
   };
 
-window.console.log('i18n.ua init', I18n);
+//window.console.log('i18n.ua init', I18n);
 })(this, I18n);

@@ -2,7 +2,7 @@ angular.module('logs', ['resources.account', 'resources.logs'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/logs', {
-    templateUrl:'logs/logs.tpl.html',
+    templateUrl:'templates/logs/logs.tpl.html',
     controller:'LogsViewCtrl',
     resolve:{
       account:['Account', function (Account) {

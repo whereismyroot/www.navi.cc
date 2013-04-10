@@ -15,6 +15,7 @@ angular.module('directives.language', ['services.i18n'])
             scope.active = i18n.active;
             scope.onSet = function(l){
                 i18n.set(l.code);
+                location.reload();
             };
             console.log('language directive: link', scope, element, i18n);
         }

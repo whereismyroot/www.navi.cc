@@ -2,7 +2,7 @@ angular.module('config.system.data', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config/:skey/data', {
-    templateUrl:'config/data/data.tpl.html',
+    templateUrl:'templates/config/data/data.tpl.html',
     controller:'ConfigDataCtrl',
     resolve:{
       account:['Account', function (Account) {

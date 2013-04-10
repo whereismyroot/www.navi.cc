@@ -1,8 +1,9 @@
 angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
+
   $routeProvider.when('/login', {
-    templateUrl:'login/login.tpl.html',
+    templateUrl:'login.tpl.html',
     controller:'LoginViewCtrl',
     resolve:{
       account:['Account', function (Account) {
@@ -11,13 +12,32 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
       }]
     }
   });
+
+  $routeProvider.when('/test-login', {
+    //templateUrl:'templates/en/login.tpl.html',
+    template: '<div>Loading...</div>',
+    controller:'TestLoginViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        return Account;
+      }]
+    }
+  });
+
 }])
 
-.controller('LoginViewCtrl', ['$scope', '$location', 'account', function ($scope, $location, account) {
+.controller('TestLoginViewCtrl', ['$scope', '$location', '$route', function ($scope, $location, $route) {
+  console.log('TestLoginViewCtrl', $location, $route);
+  $route.current.$route.template = "<div>Loaded</div>";
+}])
+
+.controller('LoginViewCtrl', ['$scope', '$location', 'account', '$templateCache', function ($scope, $location, account, $templateCache) {
   $scope.account = account;
   $scope.test = "Hello, it's test.";
   $scope.showLoginForm = true;
   $scope.user = {};
+
+  console.log('$templateCache=', $templateCache.get('templates/ru/login.tpl.html'));
 
   $scope.clearForm = function() {
     $scope.user = {};

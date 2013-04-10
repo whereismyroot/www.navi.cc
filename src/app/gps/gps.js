@@ -2,7 +2,7 @@ angular.module('gps', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/gps', {
-    templateUrl:'gps/gps.tpl.html',
+    templateUrl:'templates/gps/gps.tpl.html',
     controller:'GPSViewCtrl',
     resolve:{
       account:['Account', function (Account) {

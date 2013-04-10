@@ -2,7 +2,7 @@ angular.module('map', ['resources.account', 'directives.gmap'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/map', {
-    templateUrl:'map/map.tpl.html',
+    templateUrl:'templates/map/map.tpl.html',
     controller:'MapCtrl',
     resolve:{
       account:['Account', function (Account) {

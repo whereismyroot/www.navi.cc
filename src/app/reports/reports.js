@@ -2,7 +2,7 @@ angular.module('reports', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/reports', {
-    templateUrl:'reports/reports.tpl.html',
+    templateUrl:'templates/reports/reports.tpl.html',
     controller:'ReportsViewCtrl',
     resolve:{
       account:['Account', function (Account) {

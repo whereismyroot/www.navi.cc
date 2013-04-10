@@ -7,7 +7,7 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
   }];
   console.log(['=== skey', skey]);
   $routeProvider.when('/config/:skey/params', {
-    templateUrl:'config/params/params.tpl.html',
+    templateUrl:'templates/config/params/params.tpl.html',
     controller:'ConfigParamsCtrl',
     resolve:{
       account:['Account', function (Account) {

@@ -9,6 +9,9 @@ angular.module('services.i18n', [])
         i18n.active = 'ru';
     }
 
+    //console.log('i18 default:', i18n.active);
+    //document.write('<script type="text/javascript" src="js/templates-en.js" id="templates"></script>');
+
     i18n.set = function(code){
         //console.log('i18n onSet', code, $location, $route);
         localStorage.setItem('language', code);

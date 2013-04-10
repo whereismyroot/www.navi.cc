@@ -2,7 +2,7 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
-    templateUrl:'config/config.tpl.html',
+    templateUrl:'templates/config/config.tpl.html',
     controller:'ConfigViewCtrl',
     resolve:{
       account:['Account', function (Account) {

@@ -139,6 +139,7 @@ angular.module('directives.lists', [])
                 console.log('onChange', file);
                 var reader = new FileReader();
                 reader.onload = function(e) {
+                    console.log(['  onload ==== before', e]);
                     var list = e.target.result.replace(/[\r\t\n]/g, ' ').replace(/ {2}/g, ' ').split(' ').filter(function(el){return (el !== '') && (el !== ' ');});
                     console.log(['  onload', e, list]);
                     scope.$apply(function(){
@@ -169,4 +170,6 @@ angular.module('directives.lists', [])
         }
     };
 });
+
+console.log("*=*=*=*= I'am a spammer");
 

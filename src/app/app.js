@@ -2,6 +2,7 @@ angular.module('app', [
   'resources.account',
   'app.filters',
   'app.filters.i18n',
+  'error',
   'login',
   'map',
   'logs',
@@ -51,7 +52,8 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
   $httpProvider.defaults.headers.patch["Content-Type"] = 'application/json; charset=utf-8';
 
   //$locationProvider.html5Mode(true);
-  $routeProvider.otherwise({redirectTo:'/login'});
+  //$routeProvider.otherwise({redirectTo:'/login'});
+  //$routeProvider.otherwise({redirectTo:'/error'});
 }]);
 
 angular.module('app').run(['$http', 'SERVER', function($http, SERVER){

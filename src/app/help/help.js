@@ -2,7 +2,7 @@ angular.module('help', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/help', {
-    templateUrl:'help/help.tpl.html',
+    templateUrl:'templates/help/help.tpl.html',
     controller:'HelpViewCtrl',
     resolve:{
       account:['Account', function (Account) {

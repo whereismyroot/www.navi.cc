@@ -1,0 +1,51 @@
+div
+    div(ng-class="{hidden: account.isAuthenticated}")
+        h4= _.enter
+        span(language)
+        div= _.enter_help
+            br
+        div.wide= _.enter_comment
+            br
+        form(name="form", ng-submit="onLogin(user.name, user.password)", style="width: auto")
+            div.input-prepend
+                span.add-on
+                    i.icon-user
+                input(type="text", placeholder="#{_.user_name}", ng-model="user.name", required, autofocus)
+            br
+            div.input-prepend
+                span.add-on
+                    i.icon-key
+                input(type="password", placeholder="#{_.user_password}", ng-model="user.password", required)
+            br
+            button.btn.btn-primary.login(ng-click="onLogin(user.name, user.password)", ng-disabled='form.$invalid')
+                | #{_.enter_cmd}
+            button.btn.login(ng-click="onRegister(user.name, user.password)", ng-disabled='form.$invalid')
+                | #{_.register_cmd}
+
+        div.wide= _.enter_comment2
+
+    div(ng-class="{hidden: !account.isAuthenticated}")
+        h4 Вы вошли как
+            i {{ account.account.title }}
+
+        dl.dl-horizontal
+            dt Язык (language)
+            dd
+                select(style="max-width:100px;", ng-model="blah", ng-options="item.id as item.title for item in langs")
+            dt Имя входа
+            dd(contenteditable, ng-model="account.account.name", ng-change="onChange(account.account.name)")
+            dt Дата регистрации
+            dd {{ account.account.date | fromnow }}
+            dt Администратор
+            dd {{ account.account.admin | yesno }}
+            dt Наблюдаемых систем
+            dd {{ account.account.skeys.length }}
+            dt(title="Для восстановления пароля") email
+            dd {{ account.account.email }}
+
+        div(style="text-align: center;")
+            button.btn.btn-warning(ng-click="onLogout();")
+                i.icon-off
+                | Выйти из учетной записи
+
+
