@@ -33,7 +33,7 @@ div
             dd
                 select(style="max-width:100px;", ng-model="blah", ng-options="item.id as item.title for item in langs")
             dt Имя входа
-            dd(contenteditable, ng-model="account.account.name", ng-change="onChange(account.account.name)")
+            dd(contenteditable="true", ng-model="account.account.name", ng-change="onChange(account.account.name)")
             dt Дата регистрации
             dd {{ account.account.date | fromnow }}
             dt Администратор

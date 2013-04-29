@@ -39,10 +39,6 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
 
   console.log('$templateCache=', $templateCache.get('templates/ru/login.tpl.html'));
 
-  $scope.clearForm = function() {
-    $scope.user = {};
-  };
-
   $scope.showLogin = function(msg) {
     $scope.authError = msg;
     $scope.showLoginForm = true;
@@ -101,3 +97,5 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
 
   //console.log('LoginViewCtrl controller', $scope, $location, account, i18n);
 }]);
+
+
