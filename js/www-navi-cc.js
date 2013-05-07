@@ -684,7 +684,7 @@ angular.module('resources.geogps', [])
         $http({
             method: 'GET',
             withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto)
+            url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto) + '?rand=' + (Math.random()*1e18)
         }).success(function(data){
             console.log('hours data=', data);
             if(!data || (data.data.length === 0)){
