@@ -25,7 +25,7 @@
   <div class="cmdbtnpanel">
     <span class="info" style="">
       IMEI: <input id="imei" value="test-01"></input><br/>
-      <input type="checkbox" name="fast" id="fast"></input><label for="fast">Ускорить в 20 раз</label><br/>
+      <input type="checkbox" name="fast" id="fast"></input><label for="fast">Максимальная скорость</label><br/>
       <input type="checkbox" name="pack" id="pack"></input><label for="pack">Отправка по 100 точек</label>
     </span>
     <span class="info">
@@ -33,7 +33,9 @@
         <option value="http://localhost:8181">Локальный</option>
         <option value="http://point.newgps.navi.cc">Боевой</option>
         <!--option value="http://point.gps.navi.cc">За деньги!!!</option-->
-      </select>
+      </select><br/>
+      <input type="date" id="start_date"></input><br/>
+      <input type="time" id="start_time"></input>
     </span>
     <span class="info">
     <a id="rebuild" class="cmdbtn" href="#">Новый трек</a><br/>
@@ -55,6 +57,8 @@
     document.getElementById("imei").oninput = function(){
       IMEI = this.value;
     }
+    var el_date = document.querySelector('#start_date');
+    var el_time = document.querySelector('#start_time');
 
     var FSOURCE = {
       "SUDDENSTOP": 1,
@@ -97,7 +101,12 @@
       animation: null // google.maps.Animation.BOUNCE
     });
     window["rabbit"] = rabbit;
-    var dt = new Date();
+    var dt = localStorage.getItem("dt");
+    if(dt){
+      dt = new Date(parseInt(dt));
+    } else {
+      dt = new Date();
+    }
 
     var CRC16_CCITT_table = [
         0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7, 0x8108, 0x9129, 0xa14a, 0xb16b,
@@ -232,13 +241,17 @@
       packet[31] = 0;
       rabbit_pos += 1;
       dt.setUTCSeconds(dt.getUTCSeconds()+1);
-
+      localStorage.setItem("dt", dt.getTime());
+      el_date.valueAsDate = dt;
+      el_time.valueAsDate = dt;
+      // console.log("dt.getTime()=", dt.getTime());
       return packet;
     }
 
     var runner = function(){
+      // console.log('Runner ', rabbit_pos);
       if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
-        clearInterval(runner_id);
+        // clearInterval(runner_id);
         rabbit.setAnimation(null);
         document.getElementById("run").innerHTML = "Запустить!"
         document.getElementById("run").onclick = cmd_run;
@@ -253,7 +266,7 @@
       //var blob = new Blob();
 
       var multi = document.getElementById("pack").checked?100:1;
-      console.log('multi=', multi);
+      // console.log('multi=', multi);
       var uInt8Array = new Uint8Array(multi * 32 + 2); // Это максимальный размер, но может быть меньше в конце трека
       var pack_len = 0;
 
@@ -276,13 +289,13 @@
         crc = CRC16(crc, data);
       }
       //dv.setUint16(32, crc, true);
-      console.log(' crc of ' + pack_len + ' bytes = ' + crc + ' (' + uInt8Array.length);
+      // console.log(' crc of ' + pack_len + ' bytes = ' + crc + ' (' + uInt8Array.length);
       uInt8Array[pack_len] = crc % 256;
       uInt8Array[pack_len + 1] = crc / 256;
 
       var uInt8Array = new Uint8Array(uInt8Array.subarray(0, pack_len + 2));
 
-      console.log(' sending '+ uInt8Array.length + ' bytes');
+      // console.log(' sending '+ uInt8Array.length + ' bytes');
 
       var req = new XMLHttpRequest();
       var url = document.getElementById("server").value;
@@ -291,24 +304,39 @@
       req.setRequestHeader("Content-Length", pack_len + 2);
       req.setRequestHeader('Content-Type', 'application/octet-stream')
       //req.send(packet);
+      req.onload = function(e) {
+        var fast = document.getElementById("fast").checked;
+        // console.log("fast=", fast);
+        runner_id = setTimeout(runner, fast?0:1000);
+        // runner_id = setTimeout(runner, 1000);
+      }
       req.send(uInt8Array);
 
 
       //console.log("step", rabbit_pos, p, IMEI, packet, dv, crc, uInt8Array);
-
     }
 
     var cmd_run = function() {
       var fast = document.getElementById("fast").checked;
+
+      if(isNaN(el_date.valueAsNumber) || isNaN(el_time.valueAsNumber)){
+
+      } else {
+        dt = new Date(el_date.valueAsNumber + el_time.valueAsNumber);
+      }
+
       console.log("run", fast);
-      clearInterval(runner_id);
-      runner_id = setInterval(runner, fast?50:1000);
+      // clearInterval(runner_id);
+      clearTimeout(runner_id);
+      // runner_id = setInterval(runner, fast?50:1000);
+      runner_id = setTimeout(runner, fast?50:1000);
       //rabbit.setAnimation(google.maps.Animation.BOUNCE);
       this.innerHTML = "Остановить."
       this.onclick = cmd_stop;
     };
     var cmd_stop = function() {
-      clearInterval(runner_id);
+      // clearInterval(runner_id);
+      clearTimeout(runner_id);
       rabbit.setAnimation(null);
       this.innerHTML = "Запустить!"
       this.onclick = cmd_run;
@@ -321,11 +349,19 @@
     directionsDisplay = new google.maps.DirectionsRenderer();
     directionsDisplay.setMap(map);
 
+    var to = null;
     document.getElementById("rebuild").onclick = function() {
       console.log("rebuild:click");
+      var from;
 
-      var from = new google.maps.LatLng(48.397+(Math.random()-0.5)*6.0, 34.644+(Math.random()-0.5)*16.0);
-      var to = new google.maps.LatLng(48.397+(Math.random()-0.5)*6.0, 34.644+(Math.random()-0.5)*16.0);
+      if(to){
+        console.log("reuse from");
+        from = to;
+      } else {
+        console.log("new from");
+        from = new google.maps.LatLng(48.397+(Math.random()-0.5)*6.0, 34.644+(Math.random()-0.5)*16.0);
+      }
+      to = new google.maps.LatLng(48.397+(Math.random()-0.5)*6.0, 34.644+(Math.random()-0.5)*16.0);
       var request = {
           origin: from,
           destination: to,
@@ -337,15 +373,16 @@
           directionsDisplay.setDirections(result);
           var path = result.routes[0].overview_path;
           var leg = result.routes[0].legs[0];
-          console.log("result=", result, path, path.length);
-          clearInterval(runner_id);
+          // console.log("result=", result, path, path.length);
+          // clearInterval(runner_id);
+          clearTimeout(runner_id);
           rabbit_pos = 0;
           //var blob = new Blob(["onmessage = function(e) { postMessage('msg from worker'); }"]);
           var out = [];
           for(var i=0; i<path.length; i++){
             out.push([path[i].lat(), path[i].lng()]);
           }
-          console.log("out=", out, out.length);
+          // console.log("out=", out, out.length);
 
           out2 = [];
           for(var i=0; i<leg.steps.length; i++){
@@ -354,7 +391,7 @@
               out2.push([p.lat(), p.lng()]);
             }
           }
-          console.log("out2=", out2, out2.length);
+          // console.log("out2=", out2, out2.length);
           document.getElementById("tracklen").innerHTML = "" + out2.length;
 
           rabbit.setPosition(leg.steps[0].path[0]);

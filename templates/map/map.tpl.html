@@ -1,0 +1,30 @@
+<div gmap="main"></div>
+<div class="map-control">
+    <ul class="mapsyslist">
+        <mapsysitem ng-repeat="s in account.account.skeys" item="account.account.systems[s]" select="onSysSelect(s)"></mapsysitem>
+    </ul>
+    <div class="mapcalendar">
+      <!--div ng-model="date" value="02-16-2012" data-date="12-02-2012" data-date-format="dd-mm-yyyy" ui-date regional="ru"></div-->
+      <!-- <div id="datepicker" data-date="02/10/2013" data-date-language="ru" data-date-weekstart="1"></div> -->
+      <div id="datepicker" data-date-language="ru" data-date-weekstart="1"></div>
+      <!--div class="input-append date" id="datepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+            <input size="16" type="text" value="12-02-2012" readonly>
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div-->
+    </div>
+
+
+</div>
+
+<div class="map-timeline">
+    Шкала
+    <div style="width: 40000px;">uu</div>
+</div>
+
+<div class="map-toolbar">
+    Панель инструментов
+    <button ng-click="hideTrack()">Скрыть трек</button>
+</div>
+
+
+</div>
