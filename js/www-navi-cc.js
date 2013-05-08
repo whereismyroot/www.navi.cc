@@ -687,10 +687,10 @@ angular.module('resources.geogps', [])
             url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto) + '?rand=' + (Math.random()*1e18)
         }).success(function(data){
             console.log('hours data=', data);
-            if(!data || (data.data.length === 0)){
+            if(!data || (data.hours.length === 0)){
                 callback([]);
             } else {
-                callback(data.data[0].hours);
+                callback(data.hours);
             }
 
         });

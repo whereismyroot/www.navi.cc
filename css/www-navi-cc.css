@@ -143,13 +143,14 @@ ul.language li a:hover {
   background: #eeeeee;
   cursor: pointer;
 }
+.datepicker table tr td.enabled,
+.datepicker table tr td.enabled:hover {
+  color: #46a546;
+  font-weight: bold;
+}
 .datepicker table tr td.old,
 .datepicker table tr td.new {
   color: #999999;
-}
-.datepicker table tr td.enabled,
-.datepicker table tr td.enabled:hover {
-  font-weight: bold;
 }
 .datepicker table tr td.disabled,
 .datepicker table tr td.disabled:hover {
