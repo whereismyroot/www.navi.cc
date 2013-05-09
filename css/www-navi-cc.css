@@ -147,6 +147,10 @@ ul.language li a:hover {
 .datepicker table tr td.enabled:hover {
   color: #46a546;
   font-weight: bold;
+  background: #fef6ea;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 }
 .datepicker table tr td.old,
 .datepicker table tr td.new {

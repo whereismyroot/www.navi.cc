@@ -1241,11 +1241,6 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
     $scope.addform = false;
   };
 
-  $scope.onSort = function(){
-    console.log('onSort');
-    account.systemsort();
-  };
-
   $scope.onChange = function(el){
     console.log('onChange', el, $scope.account.account.systems[el].desc);
     system.change_desc(el, $scope.account.account.systems[el].desc);
@@ -1256,20 +1251,35 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
     console.log('onoff', el);
   };
 
+  $scope.sortableOptions = {
+    stop: function(e, ui) {
+      // console.log("Update", e, account.account.skeys);
+      account.systemsort();
+    },
+    handle: ".msp",
+    revert: true,
+    scrollSpeed: 5,
+    cursor: 'crosshair',
+    placeholder: 'ui-sortable-placeholder2',
+    axis: 'y'
+  };
+
   $scope.del = function(el){
     //delete el;
     console.log('del', el);
     account.systemdel(el);
     //$scope.account.systems[]
   };
-  var sortableEle = $('ul.config_sys_list').sortable({
-    handle: ".msp",
-    revert: true,
-    scrollSpeed: 5,
-    cursor: 'crosshair',
-    placeholder: 'ui-sortable-placeholder2',
-    stop: $scope.onSort
-  });
+  // var sortableEle = $('ul.config_sys_list').sortable({
+  //   handle: ".msp",
+  //   revert: true,
+  //   scrollSpeed: 5,
+  //   cursor: 'crosshair',
+  //   placeholder: 'ui-sortable-placeholder2',
+  //   end: $scope.onSort
+  // }).on('update', function(ev){
+  //   console.log('on update', ev);
+  // });
 
   /*$scope.$watch('account', function(){
     console.log('$watch:account');
@@ -1698,8 +1708,8 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         // console.log("hour", hour, "->", date.toDateString(), dayhour, dateepoch);
       }
       console.log(["days", days]);
-      // $('#datepicker').datepicker("refresh");
-      $('#datepicker').datepicker("update");
+      // $('#datepicker').datepicker("update");
+      $('#datepicker').datepicker("fill"); // Undocumented stuff
     });
   };
 

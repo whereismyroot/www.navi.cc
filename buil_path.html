@@ -250,7 +250,7 @@
 
     var runner = function(){
       // console.log('Runner ', rabbit_pos);
-      if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
+      if((runner_id === null) || (rabbit_pos==null) || (rabbit_pos>=out2.length)) {
         // clearInterval(runner_id);
         rabbit.setAnimation(null);
         document.getElementById("run").innerHTML = "Запустить!"
@@ -305,8 +305,9 @@
       req.setRequestHeader('Content-Type', 'application/octet-stream')
       //req.send(packet);
       req.onload = function(e) {
-        var fast = document.getElementById("fast").checked;
         // console.log("fast=", fast);
+        if(runner_id === null) return;
+        var fast = document.getElementById("fast").checked;
         runner_id = setTimeout(runner, fast?0:1000);
         // runner_id = setTimeout(runner, 1000);
       }
@@ -337,6 +338,7 @@
     var cmd_stop = function() {
       // clearInterval(runner_id);
       clearTimeout(runner_id);
+      runner_id = null;
       rabbit.setAnimation(null);
       this.innerHTML = "Запустить!"
       this.onclick = cmd_run;

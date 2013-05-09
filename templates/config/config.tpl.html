@@ -20,7 +20,7 @@
         <label style="display: inline-block" for="config_delete">Удаление</label> <input id="config_delete" type="checkbox" ng-model="deleteenable" ></input>
     </span>
 </div>
-<ul class="config_sys_list" ui-sortable ng-model="account.account.skeys" ng-update="onUpdate()">
+<ul class="config_sys_list" ui-sortable="sortableOptions" ng-model="account.account.skeys">
     <li ng-repeat="s in account.account.skeys" ng-class="{off: account.account.systems[s].off}">
         <i class="msp icon-reorder icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i
         ><!--i class="syspicto icon-globe icon-large" title="Нажмите чтобы задать значок" ng-click="icon(s)"></i
