@@ -380,9 +380,10 @@ angular.module('directives.main', [])
 .directive('mapsysitem', ["$location", function($location) {
     return {
         restrict: 'E',
-         scope: {
-             item: "=",
-             select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"
+        scope: {
+            zoom: "@",
+            item: "=",
+            select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"
          },
         replace: true,
         // transclude: true,
@@ -1727,6 +1728,45 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     }
   };
 
+  $scope.zoomlist = 0;
+  $scope.doZoomList = function(){
+    console.log("doZoomList");
+    $scope.zoomlist += 1;
+    if($scope.zoomlist >= 3) $scope.zoomlist = 0;
+  };
+
+
+
+    var data = d3.range(25).map(function(i){
+        return {
+            i: i,
+            title: i<24?("" + ((i<10)?"0":"") + i + ":00"):"23:59"
+        };
+    });
+
+    var grid = d3.select("#timeline svg");
+    var grid_days = grid.selectAll(".day")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("transform", function(d) { return "translate(" + (d.i * 100) + ",0)";});
+
+    grid_days.append("text")
+        .attr("class", "day")
+        .attr("x", "50")
+        .attr("y", "12")
+        .attr("dx", "0")
+        .attr("text-anchor", "middle")
+        .text(function(d) { return d.title; });
+
+    grid_days.append("line")
+        .style("stroke", '#555')
+        .attr("x1", "50")
+        .attr("y1", "14")
+        .attr("x2", "50")
+        .attr("y2", "48");
+
+
 }]);
 
 var parse_onebin = function(packet){
@@ -1781,21 +1821,40 @@ var parse_onebin = function(packet){
 };
 
 var bingpsparse = function(array){
-  console.log('parse');
-  var track = [];
-  for(var i=0; i<array.length; i+=32){
-    point = parse_onebin(array.subarray(i, i+32));
-    // console.log('point=', point);
-    if(point){
-      track.push(new google.maps.LatLng(point.lat, point.lon));
+    console.log('parse');
+    var track = [];
+    var points = [];
+    var bounds = null;
+    var min_hour = 1e15;
+    var max_hour = 0;
+    var hours = {};
+    for(var i=0; i<array.length; i+=32){
+        point = parse_onebin(array.subarray(i, i+32));
+        // console.log('point=', point);
+        if(point){
+            var gpoint = new google.maps.LatLng(point.lat, point.lon);
+            track.push(gpoint);
+            points.push(point);
+            if(bounds === null){
+                bounds = new google.maps.LatLngBounds(gpoint, gpoint);
+            } else {
+                bounds.extend(gpoint);
+            }
+
+            var hour = ~~(point.dt / 60);
+            if(hour < min_hour) min_hour = hour;
+            if(hour > max_hour) max_hour = hour;
+            hours[hour] = (hours[hour] || 0) + 1;
+        }
     }
-  }
-  console.log('track length =', track.length);
-  if(path) {
-    path.setMap(null);
-    path = null;
-  }
-  path = new google.maps.Polyline({
+    console.log('track length =', track.length);
+    // points_in_track =
+    $("#points_in_track").text(track.length);
+    if(path) {
+        path.setMap(null);
+        path = null;
+    }
+    path = new google.maps.Polyline({
     path: track,
     strokeColor: 'blue',
     strokeOpacity: 1.0,
@@ -1811,7 +1870,126 @@ var bingpsparse = function(array){
             repeat: '100px'
         }],
     map: window.config.map
-  });
+    });
+    window.config.map.fitBounds(bounds);
+
+    // Построим шкалу
+
+
+    // Пока сгенерируем фальшивые данные
+    var start = 0;
+    var data = d3.range(11).map(function(i){
+        var stop = start + ~~(Math.random() * 500);
+        var point = {
+            counter: i+1,
+            move: (i%2) === 1,
+            start: start,
+            stop: stop
+        };
+        start = stop;
+        return point;
+    });
+    if(data[data.length-1].stop < 2500){
+        data[data.length-1].stop = 2500;
+    }
+    console.log("data=", data);
+
+
+
+    var grid = d3.select("#timeline svg");
+
+    // var chart = function(el){
+    //     console.log("el=", el);
+    //     // el.append("text");
+    //     el.append("svg:rect")
+    //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
+    //     // .attr("class", "move")
+    //     .attr("x", function(d) { return d.start; })
+    //     .attr("y", "18")
+    //     .attr("width", function(d) { return d.stop - d.start; })
+    //     .attr("height", "12");
+    // };
+
+    var days = grid.selectAll(".move")
+        .data(data);
+
+    // days.enter().append("g").call(chart);
+
+    // days.enter().append("svg:rect")
+    //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
+    //     // .attr("class", "move")
+    //     .attr("x", function(d) { return d.start; })
+    //     .attr("y", "18")
+    //     .attr("width", function(d) { return d.stop - d.start; })
+    //     .attr("height", "12");
+
+    // days.transition()
+    //     .duration(500)
+    //     // .style("opacity", 1)
+    //     .attr("x", function(d) { return d.start; })
+    //     .attr("width", function(d) { return d.stop - d.start; });
+
+    var g = days.enter().append("g")
+        .attr("class", function(d) { return "move " + (d.move?"run":"stop"); });
+    g.append("rect")
+        .attr("x", function(d) { return d.start; })
+        .attr("y", "16")
+        .attr("width", function(d) { return d.stop - d.start; })
+        .attr("height", "16");
+    g.append("text")
+        .attr("x", function(d) { return (d.stop + d.start) / 2; })
+        .attr("y", "28")
+        // .attr("dx", "0")
+        .attr("text-anchor", "middle")
+        .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
+
+    days.select("rect").transition()
+        .duration(500)
+        .attr("x", function(d) { return d.start; })
+        .attr("width", function(d) { return d.stop - d.start; });
+
+    days.select("text").transition()
+        .duration(500)
+        .attr("x", function(d) { return (d.stop + d.start)/2; });
+        // .attr("width", function(d) { return d.stop - d.start; });
+
+    days.exit().remove();
+
+
+    // var grid = d3.select("#timeline svg")
+    //     .attr("width", "" + (max_hour-min_hour+1)*24 + "px");
+        // .append("svg")
+        // .attr("height", "46px")
+        // .attr("class", "chart");
+
+
+    // console.log("data=", data, max_hour, min_hour, hours);
+
+    // var days = grid.selectAll(".day")
+    //     .data(data);
+
+    //     days.enter().append("svg:rect")
+    //     .attr("class", "day")
+    //     .attr("x", function(d) { return d.i * 24; })
+    //     .attr("y", "0")
+    //     .attr("width", "22px")
+    //     .attr("height", "22px")
+    //     .on('mouseover', function() {
+    //         d3.select(this)
+    //             .style('fill', '#0F0');
+    //     })
+    //     .on('mouseout', function() {
+    //         d3.select(this)
+    //             .style('fill', '#FFF');
+    //     })
+    //     .on('click', function() {
+    //         console.log(d3.select(this));
+    //     })
+    //     .style("fill", '#FFF')
+    //     .style("stroke", '#555');
+
+    //     days.exit().remove();
+
 };
 angular.module('reports', ['resources.account'])
 

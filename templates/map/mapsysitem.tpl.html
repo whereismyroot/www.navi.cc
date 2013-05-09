@@ -1,24 +1,32 @@
 <li ng-click="select()">
     <!-- <i href="/#/config/{{ item.skey }}/params"><span class="icon-wrench"></span></i> -->
-    <span class="desc">
-    <i class="icon-wrench" title="Нажмите чтобы настроить трекер" ng-click="manageSystemParams(item.skey)"></i>
-        {{ item.desc }}
-    </span>
+    <div>
+        <span class="desc">
+            <i class="icon-wrench" title="Нажмите чтобы настроить трекер" ng-click="manageSystemParams(item.skey)"></i>
+                {{ item.desc }}
+        </span>
+    </div>
 
-    <!--span class="imei">
-        {{ account.account.systems[s].imei }}
-    </span-->
-    <span class="status">
-        Стоит
-    </span>
-    <span class="signal">
-        24/05/2013 24:55
-    </span>
-    <br>
-    <span class="status">
-        <span title="Основное питание"><i class="icon-ambulance"></i><strong>12В</strong></span>
-        <span title="Резервное питание"><i class="icon-bolt"></i><strong>4.2В</strong></span>
-        <span title="Сигнал GSM"><i class="icon-signal"></i></span>
-        <i title="Сигнал GPS" class="fonticon">e</i>
-    </span>
+    <div ng-show="zoom > 0">
+        <span class="status">
+            Стоит
+        </span>
+        <span class="signal">
+            24/05/2013 24:55
+        </span>
+        <br>
+        <span class="status">
+            <span title="Основное питание"><i class="icon-ambulance"></i><strong>12В</strong></span>
+            <span title="Резервное питание"><i class="icon-bolt"></i><strong>4.2В</strong></span>
+            <span title="Сигнал GSM"><i class="icon-signal"></i></span>
+            <i title="Сигнал GPS" class="fonticon">e</i>
+        </span>
+
+    </div>
+    <div ng-show="zoom > 1">
+        Тут будет много подробной<br>
+        и нужной информации<br>
+        как только мы<br>
+        закончим дизайн.
+    </div>
 </li>

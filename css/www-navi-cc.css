@@ -882,6 +882,20 @@ div[gmap="main"] {
   -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
+ul.map-control-tools {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+ul.map-control-tools li {
+  float: left;
+  display: list-item;
+  padding: 4px;
+}
+ul.map-control-tools li:hover {
+  background-color: lightBlue;
+}
 .map-timeline {
   z-index: 1;
   position: absolute;
@@ -893,6 +907,26 @@ div[gmap="main"] {
   background-color: white;
   overflow-x: scroll;
   overflow-y: hidden;
+}
+.map-timeline g.run {
+  cursor: pointer;
+}
+.map-timeline g.run rect {
+  fill: #2CF306;
+  opacity: 0.9;
+}
+.map-timeline g.run:hover rect {
+  fill: #3CFF26;
+}
+.map-timeline g.stop {
+  cursor: pointer;
+}
+.map-timeline g.stop rect {
+  fill: #F57474;
+  opacity: 0.9;
+}
+.map-timeline g.stop:hover rect {
+  fill: #FF9494;
 }
 ul.mapsyslist {
   list-style-type: none;
@@ -921,9 +955,6 @@ ul.mapsyslist li span.desc {
   overflow-x: hidden;
   text-overflow: ellipsis;
 }
-ul.mapsyslist li span.status {
-  float: left;
-}
 ul.mapsyslist li span.signal {
   float: right;
 }
@@ -939,6 +970,8 @@ div.mapcalendar {
   height: 230px;
   left: 0px;
   width: 100%;
+  border-top: 1px solid lightGrey;
+  box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.1), 0 -1px 8px rgba(0, 0, 0, 0.2);
 }
 .map-toolbar {
   position: absolute;
