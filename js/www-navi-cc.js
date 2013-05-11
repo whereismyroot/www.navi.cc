@@ -1614,36 +1614,29 @@ var path = null;
 angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'resources.geogps'])
 
 .config(['$routeProvider', function ($routeProvider) {
-  $routeProvider.when('/map', {
-    templateUrl:'templates/map/map.tpl.html',
-    controller:'MapCtrl',
-    resolve:{
-      account:['Account', function (Account) {
-        //TODO: need to know the current user here
-        return Account;
-      }]
-    }
-  });
+    $routeProvider.when('/map', {
+        templateUrl:'templates/map/map.tpl.html',
+        controller:'MapCtrl',
+        resolve:{
+            account:['Account', function (Account) {
+                //TODO: need to know the current user here
+                return Account;
+            }]
+        }
+    });
 }])
 
-.controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', function ($scope, $location, account, GeoGPS) {
-  $scope.account = account;
+.controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', '$http', 'SERVER', function ($scope, $location, account, GeoGPS, $http, SERVER) {
+    $scope.account = account;
 
-  var days = {};
-  var skey = null;
+    var days = {};
+    var skey = null;
 
-  /*setTimeout(function(){
-    console.log('+++++++++', $('#datepicker'));*/
-    // console.log('+++++++++', $('#datepicker'));
-    // var nowTemp = new Date();
-    // var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
     var datepicker = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
           var hour = date.valueOf()/1000/3600;
           var day = hour/24;
           // console.log("beforeShowDay", day, (hour%2 === 0)?'enabled':'disabled');
-          // return (day%2 === 0)?'enabled':'disabled';
-          // return date.valueOf() < now.valueOf() ? 'disabled' : '';
           return (day in days)?'enabled':'disabled';
         }
     }).on('changeDate', function(ev){
@@ -1653,38 +1646,24 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
       console.log(["datepicker: on changeDate", ev, date]);
       loadTrack(skey, hourfrom, hourfrom+23);
     });
-    // }).on('Render', function(ev){
-    //   console.log(["datepicker: on Render", ev]);
-    // });
-  /*}, 1000);*/
 
 
   var loadTrack = function(skey, hourfrom, hourto){
     console.log("loadTrack", skey, hourfrom, hourto);
-    var xhr = new XMLHttpRequest();
-    // xhr.open('GET', 'http://localhost:8182/1.0/geo/get/dGVzdC0wMQ/379952/379954', true);
-    // xhr.open('GET', 'http://localhost:8182/1.0/geo/get/dGVzdC0wMQ/379962/379962', true);
-    xhr.open('GET', 'http://localhost:8182/1.0/geo/get/' + skey + '/' + hourfrom + '/' + hourto, true);
-    xhr.responseType = 'arraybuffer';
 
-    xhr.onload = function(e) {
-      if(!this.response) {
-        // alert('No data');
-        if(path) {
-          path.setMap(null);
-          path = null;
-        }
-        return;
-      }
-      var uInt8Array = new Uint8Array(this.response); // this.response == uInt8Array.buffer
-      // var byte3 = uInt8Array[4]; // byte at offset 4
+    //responseType
 
-      bingpsparse(uInt8Array);
-      console.log("Got data", uInt8Array.length, 'bytes');
-
-    };
-
-    xhr.send();
+    $http({
+        method: 'GET',
+        withCredentials: SERVER.api_withCredentials,
+        responseType: 'arraybuffer',
+        url: SERVER.api +
+            '/geo/get/' +
+            encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
+    }).success(function(data){
+        var uInt8Array = new Uint8Array(data);
+        bingpsparse(uInt8Array);
+    });
 
   };
 
@@ -1878,7 +1857,7 @@ var bingpsparse = function(array){
 
     // Пока сгенерируем фальшивые данные
     var start = 0;
-    var data = d3.range(11).map(function(i){
+    var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
         var stop = start + ~~(Math.random() * 500);
         var point = {
             counter: i+1,
@@ -1943,13 +1922,11 @@ var bingpsparse = function(array){
         .attr("text-anchor", "middle")
         .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
 
-    days.select("rect").transition()
-        .duration(500)
+    days.select("rect").transition().duration(500)
         .attr("x", function(d) { return d.start; })
         .attr("width", function(d) { return d.stop - d.start; });
 
-    days.select("text").transition()
-        .duration(500)
+    days.select("text").transition().duration(500)
         .attr("x", function(d) { return (d.stop + d.start)/2; });
         // .attr("width", function(d) { return d.stop - d.start; });
 
