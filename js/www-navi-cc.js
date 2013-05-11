@@ -677,23 +677,286 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
 
 angular.module('resources.geogps', [])
 
-.factory('GeoGPS', ['SERVER', '$http', function (SERVER, $http) {
+.factory('GeoGPS', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
     var GeoGPS = {};
+    var skey = null;    // Ключ системы с которой идет работа
+    GeoGPS.path = null;
 
+    // var days = {};
+
+    var parse_onebin = function(packet){
+        // 0xFF,                   # D0: Заголовок (должен быть == 0xFF)
+        // 0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
+        // 32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
+        if((packet[0] == 0xFF) && (packet[1] == 0xF4) && (packet[2] == 32)){
+            // dt,                     # D3: Дата+время
+            var dt = packet[3] + packet[4]*256 + packet[5]*256*256 + packet[6]*256*256*256;
+            // latitude,               # D4: Широта 1/10000 минут
+            var lat = (packet[7] + packet[8]*256 + packet[9]*256*256 + packet[10]*256*256*256) / 600000.0;
+            // longitude,              # D5: Долгота 1/10000 минут
+            var lon = (packet[11] + packet[12]*256 + packet[13]*256*256 + packet[14]*256*256*256) / 600000.0;
+            // speed,                  # D6: Скорость 1/100 узла
+            var speed = packet[15] + packet[16]*256;
+            // int(round(course/2)),   # D7: Направление/2 = 0..179
+            var course = packet[17]*2;
+            // sats,                   # D8: Кол-во спутников 3..12
+            var sats = packet[18];
+            // vout,                   # D9: Напряжение внешнего питания 1/100 B
+            var vout = packet[19] + packet[20]*256;
+            // vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
+            var vin = packet[21] + packet[22]*256;
+            // fsource,                # D11: Тип точки   Причина фиксации точки
+            var fsource = packet[23];
+            // 0,                      # D12: Флаги
+            var flags = packet[24] + packet[25]*256;
+            // 0,                      # D13: Резерв
+            var reserve1 = packet[26] + packet[27]*256 + packet[28]*256*256 + packet[29]*256*256*256;
+            // 0,                      # D14: Резерв
+            var reserve2 = packet[30];
+            // 0                       # D15: Локальная CRC (пока не используется)
+            var lcrc = packet[31];
+            return {
+                "dt": dt,
+                "lat": lat,
+                "lon": lon,
+                "speed": speed,
+                "course": course,
+                "sats": sats,
+                "vout": vout,
+                "vin": vin,
+                "fsource": fsource,
+                "flags": flags,
+                "reserve1": reserve1,
+                "reserve2": reserve2,
+                "lcrc": lcrc
+            };
+        } else {
+            return null;
+        }
+    };
+
+    var bingpsparse = function(array){
+        console.log('parse');
+        var track = [];
+        var points = [];
+        var bounds = null;
+        var min_hour = 1e15;
+        var max_hour = 0;
+        var hours = {};
+        for(var i=0; i<array.length; i+=32){
+            point = parse_onebin(array.subarray(i, i+32));
+            // console.log('point=', point);
+            if(point){
+                var gpoint = new google.maps.LatLng(point.lat, point.lon);
+                track.push(gpoint);
+                points.push(point);
+                if(bounds === null){
+                    bounds = new google.maps.LatLngBounds(gpoint, gpoint);
+                } else {
+                    bounds.extend(gpoint);
+                }
+
+                var hour = ~~(point.dt / 60);
+                if(hour < min_hour) min_hour = hour;
+                if(hour > max_hour) max_hour = hour;
+                hours[hour] = (hours[hour] || 0) + 1;
+            }
+        }
+        console.log('track length =', track.length);
+        // points_in_track =
+        $("#points_in_track").text(track.length);
+        if(GeoGPS.path) {
+            GeoGPS.path.setMap(null);
+            GeoGPS.path = null;
+        }
+        GeoGPS.path = new google.maps.Polyline({
+        path: track,
+        strokeColor: 'blue',
+        strokeOpacity: 1.0,
+        strokeWeigth: 3,
+        icons: [{
+                icon: {
+                  path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+                  strokeColor: 'blue',
+                  strokeWeight: 2,
+                  scale: 2
+                },
+                offset: '50px',
+                repeat: '100px'
+            }],
+        map: window.config.map
+        });
+        window.config.map.fitBounds(bounds);
+
+        // Построим шкалу
+
+
+        // Пока сгенерируем фальшивые данные
+        var start = 0;
+        var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
+            var stop = start + ~~(Math.random() * 500);
+            var point = {
+                counter: i+1,
+                move: (i%2) === 1,
+                start: start,
+                stop: stop
+            };
+            start = stop;
+            return point;
+        });
+        if(data[data.length-1].stop < 2500){
+            data[data.length-1].stop = 2500;
+        }
+        console.log("data=", data);
+
+
+
+        var grid = d3.select("#timeline svg");
+
+        // var chart = function(el){
+        //     console.log("el=", el);
+        //     // el.append("text");
+        //     el.append("svg:rect")
+        //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
+        //     // .attr("class", "move")
+        //     .attr("x", function(d) { return d.start; })
+        //     .attr("y", "18")
+        //     .attr("width", function(d) { return d.stop - d.start; })
+        //     .attr("height", "12");
+        // };
+
+        var days = grid.selectAll(".move")
+            .data(data);
+
+        // days.enter().append("g").call(chart);
+
+        // days.enter().append("svg:rect")
+        //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
+        //     // .attr("class", "move")
+        //     .attr("x", function(d) { return d.start; })
+        //     .attr("y", "18")
+        //     .attr("width", function(d) { return d.stop - d.start; })
+        //     .attr("height", "12");
+
+        // days.transition()
+        //     .duration(500)
+        //     // .style("opacity", 1)
+        //     .attr("x", function(d) { return d.start; })
+        //     .attr("width", function(d) { return d.stop - d.start; });
+
+        var g = days.enter().append("g")
+            .attr("class", function(d) { return "move " + (d.move?"run":"stop"); });
+        g.append("rect")
+            .attr("x", function(d) { return d.start; })
+            .attr("y", "16")
+            .attr("width", function(d) { return d.stop - d.start; })
+            .attr("height", "16");
+        g.append("text")
+            .attr("x", function(d) { return (d.stop + d.start) / 2; })
+            .attr("y", "28")
+            // .attr("dx", "0")
+            .attr("text-anchor", "middle")
+            .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
+
+        days.select("rect").transition().duration(500)
+            .attr("x", function(d) { return d.start; })
+            .attr("width", function(d) { return d.stop - d.start; });
+
+        days.select("text").transition().duration(500)
+            .attr("x", function(d) { return (d.stop + d.start)/2; });
+            // .attr("width", function(d) { return d.stop - d.start; });
+
+        days.exit().remove();
+
+
+        // var grid = d3.select("#timeline svg")
+        //     .attr("width", "" + (max_hour-min_hour+1)*24 + "px");
+            // .append("svg")
+            // .attr("height", "46px")
+            // .attr("class", "chart");
+
+
+        // console.log("data=", data, max_hour, min_hour, hours);
+
+        // var days = grid.selectAll(".day")
+        //     .data(data);
+
+        //     days.enter().append("svg:rect")
+        //     .attr("class", "day")
+        //     .attr("x", function(d) { return d.i * 24; })
+        //     .attr("y", "0")
+        //     .attr("width", "22px")
+        //     .attr("height", "22px")
+        //     .on('mouseover', function() {
+        //         d3.select(this)
+        //             .style('fill', '#0F0');
+        //     })
+        //     .on('mouseout', function() {
+        //         d3.select(this)
+        //             .style('fill', '#FFF');
+        //     })
+        //     .on('click', function() {
+        //         console.log(d3.select(this));
+        //     })
+        //     .style("fill", '#FFF')
+        //     .style("stroke", '#555');
+
+        //     days.exit().remove();
+
+    };
+
+
+
+
+    GeoGPS.days = {}; // Дни, в которые было движение
     GeoGPS.getHours = function(skey, hourfrom, hourto, callback){
-        console.log(['GeoGPS.getHours', skey, hourfrom, hourto]);
+        var defer = $q.defer();
+        console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
         $http({
             method: 'GET',
             withCredentials: SERVER.api_withCredentials,
             url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto) + '?rand=' + (Math.random()*1e18)
         }).success(function(data){
             console.log('hours data=', data);
+            GeoGPS.days = {};
             if(!data || (data.hours.length === 0)){
-                callback([]);
+                // callback([]);
             } else {
-                callback(data.hours);
+                // callback(data.hours);
+                for(var i=0, l=data.hours.length; i<l; i++){
+                    var hour = data.hours[i];
+                    var date = new Date(hour * 3600 * 1000);
+                    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);
+                    var dayhour = date.getTime()/1000/3600; // Первый час суток
+                    var dateepoch = +(new Date(date.toDateString() + " GMT")) / 1000 / 3600 / 24;
+                    if(dateepoch in GeoGPS.days){
+                        GeoGPS.days[dateepoch] += 1;
+                        // console.log("set", days);
+                    } else {
+                        GeoGPS.days[dateepoch] = 1;
+                        // console.log("grow", days);
+                    }
+                    // console.log("hour", hour, "->", date.toDateString(), dayhour, dateepoch);
+                }
             }
+            defer.resolve();
+        });
+        return defer.promise;
+    };
 
+    GeoGPS.getTrack = function(skey, hourfrom, hourto){
+        console.log("getTrack", skey, hourfrom, hourto);
+
+        $http({
+            method: 'GET',
+            withCredentials: SERVER.api_withCredentials,
+            responseType: 'arraybuffer',
+            url: SERVER.api +
+                '/geo/get/' +
+                encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
+        }).success(function(data){
+            var uInt8Array = new Uint8Array(data);
+            bingpsparse(uInt8Array);
         });
     };
 
@@ -1609,7 +1872,6 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   $("[rel=tooltip]").tooltip();
 }]);
 
-var path = null;
 
 angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'resources.geogps'])
 
@@ -1629,92 +1891,47 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
 .controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', '$http', 'SERVER', function ($scope, $location, account, GeoGPS, $http, SERVER) {
     $scope.account = account;
 
-    var days = {};
     var skey = null;
 
     var datepicker = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
-          var hour = date.valueOf()/1000/3600;
-          var day = hour/24;
-          // console.log("beforeShowDay", day, (hour%2 === 0)?'enabled':'disabled');
-          return (day in days)?'enabled':'disabled';
+            var hour = date.valueOf()/1000/3600,
+                day = hour/24;
+            // console.log("beforeShowDay", day, (hour%2 === 0)?'enabled':'disabled');
+            return (day in GeoGPS.days)?'enabled':'disabled';
         }
     }).on('changeDate', function(ev){
-      var date = ev.date;
-      var tz = (new Date()).getTimezoneOffset()/60;
-      var hourfrom = date.valueOf() / 1000 / 3600 + tz;
-      console.log(["datepicker: on changeDate", ev, date]);
-      loadTrack(skey, hourfrom, hourfrom+23);
+        var date = ev.date;
+        var tz = (new Date()).getTimezoneOffset()/60;
+        var hourfrom = date.valueOf() / 1000 / 3600 + tz;
+        console.log(["datepicker: on changeDate", ev, date]);
+        GeoGPS.getTrack(GeoGPS.skey, hourfrom, hourfrom+23);
     });
 
+    $scope.onSysSelect = function(skey){
+        // loadTrack(skey);
+        GeoGPS.skey = skey;
+        GeoGPS.getHours(skey, 0, 1000000)
+            .then(function(){
+                // Недокументированный метод. Метод update изменяет текущий месяц
+                $('#datepicker').datepicker("fill");
+            });
+    };
 
-  var loadTrack = function(skey, hourfrom, hourto){
-    console.log("loadTrack", skey, hourfrom, hourto);
-
-    //responseType
-
-    $http({
-        method: 'GET',
-        withCredentials: SERVER.api_withCredentials,
-        responseType: 'arraybuffer',
-        url: SERVER.api +
-            '/geo/get/' +
-            encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
-    }).success(function(data){
-        var uInt8Array = new Uint8Array(data);
-        bingpsparse(uInt8Array);
-    });
-
-  };
-
-  var loadHours = function(s){
-
-    GeoGPS.getHours(s, 0, 1000000, function (data){
-      console.log(["loadHours", s, data]);
-      days = {};
-      for(var i=0, l=data.length; i<l; i++){
-        var hour = data[i];
-        var date = new Date(hour * 3600 * 1000);
-        date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);
-        var dayhour = date.getTime()/1000/3600; // Первый час суток
-        var dateepoch = +(new Date(date.toDateString() + " GMT")) / 1000 / 3600 / 24;
-        if(dateepoch in days){
-          days[dateepoch] += 1;
-          // console.log("set", days);
-        } else {
-          days[dateepoch] = 1;
-          // console.log("grow", days);
+    $scope.hideTrack = function(){
+        console.log("Hide track");
+        if(GeoGPS.path) {
+            GeoGPS.path.setMap(null);
+            GeoGPS.path = null;
         }
-        // console.log("hour", hour, "->", date.toDateString(), dayhour, dateepoch);
-      }
-      console.log(["days", days]);
-      // $('#datepicker').datepicker("update");
-      $('#datepicker').datepicker("fill"); // Undocumented stuff
-    });
-  };
+    };
 
-  $scope.onSysSelect = function(s){
-    // loadTrack(skey);
-    skey = s;
-    loadHours(skey);
-  };
-
-  $scope.hideTrack = function(){
-      console.log("Hide track");
-    if(path) {
-      path.setMap(null);
-      path = null;
-    }
-  };
-
-  $scope.zoomlist = 0;
-  $scope.doZoomList = function(){
-    console.log("doZoomList");
-    $scope.zoomlist += 1;
-    if($scope.zoomlist >= 3) $scope.zoomlist = 0;
-  };
-
-
+    $scope.zoomlist = 0;
+    $scope.doZoomList = function(){
+        // console.log("doZoomList");
+        $scope.zoomlist += 1;
+        if($scope.zoomlist >= 3) $scope.zoomlist = 0;
+    };
 
     var data = d3.range(25).map(function(i){
         return {
@@ -1745,229 +1962,9 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         .attr("x2", "50")
         .attr("y2", "48");
 
-
 }]);
 
-var parse_onebin = function(packet){
-  // 0xFF,                   # D0: Заголовок (должен быть == 0xFF)
-  // 0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
-  // 32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
-  if((packet[0] == 0xFF) && (packet[1] == 0xF4) && (packet[2] == 32)){
-    // dt,                     # D3: Дата+время
-    var dt = packet[3] + packet[4]*256 + packet[5]*256*256 + packet[6]*256*256*256;
-    // latitude,               # D4: Широта 1/10000 минут
-    var lat = (packet[7] + packet[8]*256 + packet[9]*256*256 + packet[10]*256*256*256) / 600000.0;
-    // longitude,              # D5: Долгота 1/10000 минут
-    var lon = (packet[11] + packet[12]*256 + packet[13]*256*256 + packet[14]*256*256*256) / 600000.0;
-    // speed,                  # D6: Скорость 1/100 узла
-    var speed = packet[15] + packet[16]*256;
-    // int(round(course/2)),   # D7: Направление/2 = 0..179
-    var course = packet[17]*2;
-    // sats,                   # D8: Кол-во спутников 3..12
-    var sats = packet[18];
-    // vout,                   # D9: Напряжение внешнего питания 1/100 B
-    var vout = packet[19] + packet[20]*256;
-    // vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
-    var vin = packet[21] + packet[22]*256;
-    // fsource,                # D11: Тип точки   Причина фиксации точки
-    var fsource = packet[23];
-    // 0,                      # D12: Флаги
-    var flags = packet[24] + packet[25]*256;
-    // 0,                      # D13: Резерв
-    var reserve1 = packet[26] + packet[27]*256 + packet[28]*256*256 + packet[29]*256*256*256;
-    // 0,                      # D14: Резерв
-    var reserve2 = packet[30];
-    // 0                       # D15: Локальная CRC (пока не используется)
-    var lcrc = packet[31];
-    return {
-      "dt": dt,
-      "lat": lat,
-      "lon": lon,
-      "speed": speed,
-      "course": course,
-      "sats": sats,
-      "vout": vout,
-      "vin": vin,
-      "fsource": fsource,
-      "flags": flags,
-      "reserve1": reserve1,
-      "reserve2": reserve2,
-      "lcrc": lcrc
-    };
-  } else {
-    return null;
-  }
-};
 
-var bingpsparse = function(array){
-    console.log('parse');
-    var track = [];
-    var points = [];
-    var bounds = null;
-    var min_hour = 1e15;
-    var max_hour = 0;
-    var hours = {};
-    for(var i=0; i<array.length; i+=32){
-        point = parse_onebin(array.subarray(i, i+32));
-        // console.log('point=', point);
-        if(point){
-            var gpoint = new google.maps.LatLng(point.lat, point.lon);
-            track.push(gpoint);
-            points.push(point);
-            if(bounds === null){
-                bounds = new google.maps.LatLngBounds(gpoint, gpoint);
-            } else {
-                bounds.extend(gpoint);
-            }
-
-            var hour = ~~(point.dt / 60);
-            if(hour < min_hour) min_hour = hour;
-            if(hour > max_hour) max_hour = hour;
-            hours[hour] = (hours[hour] || 0) + 1;
-        }
-    }
-    console.log('track length =', track.length);
-    // points_in_track =
-    $("#points_in_track").text(track.length);
-    if(path) {
-        path.setMap(null);
-        path = null;
-    }
-    path = new google.maps.Polyline({
-    path: track,
-    strokeColor: 'blue',
-    strokeOpacity: 1.0,
-    strokeWeigth: 3,
-    icons: [{
-            icon: {
-              path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-              strokeColor: 'blue',
-              strokeWeight: 2,
-              scale: 2
-            },
-            offset: '50px',
-            repeat: '100px'
-        }],
-    map: window.config.map
-    });
-    window.config.map.fitBounds(bounds);
-
-    // Построим шкалу
-
-
-    // Пока сгенерируем фальшивые данные
-    var start = 0;
-    var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
-        var stop = start + ~~(Math.random() * 500);
-        var point = {
-            counter: i+1,
-            move: (i%2) === 1,
-            start: start,
-            stop: stop
-        };
-        start = stop;
-        return point;
-    });
-    if(data[data.length-1].stop < 2500){
-        data[data.length-1].stop = 2500;
-    }
-    console.log("data=", data);
-
-
-
-    var grid = d3.select("#timeline svg");
-
-    // var chart = function(el){
-    //     console.log("el=", el);
-    //     // el.append("text");
-    //     el.append("svg:rect")
-    //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
-    //     // .attr("class", "move")
-    //     .attr("x", function(d) { return d.start; })
-    //     .attr("y", "18")
-    //     .attr("width", function(d) { return d.stop - d.start; })
-    //     .attr("height", "12");
-    // };
-
-    var days = grid.selectAll(".move")
-        .data(data);
-
-    // days.enter().append("g").call(chart);
-
-    // days.enter().append("svg:rect")
-    //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
-    //     // .attr("class", "move")
-    //     .attr("x", function(d) { return d.start; })
-    //     .attr("y", "18")
-    //     .attr("width", function(d) { return d.stop - d.start; })
-    //     .attr("height", "12");
-
-    // days.transition()
-    //     .duration(500)
-    //     // .style("opacity", 1)
-    //     .attr("x", function(d) { return d.start; })
-    //     .attr("width", function(d) { return d.stop - d.start; });
-
-    var g = days.enter().append("g")
-        .attr("class", function(d) { return "move " + (d.move?"run":"stop"); });
-    g.append("rect")
-        .attr("x", function(d) { return d.start; })
-        .attr("y", "16")
-        .attr("width", function(d) { return d.stop - d.start; })
-        .attr("height", "16");
-    g.append("text")
-        .attr("x", function(d) { return (d.stop + d.start) / 2; })
-        .attr("y", "28")
-        // .attr("dx", "0")
-        .attr("text-anchor", "middle")
-        .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
-
-    days.select("rect").transition().duration(500)
-        .attr("x", function(d) { return d.start; })
-        .attr("width", function(d) { return d.stop - d.start; });
-
-    days.select("text").transition().duration(500)
-        .attr("x", function(d) { return (d.stop + d.start)/2; });
-        // .attr("width", function(d) { return d.stop - d.start; });
-
-    days.exit().remove();
-
-
-    // var grid = d3.select("#timeline svg")
-    //     .attr("width", "" + (max_hour-min_hour+1)*24 + "px");
-        // .append("svg")
-        // .attr("height", "46px")
-        // .attr("class", "chart");
-
-
-    // console.log("data=", data, max_hour, min_hour, hours);
-
-    // var days = grid.selectAll(".day")
-    //     .data(data);
-
-    //     days.enter().append("svg:rect")
-    //     .attr("class", "day")
-    //     .attr("x", function(d) { return d.i * 24; })
-    //     .attr("y", "0")
-    //     .attr("width", "22px")
-    //     .attr("height", "22px")
-    //     .on('mouseover', function() {
-    //         d3.select(this)
-    //             .style('fill', '#0F0');
-    //     })
-    //     .on('mouseout', function() {
-    //         d3.select(this)
-    //             .style('fill', '#FFF');
-    //     })
-    //     .on('click', function() {
-    //         console.log(d3.select(this));
-    //     })
-    //     .style("fill", '#FFF')
-    //     .style("stroke", '#555');
-
-    //     days.exit().remove();
-
-};
 angular.module('reports', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
