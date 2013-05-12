@@ -378,11 +378,13 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
         var begin_marker = null,
             end_marker = null;
 
-
+//        if(scope.config.autobounds){
         function animateCircle() {
             var count = 0;
             offsetId = window.setInterval(function() {
-                if(path == null) return;
+                if(path === null) return;                // FIXME: Не самое элегантное решение
+                if(!scope.config.animation) return;     // FIXME: Не самое элегантное решение
+
                 count = (count + 1) % 50;
 
                 var icons = path.get('icons');
@@ -414,7 +416,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
                 map: map
             });
             // console.log("scope.autobounds=", scope.autobounds);
-            if((scope.autobounds === true) || (scope.autobounds === "true")){
+            if(scope.config.autobounds){
                 map.fitBounds(data.bounds);
             }
 
@@ -463,7 +465,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
         //template: '<div>MAP</div>',
         scope: {
             track: "=",
-            autobounds: "@"
+            config: "="
         },
         link: link/*,
         controller: ["$scope", "Connect", function($scope, Connect){
@@ -2136,14 +2138,51 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         if($scope.zoomlist >= 3) $scope.zoomlist = 0;
     };
 
-    $scope.autobounds = true;
-    $scope.switchAutobounds = function(){
-        $scope.autobounds = !$scope.autobounds;
-        console.log($scope.autobounds);
+    $scope.mapconfig = {
+        autobounds: true,   // Автоматическая центровка трека при загрузке
+        animation: false,   // Анимация направления трека
+        numbers: true       // Нумерация стоянок/остановок
     };
-    // fake_timeline();
 
-}]);
+    $scope.showconfig = true;
+    // $scope.toggleShowConfig = function(){
+    //     $scope.showconfig = !$scope.showconfig;
+    //     console.log($scope.showconfig);
+    // };
+
+}])
+
+.directive("configMapItem", function(){
+    return{
+        restrict: 'EA',
+        scope: {
+            item: "=",
+            iconOn: "@",
+            iconOff: "@"
+         },
+        replace: true,
+        transclude: true,
+        template: '<li ng-click="toggleValue()"><span></span><span ng-transclude></span></li>',
+        link: function(scope, element, attrs) {
+            var icon = element[0].querySelector('span');
+            scope.toggleValue = function(){
+                console.log("toggle", scope.item, scope);
+                scope.item = !scope.item;
+            };
+            scope.$watch("item", function(item){
+                icon.className = "icon-" + (item?scope.iconOn:scope.iconOff) + " icon-large";
+                if(item){
+                    element.addClass("on");
+                    element.removeClass("off");
+                } else {
+                    element.addClass("off");
+                    element.removeClass("on");
+                }
+                // element[0].class =
+            });
+        }
+    };
+});
 
 
 angular.module('reports', ['resources.account'])
