@@ -1,4 +1,4 @@
-<div gmap="main"></div>
+<div gmap="main" track="track" autobounds="{{autobounds}}"></div>
 <div class="map-control">
     <ul class="map-control-tools">
         <li ng-click="doFilter()"><span class="icon-filter icon-large" title="Фильтр"></span></li>
@@ -14,15 +14,13 @@
 
 </div>
 
-<div class="map-timeline" id="timeline">
-    <svg width="2500px" height="46px" class="timeline"></svg>
-    <!-- <div  style="width: 40000px;">uu</div> -->
-</div>
+<div class="map-timeline" id="timeline" data="timeline" timeline></div>
 
 <div class="map-toolbar">
     Панель инструментов
+    <span ng-class="{true:'icon-unlock', false:'icon-lock'}[autobounds]" ng-click="switchAutobounds()"></span>
     <button ng-click="hideTrack()">Скрыть трек</button>
-    Информация: точек в треке: <span id="points_in_track">?</span>
+    Информация: точек в треке: {{points}}
 </div>
 
 
