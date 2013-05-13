@@ -1306,6 +1306,7 @@ angular.module('resources.geogps', [])
         console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
         $http({
             method: 'GET',
+            cache: false,
             withCredentials: SERVER.api_withCredentials,
             url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto) + '?rand=' + (Math.random()*1e18)
         }).success(function(data){
@@ -1347,6 +1348,7 @@ angular.module('resources.geogps', [])
         // GeoGPS.hideTrack();
         $http({
             method: 'GET',
+            cache: false,
             withCredentials: SERVER.api_withCredentials,
             responseType: 'arraybuffer',
             url: SERVER.api +

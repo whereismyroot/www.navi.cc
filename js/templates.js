@@ -217,37 +217,37 @@ angular.module("templates/header.tpl.html", []).run(["$templateCache", function(
     "                    <li ng-class=\"{active:isNavbarActive('logs')}\">" +
     "                        <a href=\"#/logs\">" +
     "                            <i class=\"icon-eye-open\"></i>" +
-    "                            <span class=\"wide\">События</span>" +
+    "                            <span class=\"wide\" translate>Logs</span>" +
     "                        </a>" +
     "                    </li>" +
     "                    <li ng-class=\"{active:isNavbarActive('reports')}\">" +
     "                        <a href=\"#/reports\">" +
     "                            <i class=\"icon-table\"></i>" +
-    "                            <span class=\"wide\">Отчеты</span>" +
+    "                            <span class=\"wide\" translate>Reports</span>" +
     "                        </a>" +
     "                    </li>" +
     "                    <li ng-class=\"{active:isNavbarActive('gps')}\">" +
     "                        <a href=\"#/gps\">" +
     "                            <i class=\"icon-film\"></i>" +
-    "                            <span class=\"wide\">Экспорт GPS</span>" +
+    "                            <span class=\"wide\" translate>Export GPS</span>" +
     "                        </a>" +
     "                    </li>" +
     "                    <li ng-class=\"{active:isNavbarActive('config')}\">" +
     "                        <a href=\"#/config\">" +
     "                            <i class=\"icon-cogs\"></i>" +
-    "                            <span class=\"wide\">Настройки</span>" +
+    "                            <span class=\"wide\" translate>Config</span>" +
     "                        </a>" +
     "                    </li>" +
     "                    <li ng-class=\"{active:isNavbarActive('help')}\">" +
     "                        <a href=\"#/help\">" +
     "                            <i class=\"icon-medkit\"></i>" +
-    "                            <span class=\"wide\">Помощь</span>" +
+    "                            <span class=\"wide\" translate>Help</span>" +
     "                        </a>" +
     "                    </li>" +
     "                    <li ng-class=\"{active:isNavbarActive('login')}\">" +
     "                        <a href=\"#/login\">" +
     "                            <i class=\"icon-off\"></i>" +
-    "                            <span class=\"wide\">Пользователь</span>" +
+    "                            <span class=\"wide\" translate>User</span>" +
     "                        </a>" +
     "                    </li>" +
     "" +
