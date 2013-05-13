@@ -1,3 +1,43 @@
+angular.module('i18n', ['i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
+.config(['$translateProvider', function ($translateProvider) {
+
+    console.log(["$translateProvider", $translateProvider, $translateProvider.translations()]);
+
+    // All other langs
+    // $translateProvider.translations({
+    //     "error_msg": "Ууууупс. Что-то произошло. Попробуйте перейти по одной из следующих ссылок:",
+
+    //     // Login page
+    //     "enter": "Вход",
+    //     "enter_help": "Введите имя пользователя и пароль своей учетной записи.",
+    //     "enter_comment": "Чтобы пользоваться сервисом необходимо авторизоваться в системе.",
+    //     "enter_comment2": "Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.",
+    //     "user_name": "Имя пользователя",
+    //     "user_password": "Пароль",
+    //     "enter_cmd": "Войти",
+    //     "register_cmd": "Зарегестритоваться",
+
+    //     'SIMPLE': 'Простое значение',
+    //     'COMPLEX': 'value равно {{value}}.',
+
+    //     'MAP': 'Карта',
+
+    //     // Панель настроек карты
+    //     'AUTO_BOUND_TRACK': 'Автоматически центровать трек',
+    //     'ANIMATION_DIR': 'Анимация направления',
+    //     'STOP_NUMBERS': 'Нумерация остановок/стоянок'
+    // });
+
+    var lang = localStorage.getItem('language');
+    if((lang === null) || (lang === "undefined") || !(lang in $translateProvider.translations())){
+        lang = 'ru_RU';
+        localStorage.setItem('language', lang);
+    }
+    $translateProvider.uses(lang);
+    // $translateProvider.rememberLanguage(true);   // Not worked yet
+}]);
+
+
 (function(window, I18n){
 'use strict';
 
@@ -17,6 +57,43 @@ window.console.log('i18n.en init', I18n);
 
 })(this, I18n);
 
+
+angular.module('i18n.en', ['ngTranslate'])
+.config(['$translateProvider', function ($translateProvider) {
+
+    // Simply register translation table as object hash
+    $translateProvider.translations('en_EN', {
+        "translate": "Ошибка описания",
+        "error_msg": "Ууууупс. Что-то произошло. Попробуйте перейти по одной из следующих ссылок:",
+
+        // Login page
+        "enter": "Enter",
+        "enter_help": "Enter the user name and password of your account.",
+        "enter_comment": "To use the service to log into the system.",
+        "enter_comment2": "To create a new account, make up a name and password, your account is automatically created.",
+        "user_name": "User name",
+        "user_password": "Password",
+        "enter_cmd": "Confirm",
+        "register_cmd": "Register",
+        "enter_as": "You enter as",
+
+        'SIMPLE': 'Простое значение',
+        'COMPLEX': 'value равно "value".',
+
+        'Map': 'Map',
+        "Logs": "Logs",
+        "Reports": "Reports",
+        "Export GPS": "Export GPS",
+        "Config": "Config",
+        "Help": "Help",
+        "User": "User",
+
+        'AUTO_BOUND_TRACK': 'Automatic bound track',
+        'ANIMATION_DIR': 'Animation direction',
+        'STOP_NUMBERS': 'Numbering of stops / parks'
+    });
+}]);
+
 (function(window, I18n){
 'use strict';
 
@@ -34,6 +111,39 @@ I18n.translations.pl = {
 
 window.console.log('i18n.pl init', I18n);
 })(this, I18n);
+
+angular.module('i18n.pl', ['ngTranslate'])
+.config(['$translateProvider', function ($translateProvider) {
+
+    // Simply register translation table as object hash
+    $translateProvider.translations('pl_PL', {
+        "translate": "Błąd Opis.",
+        "error_msg": "Uuuuups. Coś się stało. Użyj jednego z poniższych linków:",
+
+        // Login page
+        "enter": "Entrance",
+        "enter_help": "Wpisz nazwę użytkownika i hasło do swojego konta.",
+        "enter_comment": "Aby skorzystać z usługi, aby zalogować się do systemu.",
+        "enter_comment2": "Aby utworzyć nowe konto, uzupełnić nazwę i hasło, konto zostanie utworzone automatycznie.",
+        "user_name": "Nazwa użytkownika",
+        "user_password": "Hasło",
+        "enter_cmd": "Wpisać",
+        "register_cmd": "Zaregestritovatsya",
+        "enter_as": "Jesteś zalogowany jako",
+
+        'Map': 'Map',
+        "Logs": "Wydarzenia",
+        "Reports": "Raporty",
+        "Export GPS": "Eksport GPS",
+        "Config": "Ustawienia",
+        "Help": "Pomoc",
+        "User": "Użytkownik",
+
+        'AUTO_BOUND_TRACK': 'Automatycznie wyśrodkować utwór',
+        'ANIMATION_DIR': 'Kierunek Animacja',
+        'STOP_NUMBERS': 'Numeracja przystanków / parki'
+    });
+}]);
 
 (function(window, I18n){
 'use strict';
@@ -53,6 +163,44 @@ I18n.translations.ru = {
 window.console.log('i18n.ru init', I18n);
 })(this, I18n);
 
+
+angular.module('i18n.ru', ['ngTranslate'])
+.config(['$translateProvider', function ($translateProvider) {
+
+    // Simply register translation table as object hash
+    $translateProvider.translations('ru_RU', {
+        "translate": "Ошибка описания",
+        "error_msg": "Ууууупс. Что-то произошло. Попробуйте перейти по одной из следующих ссылок:",
+
+        // Login page
+        "enter": "Вход",
+        "enter_help": "Введите имя пользователя и пароль своей учетной записи.",
+        "enter_comment": "Чтобы пользоваться сервисом необходимо авторизоваться в системе.",
+        "enter_comment2": "Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.",
+        "user_name": "Имя пользователя",
+        "user_password": "Пароль",
+        "enter_cmd": "Войти",
+        "register_cmd": "Зарегестритоваться",
+        "enter_as": "Вы вошли как",
+
+        'SIMPLE': 'Простое значение',
+        'COMPLEX': 'value равно {{value}}.',
+
+        "Map": 'Карта',
+        "Logs": "События",
+        "Reports": "Отчеты",
+        "Export GPS": "Экспорт GPS",
+        "Config": "Настройки",
+        "Help": "Помощь",
+        "User": "Пользователь",
+
+        // Панель настроек карты
+        'AUTO_BOUND_TRACK': 'Автоматически центровать трек',
+        'ANIMATION_DIR': 'Анимация направления движения',
+        'STOP_NUMBERS': 'Нумерация остановок / стоянок'
+    });
+}]);
+
 (function(window, I18n){
 'use strict';
 
@@ -71,30 +219,112 @@ I18n.translations.ua = {
 //window.console.log('i18n.ua init', I18n);
 })(this, I18n);
 
-angular.module('directives.language', ['services.i18n'])
+angular.module('i18n.ua', ['ngTranslate'])
+.config(['$translateProvider', function ($translateProvider) {
 
-.directive('language', ['i18n', function(i18n) {
+    // Simply register translation table as object hash
+    $translateProvider.translations('ua_UA', {
+        "translate": "Помилка опису",
+        "error_msg": "Ууууупс. Щось сталося. Спробуйте перейти по одній з наступних посилань:",
+
+        // Login page
+        "enter": "Вхiд",
+        "enter_help": "Введіть ім'я користувача і пароль свого облікового запису.",
+        "enter_comment": "Щоб користуватися сервісом необхідно авторизуватися в системі.",
+        "enter_comment2": "Для створення нового облікового запису придумайте ім'я користувача та пароль, обліковий запис буде створена автоматично.",
+        "user_name": "Ім'я користувача.",
+        "user_password": "Пароль",
+        "enter_cmd": "Увійти",
+        "register_cmd": "Зарегестрітоваться.",
+        "enter_as": "Ви увійшли як",
+
+        'SIMPLE': 'Простое значение',
+        'COMPLEX': 'value равно "value".',
+
+        'Map': 'Мапа',
+        "Logs": "Події",
+        "Reports": "Звіти",
+        "Export GPS": "Експорт GPS",
+        "Config": "Налаштування",
+        "Help": "Допомога",
+        "User": "Користувач",
+
+        'AUTO_BOUND_TRACK': 'Автоматично центрувати трек',
+        'ANIMATION_DIR': 'Анімація напрямку руху',
+        'STOP_NUMBERS': 'Нумерація зупинок / стоянок'
+    });
+}]);
+
+angular.module('directives.language', ['i18n'])
+
+.directive('chooselang', ['$translate', function($translate) {
     return {
-        restrict: 'A',
+        restrict: 'E',
         replace: true,
         template: '<div class="btn-group" data-toggle="buttons-radio"><button type="button" class="btn" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
+        // template:   '<select ng-model="lang">'+
+        //             '<option value="">Выберите язык</option>'+
+        //             '<option ng-repeat="l in langs" value="{{l.lang}}">{{l.title}}</option>'+
+        //             '</select>',
+                    // '{{ lang }}'
         link: function(scope, element, attrs) {
+            console.log('chooselang.link');
             scope.langs = [
-                {code: 'ru', text: 'RU', title: "Русский"},
-                {code: 'en', text: 'EN', title: "English"},
-                {code: 'ua', text: 'UA', title: "Українська"},
-                {code: 'pl', text: 'PL', title: "Polski"}
+                {code: 'ru_RU', text: 'RU', title: "Русский"},
+                {code: 'en_EN', text: 'EN', title: "English"},
+                {code: 'ua_UA', text: 'UA', title: "Українська"},
+                {code: 'pl_PL', text: 'PL', title: "Polski"}
             ];
-            scope.active = i18n.active;
-            scope.onSet = function(l){
-                i18n.set(l.code);
-                location.reload();
+            // scope.active = i18n.active;
+            // scope.onSet = function(l){
+            //     i18n.set(l.code);
+            //     location.reload();
+            // };
+            // console.log('language directive: link', scope, element, i18n);
+            // $scope.lang = "en_EN";
+            scope.active = $translate.uses();
+            // scope.lang = $translate.uses();
+            // scope.$watch("lang", function(lang){
+            //     // $log.warn("lang=", lang);
+            //     $translate.uses(lang);
+            //     localStorage.setItem('language', lang);
+            // });
+            scope.onSet = function(lang){
+                console.log("lang=", lang);
+                $translate.uses(lang.code);
+                localStorage.setItem('language', lang.code);
             };
-            console.log('language directive: link', scope, element, i18n);
+
         }
         //, controller: ["account", function(account){console.log("account=", account)}]
     };
 }]);
+
+
+// angular.module('directives.language', ['services.i18n'])
+
+// .directive('language', ['i18n', function(i18n) {
+//     return {
+//         restrict: 'A',
+//         replace: true,
+//         template: '<div class="btn-group" data-toggle="buttons-radio"><button type="button" class="btn" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
+//         link: function(scope, element, attrs) {
+//             scope.langs = [
+//                 {code: 'ru', text: 'RU', title: "Русский"},
+//                 {code: 'en', text: 'EN', title: "English"},
+//                 {code: 'ua', text: 'UA', title: "Українська"},
+//                 {code: 'pl', text: 'PL', title: "Polski"}
+//             ];
+//             scope.active = i18n.active;
+//             scope.onSet = function(l){
+//                 i18n.set(l.code);
+//                 location.reload();
+//             };
+//             console.log('language directive: link', scope, element, i18n);
+//         }
+//         //, controller: ["account", function(account){console.log("account=", account)}]
+//     };
+// }]);
 
 
 angular.module('directives.lists', [])
@@ -802,9 +1032,11 @@ angular.module('app.filters', [])
     };
 });
 
-angular.module('resources.account', ['services.i18nNotifications']);
+// angular.module('resources.account', ['services.i18nNotifications']);
+angular.module('resources.account', []);
 
-angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+// angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', function (SERVER, $http, $q, $timeout) {
 
   var Account = {
     'name': 'noname-noface-nonumber',
@@ -882,7 +1114,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
       Account.account = data.account;
       Account.isAuthenticated = true;
       if(data.result === "created") {
-        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
+        // i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
+        console.warning("TODO: Add notification here");
         //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
         //setTimeout(function(){location.reload();}, 3000);
       } else {
@@ -1386,85 +1619,86 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 
   return httpRequestTracker;
 }]);
-angular.module('services.i18n', [])
+// angular.module('services.i18n', [])
 
-.factory('i18n', ['$location', '$route', function($location, $route) {
-    var i18n = {
-        active: localStorage.getItem('language')
-    };
+// .factory('i18n', ['$location', '$route', function($location, $route) {
+//     var i18n = {
+//         active: localStorage.getItem('language')
+//     };
 
-    if(!i18n.active) {
-        i18n.active = 'ru';
-    }
+//     if(!i18n.active) {
+//         i18n.active = 'ru';
+//     }
 
-    //console.log('i18 default:', i18n.active);
-    //document.write('<script type="text/javascript" src="js/templates-en.js" id="templates"></script>');
+//     //console.log('i18 default:', i18n.active);
+//     //document.write('<script type="text/javascript" src="js/templates-en.js" id="templates"></script>');
 
-    i18n.set = function(code){
-        //console.log('i18n onSet', code, $location, $route);
-        localStorage.setItem('language', code);
-        i18n.active = code;
-        I18n.defaultLocale = i18n.active;
-        //$rootScope.$apply();
-        //$location.path($location.$$path);
-        //$route.reload();
-        //location.reload();
-    };
+//     i18n.set = function(code){
+//         //console.log('i18n onSet', code, $location, $route);
+//         localStorage.setItem('language', code);
+//         i18n.active = code;
+//         I18n.defaultLocale = i18n.active;
+//         //$rootScope.$apply();
+//         //$location.path($location.$$path);
+//         //$route.reload();
+//         //location.reload();
+//     };
 
-    I18n.defaultLocale = i18n.active;
+//     I18n.defaultLocale = i18n.active;
 
-    return i18n;
-}]);
+//     return i18n;
+// }]);
 
-angular.module('services.i18nNotifications', ['services.notifications', 'services.localizedMessages']);
-angular.module('services.i18nNotifications').factory('i18nNotifications', ['localizedMessages', 'notifications', function (localizedMessages, notifications) {
+// angular.module('services.i18nNotifications', ['services.notifications', 'services.localizedMessages']);
+// angular.module('services.i18nNotifications').factory('i18nNotifications', ['localizedMessages', 'notifications', function (localizedMessages, notifications) {
 
-  var prepareNotification = function(msgKey, type, interpolateParams, otherProperties) {
-     return angular.extend({
-       message: localizedMessages.get(msgKey, interpolateParams),
-       type: type
-     }, otherProperties);
-  };
+//   var prepareNotification = function(msgKey, type, interpolateParams, otherProperties) {
+//      return angular.extend({
+//        message: localizedMessages.get(msgKey, interpolateParams),
+//        type: type
+//      }, otherProperties);
+//   };
 
-  var I18nNotifications = {
-    pushSticky:function (msgKey, type, interpolateParams, otherProperties) {
-      console.log('pushSticky', msgKey, type, interpolateParams, otherProperties);
-      return notifications.pushSticky(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    pushForCurrentRoute:function (msgKey, type, interpolateParams, otherProperties) {
-      return notifications.pushForCurrentRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    pushForNextRoute:function (msgKey, type, interpolateParams, otherProperties) {
-      return notifications.pushForNextRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    getCurrent:function () {
-      return notifications.getCurrent();
-    },
-    remove:function (notification) {
-      return notifications.remove(notification);
-    }
-  };
+//   var I18nNotifications = {
+//     pushSticky:function (msgKey, type, interpolateParams, otherProperties) {
+//       console.log('pushSticky', msgKey, type, interpolateParams, otherProperties);
+//       return notifications.pushSticky(prepareNotification(msgKey, type, interpolateParams, otherProperties));
+//     },
+//     pushForCurrentRoute:function (msgKey, type, interpolateParams, otherProperties) {
+//       return notifications.pushForCurrentRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
+//     },
+//     pushForNextRoute:function (msgKey, type, interpolateParams, otherProperties) {
+//       return notifications.pushForNextRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
+//     },
+//     getCurrent:function () {
+//       return notifications.getCurrent();
+//     },
+//     remove:function (notification) {
+//       return notifications.remove(notification);
+//     }
+//   };
 
-  return I18nNotifications;
-}]);
-angular.module('services.localizedMessages', [])
-.factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
+//   return I18nNotifications;
+// }]);
+// angular.module('services.localizedMessages', [])
+// .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
-  var handleNotFound = function (msg, msgKey) {
-    return msg || '?' + msgKey + '?';
-  };
+//   var handleNotFound = function (msg, msgKey) {
+//     return msg || '?' + msgKey + '?';
+//   };
 
-  return {
-    get : function (msgKey, interpolateParams) {
-      var msg =  i18nmessages[msgKey];
-      if (msg) {
-        return $interpolate(msg)(interpolateParams);
-      } else {
-        return handleNotFound(msg, msgKey);
-      }
-    }
-  };
-}]);
+//   return {
+//     get : function (msgKey, interpolateParams) {
+//       var msg =  i18nmessages[msgKey];
+//       if (msg) {
+//         return $interpolate(msg)(interpolateParams);
+//       } else {
+//         return handleNotFound(msg, msgKey);
+//       }
+//     }
+//   };
+// }]);
+
 angular.module('services.notifications', []).factory('notifications', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
   var notifications = {
@@ -1540,10 +1774,12 @@ angular.module('app', [
   'reports',
   'config',
   'help',
-  'services.i18n',
-  'services.i18nNotifications',
-  'services.httpRequestTracker',
-  'templates']);
+  'i18n',
+  // 'services.i18n',
+  // 'services.i18nNotifications',
+  'services.httpRequestTracker'
+  // 'templates'
+]);
 
 
 var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
@@ -1562,15 +1798,15 @@ angular.module('app').constant('globals', {
 });
 
 //TODO: move those messages to a separate module
-angular.module('app').constant('I18N.MESSAGES', {
-  'errors.route.changeError':'Route change error',
-  'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
-  'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
-  'crud.user.save.error':"Something went wrong when saving a user...",
-  'login.error.notAuthorized':"Необходима авторизация чтобы пользоваться сервисом.",
-  'login.error.notAuthenticated':"Необходима авторизация чтобы пользоваться сервисом.",
-  'login.newUser':'Создана новая учетная запись {{name}}.'
-});
+// angular.module('app').constant('I18N.MESSAGES', {
+//   'errors.route.changeError':'Route change error',
+//   'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
+//   'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
+//   'crud.user.save.error':"Something went wrong when saving a user...",
+//   'login.error.notAuthorized':"Необходима авторизация чтобы пользоваться сервисом.",
+//   'login.error.notAuthenticated':"Необходима авторизация чтобы пользоваться сервисом.",
+//   'login.newUser':'Создана новая учетная запись {{name}}.'
+// });
 
 angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvider', 'SERVER', function ($routeProvider, $locationProvider, $httpProvider, SERVER) {
   console.log(['! App CONFIG !', $httpProvider, SERVER]);
@@ -1590,21 +1826,22 @@ angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
+// angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
+angular.module('app').controller('AppCtrl', ['$scope', '$location', function($scope, location) {
 //angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
-  console.log('app:AppCtrl', i18n);
-  $scope.i18n = i18n;
+  // console.log('app:AppCtrl', i18n);
+  // $scope.i18n = i18n;
 
-  $scope.notifications = i18nNotifications;
+  // $scope.notifications = i18nNotifications;
   $scope.location = location;
 
-  $scope.removeNotification = function (notification) {
-    i18nNotifications.remove(notification);
-  };
+  // $scope.removeNotification = function (notification) {
+  //   i18nNotifications.remove(notification);
+  // };
 
-  $scope.$on('$routeChangeError', function(event, current, previous, rejection){
-    i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
-  });
+  // $scope.$on('$routeChangeError', function(event, current, previous, rejection){
+  //   i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
+  // });
 }]);
 
 //angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'notifications', 'httpRequestTracker', function ($scope, $location, $route, notifications, httpRequestTracker) {
@@ -1882,7 +2119,8 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
 .config(['$routeProvider', function ($routeProvider) {
 
   $routeProvider.when('/login', {
-    templateUrl:'login.tpl.html',
+    // templateUrl:'login.tpl.html',
+    templateUrl:'templates/login.tpl.html',
     controller:'LoginViewCtrl',
     resolve:{
       account:['Account', function (Account) {
@@ -2044,7 +2282,7 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   $("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps'])
+angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/map', {
@@ -2059,7 +2297,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     });
 }])
 
-.controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', function ($scope, $location, account, GeoGPS) {
+.controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', '$log', function ($scope, $location, account, GeoGPS, $log) {
     $scope.account = account;
     $scope.track = null;
 
@@ -2075,6 +2313,9 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         var tz = (new Date()).getTimezoneOffset()/60;
         var hourfrom = date.valueOf() / 1000 / 3600 + tz;
         // console.log(["datepicker: on changeDate", ev, date]);
+        // $log.warn("datepicker:changeDate. Bad path point inn the $scope.path array ");
+        // $log.error("datepicker:changeDate. Bad path point inn the $scope.path array ");
+        $log.info("datepicker:changeDate.", $scope);
         $scope.$apply(function(){   // Без этого не будет индикации процесса загрузки
 
             GeoGPS.getTrack(hourfrom, hourfrom+23)
@@ -2149,7 +2390,6 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     //     $scope.showconfig = !$scope.showconfig;
     //     console.log($scope.showconfig);
     // };
-
 }])
 
 .directive("configMapItem", function(){
