@@ -1,0 +1,42 @@
+
+<div>
+  <div ng-class="{hidden: account.isAuthenticated}">
+    <h4 translate>enter</h4>
+    <chooselang></chooselang>
+    <div translate>enter_help<br></div>
+    <div translate class="wide">enter_comment<br></div>
+    <form name="form" ng-submit="onLogin(user.name, user.password)" style="width: auto">
+      <div class="input-prepend"><span class="add-on"><i class="icon-user"></i></span>
+        <input type="text" placeholder="{{'user_name' | translate}}" ng-model="user.name" required autofocus>
+      </div><br>
+      <div class="input-prepend"><span class="add-on"><i class="icon-key"></i></span>
+        <input type="password" placeholder="{{'user_password' | translate}}" ng-model="user.password" required>
+      </div><br>
+      <button ng-click="onLogin(user.name, user.password)" ng-disabled="form.$invalid" translate class="btn btn-primary login">enter_cmd</button>
+      <button ng-click="onRegister(user.name, user.password)" ng-disabled="form.$invalid" translate class="btn login">register_cmd</button>
+    </form>
+    <div translate class="wide">enter_comment2</div>
+  </div>
+  <div ng-class="{hidden: !account.isAuthenticated}">
+    <h4>{{'enter_as' | translate:{value: account.account.title} }}</h4>
+    <dl class="dl-horizontal wide">
+      <dt>Язык<br> (Language, Мова, Język)</dt>
+      <dd>
+        <chooselang></chooselang>
+      </dd><br>
+      <dt translate>Display name</dt>
+      <dd contenteditable="true" ng-model="account.account.name" ng-change="onChange(account.account.name)"></dd>
+      <dt translate>Register date</dt>
+      <dd>{{ account.account.date | fromnow }}</dd>
+      <dt translate>Administrator</dt>
+      <dd>{{ account.account.admin | yesno }}</dd>
+      <dt translate>Observed systems</dt>
+      <dd>{{ account.account.skeys.length }}</dd>
+      <dt title="{{ 'for_recovery' | translate}}">email</dt>
+      <dd>{{ account.account.email }}</dd>
+    </dl>
+    <div style="text-align: center;">
+      <button ng-click="onLogout();" class="btn btn-warning"><i class="icon-off"></i>Выйти из учетной записи</button>
+    </div>
+  </div>
+</div>

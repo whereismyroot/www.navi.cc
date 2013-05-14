@@ -836,6 +836,12 @@ span[ng-click]:hover {
   background-color: #eee;
   cursor: pointer;
 }
+.dl-horizontal.wide dt {
+  width: 230px;
+}
+.dl-horizontal.wide dd {
+  margin-left: 240px;
+}
 /*div[gmap] {
     width: 100%;
     height: 100%;
@@ -905,6 +911,8 @@ ul.map-control-tools li:hover {
   position: absolute;
   left: 0;
   right: 220px;
+  padding: 0;
+  margin: 0;
   bottom: 0px;
   height: 48px;
   border: 1px solid grey;
@@ -912,25 +920,32 @@ ul.map-control-tools li:hover {
   overflow-x: scroll;
   overflow-y: hidden;
 }
-.map-timeline g.run {
+.map-timeline svg {
+  float: left;
+  padding: 0;
+  margin: 0;
+}
+.map-timeline svg g.run {
   cursor: pointer;
 }
-.map-timeline g.run rect {
+.map-timeline svg g.run rect {
   fill: #2CF306;
   opacity: 0.9;
 }
-.map-timeline g.run:hover rect {
+.map-timeline svg g.run:hover rect {
   fill: #3CFF26;
+  opacity: 1.0;
 }
-.map-timeline g.stop {
+.map-timeline svg g.stop {
   cursor: pointer;
 }
-.map-timeline g.stop rect {
+.map-timeline svg g.stop rect {
   fill: #F57474;
   opacity: 0.9;
 }
-.map-timeline g.stop:hover rect {
+.map-timeline svg g.stop:hover rect {
   fill: #FF9494;
+  opacity: 1.0;
 }
 ul.mapsyslist {
   list-style-type: none;

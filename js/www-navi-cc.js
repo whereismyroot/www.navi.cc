@@ -64,7 +64,7 @@ angular.module('i18n.en', ['ngTranslate'])
     // Simply register translation table as object hash
     $translateProvider.translations('en_EN', {
         "translate": "Ошибка описания",
-        "error_msg": "Ууууупс. Что-то произошло. Попробуйте перейти по одной из следующих ссылок:",
+        "error_msg": "Ooooops. Something happened. Try using one of the following links:",
 
         // Login page
         "enter": "Enter",
@@ -75,11 +75,14 @@ angular.module('i18n.en', ['ngTranslate'])
         "user_password": "Password",
         "enter_cmd": "Confirm",
         "register_cmd": "Register",
-        "enter_as": "You enter as",
+        "enter_as": "You enter as {{ value }}",
+        "Display name": "Display name",
+        "Register date": "Register date",
+        "Administrator": "Administrator",
+        "Observed systems": "Observed systems",
+        "for_recovery": "To recover your password",
 
-        'SIMPLE': 'Простое значение',
-        'COMPLEX': 'value равно "value".',
-
+        "Login": 'Login',
         'Map': 'Map',
         "Logs": "Logs",
         "Reports": "Reports",
@@ -87,6 +90,11 @@ angular.module('i18n.en', ['ngTranslate'])
         "Config": "Config",
         "Help": "Help",
         "User": "User",
+
+        // Map
+        "Display Settings": "Display Settings",
+        "Hide track": "Hide track",
+        "points_in_track": "Points in track: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Automatic bound track',
         'ANIMATION_DIR': 'Animation direction',
@@ -129,15 +137,26 @@ angular.module('i18n.pl', ['ngTranslate'])
         "user_password": "Hasło",
         "enter_cmd": "Wpisać",
         "register_cmd": "Zaregestritovatsya",
-        "enter_as": "Jesteś zalogowany jako",
+        "enter_as": "Jesteś zalogowany jako {{ value }}",
+        "Display name": "Wyświetla nazwę",
+        "Register date": "Data rejestracji",
+        "Administrator": "Administrator",
+        "Observed systems": "Obserwacji systemów",
+        "for_recovery": "Aby odzyskać hasło",
 
-        'Map': 'Map',
+        "Login": "Zaloguj się",
+        "Map": "Map",
         "Logs": "Wydarzenia",
         "Reports": "Raporty",
         "Export GPS": "Eksport GPS",
         "Config": "Ustawienia",
         "Help": "Pomoc",
         "User": "Użytkownik",
+
+        // Map
+        "Display Settings": "Ustawienia ekranu",
+        "Hide track": "Ukryj utwór",
+        "points_in_track": "Punkty w utworu: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Automatycznie wyśrodkować utwór',
         'ANIMATION_DIR': 'Kierunek Animacja',
@@ -181,11 +200,14 @@ angular.module('i18n.ru', ['ngTranslate'])
         "user_password": "Пароль",
         "enter_cmd": "Войти",
         "register_cmd": "Зарегестритоваться",
-        "enter_as": "Вы вошли как",
+        "enter_as": "Вы вошли как {{ value }}",
+        "Display name": "Отображаемое имя",
+        "Register date": "Дата регистрации",
+        "Administrator": "Администратор",
+        "Observed systems": "Наблюдаемых систем",
+        "for_recovery": "Для восстановления пароля",
 
-        'SIMPLE': 'Простое значение',
-        'COMPLEX': 'value равно {{value}}.',
-
+        "Login": 'Вход',
         "Map": 'Карта',
         "Logs": "События",
         "Reports": "Отчеты",
@@ -193,6 +215,11 @@ angular.module('i18n.ru', ['ngTranslate'])
         "Config": "Настройки",
         "Help": "Помощь",
         "User": "Пользователь",
+
+        // Карта
+        "Display Settings": "Настройки отображения",
+        "Hide track": "Скрыть трек",
+        "points_in_track": "Точек в треке: {{value}}",
 
         // Панель настроек карты
         'AUTO_BOUND_TRACK': 'Автоматически центровать трек',
@@ -236,11 +263,14 @@ angular.module('i18n.ua', ['ngTranslate'])
         "user_password": "Пароль",
         "enter_cmd": "Увійти",
         "register_cmd": "Зарегестрітоваться.",
-        "enter_as": "Ви увійшли як",
+        "enter_as": "Ви увійшли як {{ value }}",
+        "Display name": "Екранне ім'я",
+        "Register date": "Дата реєстрації",
+        "Administrator": "Адміністратор",
+        "Observed systems": "Спостережуваних систем",
+        "for_recovery": "Для відновлення паролю",
 
-        'SIMPLE': 'Простое значение',
-        'COMPLEX': 'value равно "value".',
-
+        "Login": 'Вхiд',
         'Map': 'Мапа',
         "Logs": "Події",
         "Reports": "Звіти",
@@ -248,6 +278,11 @@ angular.module('i18n.ua', ['ngTranslate'])
         "Config": "Налаштування",
         "Help": "Допомога",
         "User": "Користувач",
+
+        // Map
+        "Display Settings": "Налаштування відображення",
+        "Hide track": "Приховати трек",
+        "points_in_track": "Точок в треку: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Автоматично центрувати трек',
         'ANIMATION_DIR': 'Анімація напрямку руху',
@@ -995,7 +1030,7 @@ angular.module('directives.timeline', [])
         scope: {
             data: "="
         },
-        template: '<svg width="2500px" height="46px" class="timeline"></svg>',
+        template: '<svg width="2500px" height="33px" class="timeline"></svg>',
         link: link
     };
 }]);
@@ -2067,7 +2102,7 @@ angular.module('error', [])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/error', {
-    templateUrl:'templates/en/error.tpl.html',
+    templateUrl:'templates/error/error.tpl.html',
     controller:'ErrorCtrl'
   });
 
@@ -2116,13 +2151,13 @@ angular.module('help', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'directives.language'])
+angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
 
   $routeProvider.when('/login', {
     // templateUrl:'login.tpl.html',
-    templateUrl:'templates/login.tpl.html',
+    templateUrl:'templates/login/login.tpl.html',
     controller:'LoginViewCtrl',
     resolve:{
       account:['Account', function (Account) {
@@ -2142,6 +2177,8 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
       }]
     }
   });
+
+  $routeProvider.otherwise({ redirectTo: '/error' });
 
 }])
 
@@ -2387,7 +2424,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         numbers: true       // Нумерация стоянок/остановок
     };
 
-    $scope.showconfig = true;
+    $scope.showconfig = false;
     // $scope.toggleShowConfig = function(){
     //     $scope.showconfig = !$scope.showconfig;
     //     console.log($scope.showconfig);

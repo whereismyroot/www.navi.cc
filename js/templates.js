@@ -1,4 +1,4 @@
-angular.module('templates', ['templates/config/config.tpl.html', 'templates/config/data/data.tpl.html', 'templates/config/params/params.tpl.html', 'templates/error.tpl.html', 'templates/gps/gps.tpl.html', 'templates/header.tpl.html', 'templates/help/help.tpl.html', 'templates/login.tpl.html', 'templates/login/login-orig.tpl.html', 'templates/login/toolbar.tpl.html', 'templates/logs/logs.tpl.html', 'templates/map/map.tpl.html', 'templates/map/mapsysitem.tpl.html', 'templates/notifications.tpl.html', 'templates/reports/reports.tpl.html']);
+angular.module('templates', ['templates/config/config.tpl.html', 'templates/config/data/data.tpl.html', 'templates/config/params/params.tpl.html', 'templates/error/error.tpl.html', 'templates/gps/gps.tpl.html', 'templates/header.tpl.html', 'templates/help/help.tpl.html', 'templates/login/login-orig.tpl.html', 'templates/login/login.tpl.html', 'templates/login/toolbar.tpl.html', 'templates/logs/logs.tpl.html', 'templates/map/map.tpl.html', 'templates/map/mapsysitem.tpl.html', 'templates/notifications.tpl.html', 'templates/reports/reports.tpl.html']);
 
 angular.module("templates/config/config.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/config/config.tpl.html",
@@ -181,12 +181,12 @@ angular.module("templates/config/params/params.tpl.html", []).run(["$templateCac
     "</div>");
 }]);
 
-angular.module("templates/error.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/error.tpl.html",
+angular.module("templates/error/error.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/error/error.tpl.html",
     "" +
     "<div translate>error_msg</div>" +
     "<ul class=\"unstyled\">" +
-    "  <li><a href=\"#/login\" class=\"btn\">Login</a><a href=\"#/map\" class=\"btn\">Map</a></li>" +
+    "  <li><a href=\"#/login\" translate class=\"btn\">Login</a><a href=\"#/map\" translate class=\"btn\">Map</a></li>" +
     "</ul>");
 }]);
 
@@ -278,52 +278,6 @@ angular.module("templates/help/help.tpl.html", []).run(["$templateCache", functi
     "");
 }]);
 
-angular.module("templates/login.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("templates/login.tpl.html",
-    "" +
-    "<div>" +
-    "  <div ng-class=\"{hidden: account.isAuthenticated}\">" +
-    "    <h4 translate>enter</h4>" +
-    "    <chooselang></chooselang>" +
-    "    <div translate>enter_help<br></div>" +
-    "    <div translate class=\"wide\">enter_comment<br></div>" +
-    "    <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
-    "      <div class=\"input-prepend\"><span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
-    "        <input type=\"text\" placeholder=\"{{'user_name' | translate}}\" ng-model=\"user.name\" required autofocus>" +
-    "      </div><br>" +
-    "      <div class=\"input-prepend\"><span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
-    "        <input type=\"password\" placeholder=\"{{'user_password' | translate}}\" ng-model=\"user.password\" required>" +
-    "      </div><br>" +
-    "      <button ng-click=\"onLogin(user.name, user.password)\" ng-disabled=\"form.$invalid\" translate class=\"btn btn-primary login\">enter_cmd</button>" +
-    "      <button ng-click=\"onRegister(user.name, user.password)\" ng-disabled=\"form.$invalid\" translate class=\"btn login\">register_cmd</button>" +
-    "    </form>" +
-    "    <div translate class=\"wide\">enter_comment2</div>" +
-    "  </div>" +
-    "  <div ng-class=\"{hidden: !account.isAuthenticated}\">" +
-    "    <h4 translate>enter_as<i>{{ account.account.title }}</i></h4>" +
-    "    <dl class=\"dl-horizontal\">" +
-    "      <dt>Язык (language)</dt>" +
-    "      <dd>" +
-    "        <chooselang></chooselang>" +
-    "      </dd>" +
-    "      <dt>Имя входа</dt>" +
-    "      <dd contenteditable=\"true\" ng-model=\"account.account.name\" ng-change=\"onChange(account.account.name)\"></dd>" +
-    "      <dt>Дата регистрации</dt>" +
-    "      <dd>{{ account.account.date | fromnow }}</dd>" +
-    "      <dt>Администратор</dt>" +
-    "      <dd>{{ account.account.admin | yesno }}</dd>" +
-    "      <dt>Наблюдаемых систем</dt>" +
-    "      <dd>{{ account.account.skeys.length }}</dd>" +
-    "      <dt title=\"Для восстановления пароля\">email</dt>" +
-    "      <dd>{{ account.account.email }}</dd>" +
-    "    </dl>" +
-    "    <div style=\"text-align: center;\">" +
-    "      <button ng-click=\"onLogout();\" class=\"btn btn-warning\"><i class=\"icon-off\"></i>Выйти из учетной записи</button>" +
-    "    </div>" +
-    "  </div>" +
-    "</div>");
-}]);
-
 angular.module("templates/login/login-orig.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/login/login-orig.tpl.html",
     "<div modal=\"showLoginForm\" close=\"cancelLogin()\">" +
@@ -348,6 +302,52 @@ angular.module("templates/login/login-orig.tpl.html", []).run(["$templateCache",
     "    </div>" +
     "</div>" +
     "");
+}]);
+
+angular.module("templates/login/login.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/login/login.tpl.html",
+    "" +
+    "<div>" +
+    "  <div ng-class=\"{hidden: account.isAuthenticated}\">" +
+    "    <h4 translate>enter</h4>" +
+    "    <chooselang></chooselang>" +
+    "    <div translate>enter_help<br></div>" +
+    "    <div translate class=\"wide\">enter_comment<br></div>" +
+    "    <form name=\"form\" ng-submit=\"onLogin(user.name, user.password)\" style=\"width: auto\">" +
+    "      <div class=\"input-prepend\"><span class=\"add-on\"><i class=\"icon-user\"></i></span>" +
+    "        <input type=\"text\" placeholder=\"{{'user_name' | translate}}\" ng-model=\"user.name\" required autofocus>" +
+    "      </div><br>" +
+    "      <div class=\"input-prepend\"><span class=\"add-on\"><i class=\"icon-key\"></i></span>" +
+    "        <input type=\"password\" placeholder=\"{{'user_password' | translate}}\" ng-model=\"user.password\" required>" +
+    "      </div><br>" +
+    "      <button ng-click=\"onLogin(user.name, user.password)\" ng-disabled=\"form.$invalid\" translate class=\"btn btn-primary login\">enter_cmd</button>" +
+    "      <button ng-click=\"onRegister(user.name, user.password)\" ng-disabled=\"form.$invalid\" translate class=\"btn login\">register_cmd</button>" +
+    "    </form>" +
+    "    <div translate class=\"wide\">enter_comment2</div>" +
+    "  </div>" +
+    "  <div ng-class=\"{hidden: !account.isAuthenticated}\">" +
+    "    <h4>{{'enter_as' | translate:{value: account.account.title} }}</h4>" +
+    "    <dl class=\"dl-horizontal wide\">" +
+    "      <dt>Язык<br> (Language, Мова, Język)</dt>" +
+    "      <dd>" +
+    "        <chooselang></chooselang>" +
+    "      </dd><br>" +
+    "      <dt translate>Display name</dt>" +
+    "      <dd contenteditable=\"true\" ng-model=\"account.account.name\" ng-change=\"onChange(account.account.name)\"></dd>" +
+    "      <dt translate>Register date</dt>" +
+    "      <dd>{{ account.account.date | fromnow }}</dd>" +
+    "      <dt translate>Administrator</dt>" +
+    "      <dd>{{ account.account.admin | yesno }}</dd>" +
+    "      <dt translate>Observed systems</dt>" +
+    "      <dd>{{ account.account.skeys.length }}</dd>" +
+    "      <dt title=\"{{ 'for_recovery' | translate}}\">email</dt>" +
+    "      <dd>{{ account.account.email }}</dd>" +
+    "    </dl>" +
+    "    <div style=\"text-align: center;\">" +
+    "      <button ng-click=\"onLogout();\" class=\"btn btn-warning\"><i class=\"icon-off\"></i>Выйти из учетной записи</button>" +
+    "    </div>" +
+    "  </div>" +
+    "</div>");
 }]);
 
 angular.module("templates/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
