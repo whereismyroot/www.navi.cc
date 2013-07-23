@@ -1197,7 +1197,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
       Account.isAuthenticated = true;
       if(data.result === "created") {
         // i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
-        console.warning("TODO: Add notification here");
+        console.warn("TODO: Add notification here");
         //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
         //setTimeout(function(){location.reload();}, 3000);
       } else {
