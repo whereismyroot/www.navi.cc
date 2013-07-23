@@ -233,7 +233,7 @@ angular.module('i18n.ru', ['ngTranslate'])
         'STOP_NUMBERS': 'Нумерация остановок / стоянок',
 
         // Страница настроек
-        'add_system': 'Добавить систему'
+        'add_system': 'Добавить трекер'
     });
 }]);
 
@@ -545,6 +545,37 @@ angular.module('directives.lists', [])
             console.log(['fileload', scope, element, attr, ngModel]);
         }
     };
+})
+
+.directive('addtracker', function() {
+    return {
+        restrict: 'E',
+        require: '?ngModel',
+        scope: {
+            account: "="
+        },
+        template: '<div><button class="btn btn-primary" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>' +
+                    '<span ng-show="addform">' +
+                    '   <form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">' +
+                    '        <label style="display:inline">IMEI</label>' +
+                    '       <input type="text" ng-model="newimei" required autofocus></input>' +
+                    '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\'>Добавить</button>' +
+                    '       <fileload ng-model="files" ng-change="onFromFiles()"></fileload>' +
+                    '    </form>' +
+                    '</span></div>',
+        replace: true,
+        link: function(scope, element, attr, ngModel) {
+        },
+        controller: ["$scope", function($scope){
+            $scope.addform = false;
+            $scope.onAdd = function(imei){
+                console.log('onAdd', imei, $scope.account, document.getElementById('config_add_file'));
+
+                $scope.account.systemadd([imei]);
+                $scope.addform = false;
+            };
+        }]
+    }
 });
 
 console.log("*=*=*=*= I'am a spammer");

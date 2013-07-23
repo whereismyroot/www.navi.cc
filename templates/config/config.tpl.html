@@ -1,24 +1,10 @@
 <h4>Список систем</h4>
 
 <div>
-    <button class="btn" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>
-    <!--span ng-class="{hidden: !addform}"-->
-    <span ng-show="addform">
-        <form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">
-            <label style="display:inline">IMEI</label>
-            <input type="text" ng-model="newimei" required autofocus></input>
-            <button class="btn btn-primary login" id="login" ng-show='!form.$invalid'>Добавить</button>
-            <fileload ng-model="files" ng-change="onFromFiles()"></fileload>
-        </form>
-            <!--div class="add_by_files">
-                <ul>
-                    <li ng-repeat="f in files">{{f}}</li>
-                </ul>
-            </div-->
-    </span>
     <span style="display:inline-block; float:right; margin-right: 8px;" title="Удаление систем">
         <label style="display: inline-block" for="config_delete">Удаление</label> <input id="config_delete" type="checkbox" ng-model="deleteenable" ></input>
     </span>
+    <addtracker account="account"></addtracker>
 </div>
 <ul class="config_sys_list" ui-sortable="sortableOptions" ng-model="account.account.skeys">
     <li ng-repeat="s in account.account.skeys" ng-class="{off: account.account.systems[s].off}">
