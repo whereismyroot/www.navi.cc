@@ -842,6 +842,14 @@ span[ng-click]:hover {
 .dl-horizontal.wide dd {
   margin-left: 240px;
 }
+.btn-group > .btn:active,
+.btn-group > .btn.active {
+  background-color: #FAA732;
+}
+.btn [class^="icon-"],
+.btn [class*=" icon-"] {
+  margin-right: 8px;
+}
 /*div[gmap] {
     width: 100%;
     height: 100%;

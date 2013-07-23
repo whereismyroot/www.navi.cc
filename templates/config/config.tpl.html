@@ -1,7 +1,7 @@
 <h4>Список систем</h4>
 
 <div>
-    <button class="btn" ng-click="addform=!addform;"><i class="icon-plus-sign"></i> Добавить систему</button>
+    <button class="btn" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>
     <!--span ng-class="{hidden: !addform}"-->
     <span ng-show="addform">
         <form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">
@@ -36,21 +36,3 @@
         </span>
     </li>
 </ul>
-
-<!--
-<div class="row">
-<div class="well span4">
-    <h4>Список для контроля</h4>
-    <ul class="unstyled">
-        <li ng-repeat="s in account.account.skeys">{{ account.account.systems[s].imei }}</li>
-    </ul>
-</div>
-</div>
-
-
-<div class="well">
-    <h4>Контроль сферы</h4>
-    <code>{{ account }}</code>
-</div>
-
--->

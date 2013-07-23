@@ -1,11 +1,11 @@
-angular.module('templates', ['templates/config/config.tpl.html', 'templates/config/data/data.tpl.html', 'templates/config/params/params.tpl.html', 'templates/error/error.tpl.html', 'templates/gps/gps.tpl.html', 'templates/header.tpl.html', 'templates/help/help.tpl.html', 'templates/login/login-orig.tpl.html', 'templates/login/login.tpl.html', 'templates/login/toolbar.tpl.html', 'templates/logs/logs.tpl.html', 'templates/map/map.tpl.html', 'templates/map/mapsysitem.tpl.html', 'templates/notifications.tpl.html', 'templates/reports/reports.tpl.html']);
+angular.module('templates', ['templates/config/config.tpl.html', 'templates/config/data/data.tpl.html', 'templates/config/params/master.tpl.html', 'templates/config/params/params.tpl.html', 'templates/error/error.tpl.html', 'templates/gps/gps.tpl.html', 'templates/header.tpl.html', 'templates/help/help.tpl.html', 'templates/login/login-orig.tpl.html', 'templates/login/login.tpl.html', 'templates/login/toolbar.tpl.html', 'templates/logs/logs.tpl.html', 'templates/map/map.tpl.html', 'templates/map/mapsysitem.tpl.html', 'templates/notifications.tpl.html', 'templates/reports/reports.tpl.html']);
 
 angular.module("templates/config/config.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/config/config.tpl.html",
     "<h4>Список систем</h4>" +
     "" +
     "<div>" +
-    "    <button class=\"btn\" ng-click=\"addform=!addform;\"><i class=\"icon-plus-sign\"></i> Добавить систему</button>" +
+    "    <button class=\"btn\" ng-click=\"addform=!addform;\"><i class=\"icon-plus-sign\"></i><span translate>add_system</span></button>" +
     "    <!--span ng-class=\"{hidden: !addform}\"-->" +
     "    <span ng-show=\"addform\">" +
     "        <form class=\"form-inline\" style=\"display: inline-block; margin:0;\" name=\"form\" ng-submit=\"onAdd(newimei)\">" +
@@ -70,6 +70,103 @@ angular.module("templates/config/data/data.tpl.html", []).run(["$templateCache",
     "    <hr>" +
     "    <crud-buttons></crud-buttons>" +
     "</div>" +
+    "");
+}]);
+
+angular.module("templates/config/params/master.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/config/params/master.tpl.html",
+    "<h2>Config Wizard {{step+1}}/4</h2>" +
+    "" +
+    "<div class=\"btn-group\">" +
+    "    <button ng-class=\"{'btn-warning active':isCurrentStep(0)}\" ng-click=\"setCurrentStep(0)\" class=\"btn\">Напряжения</button>" +
+    "    <button ng-class=\"{'btn-warning active':isCurrentStep(1)}\" ng-click=\"setCurrentStep(1)\" class=\"btn\">Входы</button>" +
+    "    <button ng-class=\"{'btn-warning active':isCurrentStep(2)}\" ng-click=\"setCurrentStep(2)\" class=\"btn\">Выходы</button>" +
+    "    <button ng-class=\"{'btn-warning active':isCurrentStep(3)}\" ng-click=\"setCurrentStep(3)\" class=\"btn\">Режимы</button>" +
+    "</div>" +
+    "<div ng-switch=\"getCurrentStep()\" class=\"container slide-frame\">" +
+    "    <div ng-switch-when=\"one\">" +
+    "        <legend>Напряжения</legend>" +
+    "        <fieldset class=\"form-inline\">" +
+    "            <label>Напряжение основного питания: </label>" +
+    "" +
+    "            <label class=\"radio\">" +
+    "                <input type=\"radio\" name=\"optionsRadios\" id=\"optionsRadios1\" value=\"option1\" checked>" +
+    "                12V" +
+    "            </label>" +
+    "            <label class=\"radio\">" +
+    "                <input type=\"radio\" name=\"optionsRadios\" id=\"optionsRadios2\" value=\"option2\">" +
+    "                24V" +
+    "            </label>" +
+    "            <br>" +
+    "        </fieldset>" +
+    "" +
+    "        <hr>" +
+    "        <button class=\"btn btn-primary\" ng-click=\"setNextStep()\">Дальше...</button>" +
+    "    </div>" +
+    "" +
+    "    <div ng-switch-when=\"two\">" +
+    "        <legend>Входы</legend>" +
+    "        <fieldset class=\"form-inline\">" +
+    "            <label>Вход 1: </label>" +
+    "" +
+    "            <div class=\"btn-group\" bs-buttons-radio ng-model=\"config.in1\" >" +
+    "                <button type=\"button\" class=\"btn\" value=\"off\">Выкл</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"ign\">Зажигание</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"shleyf\">Шлейф</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"alarn\">Тревожная кнопка</button>" +
+    "            </div>" +
+    "            <br>" +
+    "            <label>Вход 2: </label>" +
+    "" +
+    "            <div class=\"btn-group\" bs-buttons-radio ng-model=\"config.in2\" >" +
+    "                <button type=\"button\" class=\"btn\" value=\"off\">Выкл</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"ign\">Зажигание</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"shleyf\">Шлейф</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"alarn\">Тревожная кнопка</button>" +
+    "            </div>" +
+    "            <br>" +
+    "            <label>Вход 3: </label>" +
+    "" +
+    "            <div class=\"btn-group\" bs-buttons-radio ng-model=\"config.in3\" >" +
+    "                <button type=\"button\" class=\"btn\" value=\"off\">Выкл</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"ign\">Зажигание</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"shleyf\">Шлейф</button>" +
+    "                <button type=\"button\" class=\"btn\" value=\"alarn\">Тревожная кнопка</button>" +
+    "            </div>" +
+    "        </fieldset>" +
+    "" +
+    "        <hr>" +
+    "        <button class=\"btn btn-primary\" ng-click=\"setNextStep()\">Дальше...</button>" +
+    "    </div>" +
+    "" +
+    "    <div ng-switch-when=\"three\">" +
+    "        <h3>Выходы</h3>" +
+    "" +
+    "        <hr>" +
+    "        <button class=\"btn btn-primary\" ng-click=\"setNextStep()\">Дальше...</button>" +
+    "    </div>" +
+    "" +
+    "    <div ng-switch-when=\"four\">" +
+    "" +
+    "        <legend>Режимы работы</legend>" +
+    "        <fieldset class=\"form-inline\">" +
+    "            <label>Работа в автономном режиме: </label>" +
+    "" +
+    "            <label class=\"radio\">" +
+    "                <input type=\"radio\" name=\"optionsRadios\" id=\"optionsRadios1\" value=\"option1\" checked>" +
+    "                Продолжать работать" +
+    "            </label>" +
+    "            <label class=\"radio\">" +
+    "                <input type=\"radio\" name=\"optionsRadios\" id=\"optionsRadios2\" value=\"option2\">" +
+    "                Отключиться" +
+    "            </label>" +
+    "        </fieldset>" +
+    "" +
+    "        <button class=\"btn btn-primary\" ng-click=\"confirm()\">Завершить.</button>" +
+    "    </div>" +
+    "</div>" +
+    "    {{ config }}" +
+    "" +
     "");
 }]);
 
@@ -142,6 +239,7 @@ angular.module("templates/config/params/params.tpl.html", []).run(["$templateCac
     "" +
     "<div class=\"well well-small\">" +
     "    <h4>Программирование параметров системы</h4>" +
+    "    <a href=\"/#/config/{{skey}}/params/master\" class=\"btn btn-primary\"><i class=\"icon-magic icon-large\"></i> Мастер настройки</a>" +
     "" +
     "    <table class=\"table table-bordered table-condensed table-striped table-hover\">" +
     "        <thead>" +
@@ -432,7 +530,7 @@ angular.module("templates/map/map.tpl.html", []).run(["$templateCache", function
     "<div class=\"map-timeline\" id=\"timeline\" data=\"timeline\" timeline></div>" +
     "" +
     "<div class=\"map-toolbar\">" +
-    "    <span class=\"icon-wrench icon-large\" title=\"Настройки отображения\" ng-click=\"showconfig = !showconfig\" style=\"padding: 7px;\"></span>" +
+    "    <span class=\"icon-wrench icon-large\" title=\"{{'Display Settings' | translate}}\" ng-click=\"showconfig = !showconfig\" style=\"padding: 7px;\"></span>" +
     "    <div class=\"map-toolbar-config\" ng-show=\"showconfig\">" +
     "        <ul class=\"unstyled\">" +
     "            <li config-map-item item=\"mapconfig.autobounds\" icon-off=\"unlock\" icon-on=\"lock\">{{ 'AUTO_BOUND_TRACK' | translate }}</li>" +
@@ -440,8 +538,8 @@ angular.module("templates/map/map.tpl.html", []).run(["$templateCache", function
     "            <li config-map-item item=\"mapconfig.numbers\" icon-off=\"map-marker\" icon-on=\"map-marker\">{{ 'STOP_NUMBERS' | translate}}</li>" +
     "        </ul>" +
     "    </div>" +
-    "    <button ng-click=\"hideTrack()\" class=\"btn\">Скрыть трек</button>" +
-    "    Tочек в треке: {{points}}" +
+    "    <button ng-click=\"hideTrack()\" class=\"btn\" translate>Hide track</button>" +
+    "    {{'points_in_track' | translate:{value: points} }}" +
     "    <chooselang></chooselang>" +
     "</div>" +
     "" +

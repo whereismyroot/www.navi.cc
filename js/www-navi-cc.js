@@ -98,8 +98,11 @@ angular.module('i18n.en', ['ngTranslate'])
 
         'AUTO_BOUND_TRACK': 'Automatic bound track',
         'ANIMATION_DIR': 'Animation direction',
-        'STOP_NUMBERS': 'Numbering of stops / parks'
-    });
+        'STOP_NUMBERS': 'Numbering of stops / parks',
+
+        // Config page
+        'add_system': 'Add system'
+});
 }]);
 
 (function(window, I18n){
@@ -160,7 +163,10 @@ angular.module('i18n.pl', ['ngTranslate'])
 
         'AUTO_BOUND_TRACK': 'Automatycznie wyśrodkować utwór',
         'ANIMATION_DIR': 'Kierunek Animacja',
-        'STOP_NUMBERS': 'Numeracja przystanków / parki'
+        'STOP_NUMBERS': 'Numeracja przystanków / parki',
+
+        // Config page
+        'add_system': 'Add system (translate)'
     });
 }]);
 
@@ -224,7 +230,10 @@ angular.module('i18n.ru', ['ngTranslate'])
         // Панель настроек карты
         'AUTO_BOUND_TRACK': 'Автоматически центровать трек',
         'ANIMATION_DIR': 'Анимация направления движения',
-        'STOP_NUMBERS': 'Нумерация остановок / стоянок'
+        'STOP_NUMBERS': 'Нумерация остановок / стоянок',
+
+        // Страница настроек
+        'add_system': 'Добавить систему'
     });
 }]);
 
@@ -286,7 +295,10 @@ angular.module('i18n.ua', ['ngTranslate'])
 
         'AUTO_BOUND_TRACK': 'Автоматично центрувати трек',
         'ANIMATION_DIR': 'Анімація напрямку руху',
-        'STOP_NUMBERS': 'Нумерація зупинок / стоянок'
+        'STOP_NUMBERS': 'Нумерація зупинок / стоянок',
+
+        // Config page
+        'add_system': 'Add system (translate)'
     });
 }]);
 
@@ -538,11 +550,15 @@ angular.module('directives.lists', [])
 console.log("*=*=*=*= I'am a spammer");
 
 
+// Enable the visual refresh
+google.maps.visualRefresh = true;
+
 angular.module('directives.gmap', ['services.connect', 'ui'])
 
 .directive('gmap', ["Connect", function(Connect) {
     console.log('gmap:directive');
 
+    // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
     var path = null;
 
     var link = function(scope, element, attrs) {
@@ -1812,6 +1828,7 @@ angular.module('app', [
   'config',
   'help',
   'i18n',
+  '$strap',
   // 'services.i18n',
   // 'services.i18nNotifications',
   'services.httpRequestTracker'
@@ -2029,7 +2046,68 @@ angular.module('config.system.data', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters'])
+angular.module('config.system.params.master', ['resources.account', 'resources.params', 'app.filters'])
+
+.config(['$routeProvider', function ($routeProvider) {
+  var skey = ['$route', function($route){
+    console.log(['=== route', route]);
+    return $route.current.params.skey;
+  }];
+  console.log(['=== skey', skey]);
+  $routeProvider.when('/config/:skey/params/master', {
+    templateUrl:'templates/config/params/master.tpl.html',
+    controller:'ConfigParamsMasterCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }],
+      params:['Params', '$route', function (Params, $route) {
+        return Params.get({skey:$route.current.params.skey});
+      }]
+    }
+  });
+}])
+
+.controller('ConfigParamsMasterCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', '$location', function ($scope, $route, $routeParams, account, params, $location) {
+  console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
+  $scope.account = account;
+  $scope.skey = $routeParams['skey'];
+  $scope.params = params;
+
+  $scope.steps = ['one', 'two', 'three', 'four'];
+  $scope.step = 0;
+
+  $scope.isCurrentStep = function(step) {
+    return $scope.step === step;
+  };
+
+  $scope.setCurrentStep = function(step) {
+    $scope.step = step;
+  };
+
+  $scope.setNextStep = function(step) {
+    $scope.step += 1;
+  };
+
+  $scope.getCurrentStep = function() {
+    return $scope.steps[$scope.step];
+  };
+
+  $scope.confirm = function() {
+    $location.path("/config/" + $scope.skey + "/params");
+  };
+
+  // Defaults
+  $scope.config = {
+    in1: "off"
+  };
+
+  $("[rel=tooltip]").tooltip();
+}]);
+
+
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){

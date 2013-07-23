@@ -1,0 +1,92 @@
+<h2>Config Wizard {{step+1}}/4</h2>
+
+<div class="btn-group">
+    <button ng-class="{'btn-warning active':isCurrentStep(0)}" ng-click="setCurrentStep(0)" class="btn">Напряжения</button>
+    <button ng-class="{'btn-warning active':isCurrentStep(1)}" ng-click="setCurrentStep(1)" class="btn">Входы</button>
+    <button ng-class="{'btn-warning active':isCurrentStep(2)}" ng-click="setCurrentStep(2)" class="btn">Выходы</button>
+    <button ng-class="{'btn-warning active':isCurrentStep(3)}" ng-click="setCurrentStep(3)" class="btn">Режимы</button>
+</div>
+<div ng-switch="getCurrentStep()" class="container slide-frame">
+    <div ng-switch-when="one">
+        <legend>Напряжения</legend>
+        <fieldset class="form-inline">
+            <label>Напряжение основного питания: </label>
+
+            <label class="radio">
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                12V
+            </label>
+            <label class="radio">
+                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                24V
+            </label>
+            <br>
+        </fieldset>
+
+        <hr>
+        <button class="btn btn-primary" ng-click="setNextStep()">Дальше...</button>
+    </div>
+
+    <div ng-switch-when="two">
+        <legend>Входы</legend>
+        <fieldset class="form-inline">
+            <label>Вход 1: </label>
+
+            <div class="btn-group" bs-buttons-radio ng-model="config.in1" >
+                <button type="button" class="btn" value="off">Выкл</button>
+                <button type="button" class="btn" value="ign">Зажигание</button>
+                <button type="button" class="btn" value="shleyf">Шлейф</button>
+                <button type="button" class="btn" value="alarn">Тревожная кнопка</button>
+            </div>
+            <br>
+            <label>Вход 2: </label>
+
+            <div class="btn-group" bs-buttons-radio ng-model="config.in2" >
+                <button type="button" class="btn" value="off">Выкл</button>
+                <button type="button" class="btn" value="ign">Зажигание</button>
+                <button type="button" class="btn" value="shleyf">Шлейф</button>
+                <button type="button" class="btn" value="alarn">Тревожная кнопка</button>
+            </div>
+            <br>
+            <label>Вход 3: </label>
+
+            <div class="btn-group" bs-buttons-radio ng-model="config.in3" >
+                <button type="button" class="btn" value="off">Выкл</button>
+                <button type="button" class="btn" value="ign">Зажигание</button>
+                <button type="button" class="btn" value="shleyf">Шлейф</button>
+                <button type="button" class="btn" value="alarn">Тревожная кнопка</button>
+            </div>
+        </fieldset>
+
+        <hr>
+        <button class="btn btn-primary" ng-click="setNextStep()">Дальше...</button>
+    </div>
+
+    <div ng-switch-when="three">
+        <h3>Выходы</h3>
+
+        <hr>
+        <button class="btn btn-primary" ng-click="setNextStep()">Дальше...</button>
+    </div>
+
+    <div ng-switch-when="four">
+
+        <legend>Режимы работы</legend>
+        <fieldset class="form-inline">
+            <label>Работа в автономном режиме: </label>
+
+            <label class="radio">
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                Продолжать работать
+            </label>
+            <label class="radio">
+                <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                Отключиться
+            </label>
+        </fieldset>
+
+        <button class="btn btn-primary" ng-click="confirm()">Завершить.</button>
+    </div>
+</div>
+    {{ config }}
+
