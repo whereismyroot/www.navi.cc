@@ -574,9 +574,69 @@ angular.module('directives.lists', [])
                 $scope.account.systemadd([imei]);
                 $scope.addform = false;
             };
+            $scope.onFromFiles = function(){
+                console.log('multiple add', $scope.files);
+                $scope.account.systemadd($scope.files);
+                $scope.addform = false;
+            };
         }]
     }
-});
+})
+
+.directive('clone', function() {
+    return {
+        restrict: 'C',
+        // template: null,
+        // replace: true,
+        link: function(scope, element, attr, ngModel) {
+            console.log('clone component');
+            element.attr('readonly', 'readonly');
+            element.attr('type', 'text');
+            element.attr('title', "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'");
+            element.bind('mousedown', function(){this.select();});
+            //element.bind('mouseover', function(){this.select();});
+        }
+    }
+})
+
+.directive('datetime', [function(){
+    return {
+        restrict: 'E',
+        scope: {
+            datetime: "@",
+            "default": "@",
+            seconds: "="
+        },
+        template: '<span class="datelabel" title="{{ title }}" ng-click="switch()">{{ value }}</span>',
+        controller: ["$scope", "$filter", function($scope, $filter){
+            $scope.invert = $scope["default"] || false;
+            var update = function(){
+                // console.log("$scope.seconds", $scope.seconds);
+                if($scope.invert){
+                    $scope.value = $filter("datetime")($scope.datetime, $scope.seconds);
+                    $scope.title = $filter("fromnow")($scope.datetime);
+                } else {
+                    $scope.value = $filter("fromnow")($scope.datetime);
+                    $scope.title = $filter("datetime")($scope.datetime, $scope.seconds);
+                }
+            };
+            $scope.switch = function(){
+                $scope.invert = !$scope.invert;
+                update();
+            };
+            $scope.enter = function(){
+                $scope.invert = true;
+                update();
+            };
+            $scope.leave = function(){
+                $scope.invert = false;
+                update();
+            };
+            $scope.$watch("datetime", update);
+        }]
+    };
+}]);
+
 
 console.log("*=*=*=*= I'am a spammer");
 
@@ -1091,8 +1151,33 @@ angular.module('app.filters.i18n', [])
     };
 }]);
 
-angular.module('app.filters', [])
+var fdigits = function(value, digits) {
+    return ("00000000000" + value).slice(-digits);
+};
 
+angular.module('app.filters', []).
+
+filter('datetime', function(){
+    return function (text, seconds) {
+        var d = new Date(parseInt(text, 10)*1000);
+        if((seconds === false) || (seconds === 'false')){
+            return '' + fdigits(d.getDate(),2) + '/' + fdigits(d.getMonth()+1, 2) + '/' + d.getFullYear() + ' ' +
+                fdigits(d.getHours(), 2) + ':' + fdigits(d.getMinutes(), 2);
+        } else {
+            return '' + fdigits(d.getDate(),2) + '/' + fdigits(d.getMonth()+1, 2) + '/' + d.getFullYear() + ' ' +
+                fdigits(d.getHours(), 2) + ':' + fdigits(d.getMinutes(), 2) + ':' + fdigits(d.getSeconds(), 2);
+        }
+    };
+}).
+
+filter('fromnow', function(){
+    return function (text, length, end) {
+        var d = new Date(parseInt(text, 10)*1000);
+        return moment(parseInt(text, 10)*1000).fromNow();
+    };
+}).
+
+/*
 .filter('datetime', function(){
     return function (text, length, end) {
         var d = new Date(parseInt(text, 10)*1000);
@@ -1107,8 +1192,9 @@ angular.module('app.filters', [])
         return moment(parseInt(text, 10)*1000).fromNow();
     };
 })
+*/
 
-.filter('yesno', function(){
+filter('yesno', function(){
     return function (state, length, end) {
         return state?"да":"нет";
     };
@@ -1987,12 +2073,12 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
 
   $scope.deleteenable = false;
   //$scope.addform = false;
-  $scope.onAdd = function(imei){
+  /*$scope.onAdd = function(imei){
     console.log('onAdd', imei, account, document.getElementById('config_add_file'));
 
     account.systemadd([imei]);
     $scope.addform = false;
-  };
+  };*/
 
   $scope.onFromFiles = function(){
     console.log('multiple add', $scope.files);

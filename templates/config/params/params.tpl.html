@@ -8,14 +8,14 @@
         <h4>Информация о трекере</h4>
 
         <dl class="dl-horizontal">
-            <dt>Наименование</dt><dd>{{ account.account.systems[skey].desc }}</dd>
-            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }} <i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
+            <dt>Модель</dt><dd>MT-400</dd>
+            <dt>IMEI</dt><dd><input class="clone" value="{{ account.account.systems[skey].imei }}"/></dd>
             <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>
-            <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
+            <dt>Зарегестрирован</dt><dd><datetime seconds="false" datetime="{{ account.account.systems[skey].date }}"></datetime></dd>
             <dt>Версия ПО</dt><dd>3021 <i class="icon-question-sign cmd" title="Проверить доступность обновления"></i></dd>
         </dl>
 
-        <button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button>
+        <!--button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button-->
     </div>
 
     <div class="well well-small span4">
@@ -28,7 +28,7 @@
             <dt>Уровень GPS</dt><dd>неизвестно</dd>
             <dt>Основное питание</dt><dd>-</dd>
             <dt>Резервное питание</dt><dd>-</dd>
-            <dt>Координаты</dt><dd>35.4, 46.2<i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
+            <dt>Координаты</dt><dd><input class="clone" value="48.4433, 35.0288"/></dd>
             <dt>Высота над ур.моря</dt><dd>256м</dd>
             <dt>Температура</dt><dd>52гЦ</dd>
             <dt>Корпус</dt><dd>закрыт</dd>
@@ -47,7 +47,7 @@
         <h4>Информация о транспортном средстве</h4>
 
         <dl class="dl-horizontal">
-            <dt>Наименование</dt><dd>-</dd>
+            <dt>Наименование ТС</dt><dd>{{ account.account.systems[skey].desc }}</dd>
             <dt>Гос номер</dt><dd>AA 0000 AA</dd>
             <dt>Год выпуска</dt><dd>-</dd>
             <dt>№ двигателя</dt><dd>-</dd>

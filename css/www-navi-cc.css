@@ -850,6 +850,20 @@ span[ng-click]:hover {
 .btn [class*=" icon-"] {
   margin-right: 8px;
 }
+input.clone {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  background: none;
+}
+input.clone:focus {
+  box-shadow: none;
+  outline: none;
+}
 /*div[gmap] {
     width: 100%;
     height: 100%;
