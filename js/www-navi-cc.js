@@ -2260,12 +2260,15 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
       }],
       params:['Params', '$route', function (Params, $route) {
         return Params.get({skey:$route.current.params.skey});
+      }],
+      system: ['System', function (System) {
+        return  System;
       }]
     }
   });
 }])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', function ($scope, $route, $routeParams, account, params) {
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', function ($scope, $route, $routeParams, account, params, system) {
   console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
   $scope.account = account;
   $scope.skey = $routeParams['skey'];
@@ -2292,6 +2295,13 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     }
     return item.filter;
   };
+
+  $scope.onChange = function(el){
+    // console.log('onChange', el);
+    // console.log('onChange', el, $scope.account.account.systems[el].desc);
+    system.change_desc(el, $scope.account.account.systems[el].desc);
+  };
+
   $("[rel=tooltip]").tooltip();
 }])
 

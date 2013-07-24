@@ -42,14 +42,14 @@
             <dt>Уровень топлива</dt><dd>? л</dd>
         </dl>
 
-        <button class="btn btn-small" ng-click="update()">Обновить</button>
+        <!--button class="btn btn-small" ng-click="update()">Обновить</button-->
     </div>
 
     <div class="well well-small span4">
         <h4>Информация о транспортном средстве</h4>
 
         <dl class="dl-horizontal">
-            <dt>Наименование ТС</dt><dd>{{ account.account.systems[skey].desc }}</dd>
+            <dt>Наименование ТС</dt><dd contenteditable ng-model="account.account.systems[skey].desc" ng-change="onChange(skey)" title="Для изменения описания поместите курсор в поле"></dd>
             <dt>Гос номер</dt><dd>AA 0000 AA</dd>
             <dt>Год выпуска</dt><dd>-</dd>
             <dt>№ двигателя</dt><dd>-</dd>
