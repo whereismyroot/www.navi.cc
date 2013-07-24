@@ -1550,7 +1550,7 @@ angular.module('resources.logs', ['services.connect'])
 
     var updater = Connect.updater.on('add_log', function(msg) {
         //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
-        Logs.logs.push(msg.log);
+        Logs.logs.unshift(msg.log);
         console.log(['Logs add_log message:', msg, Logs]);
         $rootScope.$apply();
         //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
