@@ -612,6 +612,12 @@ angular.module('directives.lists', [])
             $scope.invert = $scope["default"] || false;
             var update = function(){
                 // console.log("$scope.seconds", $scope.seconds);
+                // console.log('$scope.datetime=', $scope.datetime);
+                if(angular.isUndefined($scope.datetime) || $scope.datetime === ''){
+                    $scope.value = "?";
+                    $scope.title = "Значение неопределено";
+                    return;
+                }
                 if($scope.invert){
                     $scope.value = $filter("datetime")($scope.datetime, $scope.seconds);
                     $scope.title = $filter("fromnow")($scope.datetime);
@@ -1204,7 +1210,7 @@ filter('yesno', function(){
 angular.module('resources.account', []);
 
 // angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
-angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', function (SERVER, $http, $q, $timeout) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', function (SERVER, $http, $q, $timeout, Connect, $rootScope) {
 
   var Account = {
     'name': 'noname-noface-nonumber',
@@ -1363,6 +1369,18 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   };
 
   //$scope.access_token = access_token;
+  var updater = Connect.updater.on('update_dynamic', function(msg) {
+      console.log('==Update dynamic', msg);
+      if(msg.skey in Account.account.systems){
+        if(!Account.account.systems[msg.skey].dynamic){
+          Account.account.systems[msg.skey].dynamic = {};
+        }
+        angular.extend(Account.account.systems[msg.skey].dynamic, msg.dynamic);
+      }
+      $rootScope.$apply();
+      //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
+      //lastpos.setPosition(newpos);
+  });
 
   return Account;
 }]);
@@ -1745,8 +1763,8 @@ angular.module('services.connect', [])
             //ws.send("First msg");
         };
         ws.onmessage = function(event) {
-            //console.log(['onmessage:', event.data]);
             var msg = JSON.parse(event.data);
+            console.log('onmessage:', msg);
             //msg.map(function f(m){ shared.updater.process(m); });
             shared.updater.process(msg);
             //shared.send(event.data);
