@@ -2446,7 +2446,14 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   var tz = (new Date()).getTimezoneOffset()/60;
   var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;
 
-  if($scope.skey && ($scope.skey != '')){
+  $scope.mapconfig = {
+      autobounds: true,   // Автоматическая центровка трека при загрузке
+      animation: true,   // Анимация направления трека
+      numbers: true       // Нумерация стоянок/остановок
+  };
+
+  if($scope.skey && ($scope.skey != '') && ($scope.skey != '+')){
+    console.log('get Track', $scope.skey);
     GeoGPS.select($scope.skey);
     GeoGPS.getTrack(hourfrom, hourfrom+23)
         .then(function(data){
@@ -2456,12 +2463,6 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
             $scope.points = data.track.length;
             fake_timeline();*/
         });
-
-    $scope.mapconfig = {
-        autobounds: true,   // Автоматическая центровка трека при загрузке
-        animation: false,   // Анимация направления трека
-        numbers: true       // Нумерация стоянок/остановок
-    };
 
     $scope.onMouseOver = function(g) {
       $scope.center = g;

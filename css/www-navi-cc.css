@@ -1057,9 +1057,10 @@ div.mapcalendar {
 div#geos_head {
   position: absolute;
   top: 0px;
+  width: 450px;
   height: 76px;
   overflow: hidden;
-  width: 100%;
+  padding-top: 6px;
 }
 div#geos_body {
   position: absolute;
@@ -1067,6 +1068,7 @@ div#geos_body {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  width: 449px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -1077,6 +1079,14 @@ div#geos_body {
     padding-bottom: 10px;*/
 
   min-height: 22px;
+}
+div.geo_map {
+  height: 99%;
+  position: absolute;
+  left: 450px;
+  right: 16px;
+  top: 0px;
+  border: 1px solid black;
 }
 div#geos_previev {
   position: absolute;
