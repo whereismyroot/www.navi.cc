@@ -2446,26 +2446,28 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   var tz = (new Date()).getTimezoneOffset()/60;
   var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;
 
-  GeoGPS.select($scope.skey);
-  GeoGPS.getTrack(hourfrom, hourfrom+23)
-      .then(function(data){
-          console.log(["getTrack: ", data]);
-          $scope.track = data;
-          /*$scope.track = data;
-          $scope.points = data.track.length;
-          fake_timeline();*/
-      });
+  if($scope.skey && $scope.skey != ''){
+    GeoGPS.select($scope.skey);
+    GeoGPS.getTrack(hourfrom, hourfrom+23)
+        .then(function(data){
+            console.log(["getTrack: ", data]);
+            $scope.track = data;
+            /*$scope.track = data;
+            $scope.points = data.track.length;
+            fake_timeline();*/
+        });
 
-  $scope.mapconfig = {
-      autobounds: true,   // Автоматическая центровка трека при загрузке
-      animation: false,   // Анимация направления трека
-      numbers: true       // Нумерация стоянок/остановок
-  };
+    $scope.mapconfig = {
+        autobounds: true,   // Автоматическая центровка трека при загрузке
+        animation: false,   // Анимация направления трека
+        numbers: true       // Нумерация стоянок/остановок
+    };
 
-  $scope.onMouseOver = function(g) {
-    $scope.center = g;
-    //console.log('onmouseover', g);
-  };
+    $scope.onMouseOver = function(g) {
+      $scope.center = g;
+      //console.log('onmouseover', g);
+    };
+  }
   /*$scope.onSelect = function(){
     console.log('onSelect', $scope.system, $scope.skey);
     //$location.path(s);
