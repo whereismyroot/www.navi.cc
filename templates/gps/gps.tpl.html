@@ -1,3 +1,53 @@
-<h4>Экспорт GPS</h4>
-<hr>
-В разработке...
+
+<div id="geos_head">
+    <select ng-model="skey" ng-options="account.account.systems[s].desc for s in account.account.skeys">
+        <option value="">Выберите систему</option>
+    </select>
+    <br>
+
+    <div class="btn-group">
+        <button class="btn active">Сегодня</button>
+        <button class="btn">Вчера</button>
+        <button class="btn">Выбрать...</button>
+    </div>
+    <br>
+</div>
+
+<div id="geos_body">
+    <table class="table table-condensed table-hover tview" style="width: 200px">
+        <thead>
+            <tr>
+                <th rowspan=2>Время</th>
+                <th rowspan=2>Координаты</th>
+                <th rowspan=2 title="Спутники
+Показать график"><span class="showchart" style="background-image: url(img/sputnik.png);width: 32px;height: 32px;background-position: 0px 0px;" data-value="sats"></span></th>
+                <th rowspan=2 title="Скорость
+Показать график"><span class="showchart" style="background-image: url(img/ulitka.png);width: 32px;height: 32px;background-position: 0px 0px;" data-value="speed"></span></th>
+                <th colspan=2>Питание</th>
+                <th rowspan="2">Тип метки</th>
+                <th rowspan=2 title="Фотодатчик
+Показать график"><span class="icon-calculator showchart" style="background-image: url(img/photo.png);width: 32px;height: 32px;background-position: 0px 0px;" data-value="photo"></span></th>
+            </tr>
+            <tr>
+                <th>осн.<span title="Основное
+Показать график" class="ui-icon ui-icon-calculator showchart" data-value="vout"></span></th>
+                <th>рез.<span title="Резервное
+Показать график" class="ui-icon ui-icon-calculator showchart" data-value="vin"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="g in track.points" ng-mouseover="onMouseOver(g)">
+                <td>{{ g.dt | datetime:true:"time" }}</td>
+                <td>{{ g.lat | number:3 }},{{ g.lon | number:3 }}</td>
+                <td>{{ g.sats }}</td>
+                <td>{{ g.speed | number:1 }}</td>
+                <td>{{ g.vout | number:1 }}</td>
+                <td>{{ g.vin | number:2 }}</td>
+                <td title="{{ (g.fsource | fsource).title }}" style="color:grey"><i class="{{s}}" ng-repeat="s in (g.fsource | fsource).icons" style="padding-left:2px"></i></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div gmap="main" track="track" center="center" config="mapconfig" style="height: 99%; position: absolute; left: 450px; right: 16px; top: 0px; border: 1px solid black;"></div>

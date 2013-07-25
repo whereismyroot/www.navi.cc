@@ -605,11 +605,13 @@ angular.module('directives.lists', [])
         scope: {
             datetime: "@",
             "default": "@",
+            format: "@",
             seconds: "="
         },
         template: '<span class="datelabel" title="{{ title }}" ng-click="switch()">{{ value }}</span>',
         controller: ["$scope", "$filter", function($scope, $filter){
             $scope.invert = $scope["default"] || false;
+            //$scope.format =
             var update = function(){
                 // console.log("$scope.seconds", $scope.seconds);
                 // console.log('$scope.datetime=', $scope.datetime);
@@ -619,11 +621,11 @@ angular.module('directives.lists', [])
                     return;
                 }
                 if($scope.invert){
-                    $scope.value = $filter("datetime")($scope.datetime, $scope.seconds);
+                    $scope.value = $filter("datetime")($scope.datetime, $scope.seconds, $scope.format);
                     $scope.title = $filter("fromnow")($scope.datetime);
                 } else {
                     $scope.value = $filter("fromnow")($scope.datetime);
-                    $scope.title = $filter("datetime")($scope.datetime, $scope.seconds);
+                    $scope.title = $filter("datetime")($scope.datetime, $scope.seconds, $scope.format);
                 }
             };
             $scope.switch = function(){
@@ -657,6 +659,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
     var path = null;
+    var gmarker = null;
 
     var link = function(scope, element, attrs) {
         // console.log('map directive: link', scope, element, Connect);
@@ -718,6 +721,21 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
             scale: 5
           },
           animation: null // google.maps.Animation.BOUNCE
+        });
+
+        var center = new google.maps.MarkerImage(
+            '/img/marker/marker-center.png?v=1',
+            new google.maps.Size(32, 32),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(15, 15)
+        );
+
+        gmarker = new google.maps.Marker({
+            //position: new google.maps.LatLng(data.stops[i].p[0], data.stops[i].p[1]),
+            map: map,
+            title: 'Положение',
+            icon: center,
+            draggable: false
         });
 
         //config.updater.add('last_update', function(msg) {
@@ -833,6 +851,14 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
             showTrack(data);
         });
 
+        scope.$watch("center", function(center){
+            if(center) {
+                var pos = new google.maps.LatLng(center.lat, center.lon);
+                map.panTo(pos);
+                gmarker.setPosition(pos);
+            }
+        });
+
     };
 
     return {
@@ -843,7 +869,8 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
         //template: '<div>MAP</div>',
         scope: {
             track: "=",
-            config: "="
+            config: "=",
+            center: "="
         },
         link: link/*,
         controller: ["$scope", "Connect", function($scope, Connect){
@@ -1161,11 +1188,37 @@ var fdigits = function(value, digits) {
     return ("00000000000" + value).slice(-digits);
 };
 
+var fsource = {
+    0: {title: "-", icons: ["icon-question"]},
+    1: {title: "SUDDENSTOP", icons: ["icon-stop", "icon-warning"]},
+    2: {title: "STOPACC", icons: ["icon-stop", "icon-pause"]},
+    3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-pause"]},
+    4: {title: "SLOW", icons: ["icon-stop"]},
+    5: {title: "TIMEMOVE", icons: ["icon-time", "icon-play" ]},
+    6: {title: "START", icons: ["icon-play"]},
+    7: {title: "TIMESTOP", icons: ["icon-time", "icon-stop"]},
+    8: {title: "ANGLE", icons: ["icon-share-alt"]},
+    9: {title: "DELTALAT", icons: ["icon-resize-full"]},
+    10: {title: "DELTALONG", icons: ["icon-resize-full"]},
+    11: {title: "DELTA", icons: ["icon-resize-full"]},
+};
+
 angular.module('app.filters', []).
 
 filter('datetime', function(){
-    return function (text, seconds) {
+    return function (text, seconds, format) {
         var d = new Date(parseInt(text, 10)*1000);
+
+        if(format === 'date'){
+            return '' + fdigits(d.getDate(),2) + '/' + fdigits(d.getMonth()+1, 2) + '/' + d.getFullYear()
+        } else if(format === 'time'){
+            if((seconds === false) || (seconds === 'false')){
+                return fdigits(d.getHours(), 2) + ':' + fdigits(d.getMinutes(), 2);
+            } else {
+                return fdigits(d.getHours(), 2) + ':' + fdigits(d.getMinutes(), 2) + ':' + fdigits(d.getSeconds(), 2);
+            }
+        }
+
         if((seconds === false) || (seconds === 'false')){
             return '' + fdigits(d.getDate(),2) + '/' + fdigits(d.getMonth()+1, 2) + '/' + d.getFullYear() + ' ' +
                 fdigits(d.getHours(), 2) + ':' + fdigits(d.getMinutes(), 2);
@@ -1203,6 +1256,12 @@ filter('fromnow', function(){
 filter('yesno', function(){
     return function (state, length, end) {
         return state?"да":"нет";
+    };
+}).
+
+filter('fsource', function(){
+    return function (index) {
+        return fsource[1 * index];
     };
 });
 
@@ -1407,15 +1466,15 @@ angular.module('resources.geogps', [])
             // longitude,              # D5: Долгота 1/10000 минут
             var lon = (packet[11] + packet[12]*256 + packet[13]*256*256 + packet[14]*256*256*256) / 600000.0;
             // speed,                  # D6: Скорость 1/100 узла
-            var speed = packet[15] + packet[16]*256;
+            var speed = ((packet[15] + packet[16]*256) * 1.852) / 100;
             // int(round(course/2)),   # D7: Направление/2 = 0..179
             var course = packet[17]*2;
             // sats,                   # D8: Кол-во спутников 3..12
             var sats = packet[18];
             // vout,                   # D9: Напряжение внешнего питания 1/100 B
-            var vout = packet[19] + packet[20]*256;
+            var vout = (packet[19] + packet[20]*256) / 100;
             // vin,                    # D10: Напряжение внутреннего аккумулятора 1/100 B
-            var vin = packet[21] + packet[22]*256;
+            var vin = (packet[21] + packet[22]*256) / 100;
             // fsource,                # D11: Тип точки   Причина фиксации точки
             var fsource = packet[23];
             // 0,                      # D12: Флаги
@@ -1541,6 +1600,7 @@ angular.module('resources.geogps', [])
                 '/geo/get/' +
                 encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
         }).success(function(data){
+            console.log('GeoGPS.getTrack.success');
             var uInt8Array = new Uint8Array(data);
             defer.resolve(bingpsparse(uInt8Array));
         });
@@ -2336,7 +2396,7 @@ angular.module('error', [])
   //$route.current.$route.template = "<div>Loaded</div>";
 }]);
 
-angular.module('gps', ['resources.account'])
+angular.module('gps', ['resources.account', 'resources.params', 'resources.geogps', 'app.filters', 'config.system.params.master'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/gps', {
@@ -2349,10 +2409,68 @@ angular.module('gps', ['resources.account'])
       }]
     }
   });
+  $routeProvider.when('/gps/:skey', {
+    templateUrl:'templates/gps/gps.tpl.html',
+    controller:'GPSViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }],
+      system: ['System', function (System) {
+        return  System;
+      }]
+    }
+  });
+
 }])
 
-.controller('GPSViewCtrl', ['$scope', '$location', 'account', function ($scope, $location, account) {
+.controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, GeoGPS) {
+  var startskey = $scope.skey = $routeParams['skey'];
+  console.log('gps select: ', $scope.skey);
+
   $scope.account = account;
+  $scope.track = null;
+
+  $scope.$watch('skey', function(skey){
+    if($scope.skey !== startskey) {
+      //console.log('reload', $scope.skey, skey);
+      $location.path('/gps/' + $scope.skey);
+      //reload();
+    }
+  });
+
+  $scope.gpsdata = [{lat: 1.0, lon: 1.0}];
+
+  var date = new Date();
+  var tz = (new Date()).getTimezoneOffset()/60;
+  var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;
+
+  GeoGPS.select($scope.skey);
+  GeoGPS.getTrack(hourfrom, hourfrom+23)
+      .then(function(data){
+          console.log(["getTrack: ", data]);
+          $scope.track = data;
+          /*$scope.track = data;
+          $scope.points = data.track.length;
+          fake_timeline();*/
+      });
+
+  $scope.mapconfig = {
+      autobounds: true,   // Автоматическая центровка трека при загрузке
+      animation: false,   // Анимация направления трека
+      numbers: true       // Нумерация стоянок/остановок
+  };
+
+  $scope.onMouseOver = function(g) {
+    $scope.center = g;
+    //console.log('onmouseover', g);
+  };
+  /*$scope.onSelect = function(){
+    console.log('onSelect', $scope.system, $scope.skey);
+    //$location.path(s);
+    //$location.path('/gps/' + $scope.system);
+  }*/
 }]);
 
 angular.module('help', ['resources.account'])
@@ -2580,7 +2698,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         $log.info("datepicker:changeDate.", $scope);
         $scope.$apply(function(){   // Без этого не будет индикации процесса загрузки
 
-            GeoGPS.getTrack(hourfrom, hourfrom+23)
+            GeoGPS.getTrack(hourfrom, hourfrom+23)  // +23? не 24?
                 .then(function(data){
                     console.log(["getTrack: ", data]);
                     $scope.track = data;

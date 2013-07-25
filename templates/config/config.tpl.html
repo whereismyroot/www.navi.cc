@@ -12,7 +12,7 @@
         ><!--i class="syspicto icon-globe icon-large" title="Нажмите чтобы задать значок" ng-click="icon(s)"></i
         ><i class="systag icon-tags icon-large" title="Нажмите чтобы назначить ярлыки" ng-click="tags(s)"></i
         --><i class="icon-wrench icon-large" title="Нажмите чтобы настроить трекер" ng-click="manageSystemParams(s)"></i>
-        <span class="sysimei canselect" title="IMEI">{{ account.account.systems[s].imei }}</span>
+        <span class="sysimei canselect"><input class="clone" value="{{ account.account.systems[s].imei }}"/><!--span class="sysimei canselect" title="IMEI">{{ account.account.systems[s].imei }}--></span>
         <span class="sysphone" title="номер телефона">{{ account.account.systems[s].phone }}</span>
         <!--span class="control"><i class="icon-edit" title="Редактировать описание системы" ng-click="edit(s)"></i></span-->
         <span class="sysname canselect" contenteditable ng-model="account.account.systems[s].desc" ng-change="onChange(s)" title="Для изменения описания поместите курсор в поле"></span>
