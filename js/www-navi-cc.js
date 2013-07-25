@@ -2446,7 +2446,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   var tz = (new Date()).getTimezoneOffset()/60;
   var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;
 
-  if($scope.skey && $scope.skey != ''){
+  if($scope.skey && ($scope.skey != '')){
     GeoGPS.select($scope.skey);
     GeoGPS.getTrack(hourfrom, hourfrom+23)
         .then(function(data){
