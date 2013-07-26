@@ -67,14 +67,13 @@
 
 <div class="well well-small">
     <h4>Программирование параметров системы</h4>
-    <a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a>
+    <!-- a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a-->
 
     <table class="table table-bordered table-condensed table-striped table-hover">
         <thead>
         <tr>
-            <th>№</th>
-            <th>Имя</th>
-            <th>Описание<i class="icon-filter cmd" rel="tooltip" title="Показать все параметры" ng-click="showall =! showall"></i></th>
+            <th><i class="icon-filter cmd" rel="tooltip" title="Показать все параметры" ng-click="showall =! showall"></i>Имя</th>
+            <th>Описание</th>
             <th>Тип</th>
             <th>Значение</th>
             <th>Заводское значение</th>
@@ -85,13 +84,12 @@
         <!--tr ng-repeat="p in params | isFiltered:filtered"-->
         <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
         <tr ng-repeat="(k, p) in filtered(params.value)">
-            <td>{{p.index}}</td>
             <td>{{k}}</td>
             <td>{{p.desc}}</td>
             <td>{{p.type}}</td>
             <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td>
             <td>{{p.default}}</td>
-            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input type="text" ng-model="p.queue" ></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
+            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input type="text" ng-model="p.queue" style="width: 70%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
         </tr>
         <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>
