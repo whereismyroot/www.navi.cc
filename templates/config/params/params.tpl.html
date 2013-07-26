@@ -78,7 +78,7 @@
             <th>Тип</th>
             <th>Значение</th>
             <th>Заводское значение</th>
-            <th>Очередь</th>
+            <th>Изменить на</th>
         </tr>
         </thead>
         <tbody>
@@ -90,7 +90,7 @@
             <td>{{p.type}}</td>
             <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td>
             <td>{{p.default}}</td>
-            <td>{{p.queue}}<i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></td>
+            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input type="text" ng-model="p.queue" ></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
         </tr>
         <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>

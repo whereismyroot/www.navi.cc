@@ -1686,6 +1686,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             for (var k in data.value) {
                 var p = data.value[k];
                 p.newvalue = p.value;
+                p.newqueue = p.queue;
             };
 
             defer.resolve();
@@ -1706,18 +1707,20 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
         $http({
             method: 'POST',
-            url: SERVER.api + "/params/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k),
-            data: {key: k, value: p.newvalue}
+            url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey),
+            data: {key: k, value: p.queue}
         }).success(function(data){
             console.log('params.Params.set.success', data);
+            /*if(p.value != p.newvalue){
+              p.queue = p.newvalue;
+            } else {
+              p.queue = null;
+            }*/
+            p.newqueue = p.queue;
+
             defer.resolve();
         });
         //console.log("Params.set", k);
-        if(p.value != p.newvalue){
-          p.queue = p.newvalue;
-        } else {
-          p.queue = null;
-        }
         return defer.promise;
     }
 
@@ -1725,14 +1728,39 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     Params.cancel = function(k){
         var defer = $q.defer();
         var p = Params.value[k];
-        p.newvalue = p.value;
-        p.queue = null;
 
         $http({
             method: 'DELETE',
-            url: SERVER.api + "/params/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
+            url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
         }).success(function(data){
             console.log('params.Params.del.success', data);
+
+            p.newvalue = p.value;
+            p.queue = null;
+            p.newqueue = null;
+            defer.resolve();
+        });
+
+        return defer.promise;
+    }
+
+    // Отменить все изменения
+    Params.cancelall = function(){
+        var defer = $q.defer();
+
+        $http({
+            method: 'DELETE',
+            url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey)
+        }).success(function(data){
+            console.log('params.Params.delall.success', data);
+
+            for (var k in Params.value) {
+                var p = Params.value[k];
+                p.newvalue = p.value;
+                p.queue = null;
+                p.newqueue = null;
+              //$scope.cancelqueue(k);
+            };
             defer.resolve();
         });
 
@@ -2442,14 +2470,20 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     params.set(k);  // Отправим значение в очередь на сервер
   };
 
+  $scope.setqueue = function(k){
+    // console.log('setqueue', k);
+    params.set(k);  // Отправим значение в очередь на сервер
+  }
+
   $scope.cancelqueue = function(k){
     params.cancel(k);  // Отправим на сервер команду отменить изменение параметра
   }
 
   $scope.stopqueue = function(){
-    for (var k in params.value) {
+    params.cancelall();  // Отправим на сервер команду отменить все изменения
+    /*for (var k in params.value) {
       $scope.cancelqueue(k);
-    };
+    };*/
   }
 
   $("[rel=tooltip]").tooltip();
