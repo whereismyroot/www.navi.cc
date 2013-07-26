@@ -88,11 +88,11 @@
             <td>{{k}}</td>
             <td>{{p.desc}}</td>
             <td>{{p.type}}</td>
-            <td>{{p.value}}</td>
+            <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td>
             <td>{{p.default}}</td>
-            <td>{{p.queue}}</td>
+            <td>{{p.queue}}<i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></td>
         </tr>
-        <tr ng-show="!params.length">
+        <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>
         </tr>
         </tbody>

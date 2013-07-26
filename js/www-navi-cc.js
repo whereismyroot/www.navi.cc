@@ -469,7 +469,7 @@ angular.module('directives.lists', [])
                 }
             });
             read = function() {
-                console.log("read()", scope, ngModel);
+                // console.log("read()", scope, ngModel);
                 ngModel.$setViewValue($.trim(element.text()));
                 element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
                 /*
@@ -658,10 +658,10 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
     console.log('gmap:directive');
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
-    var path = null;
-    var gmarker = null;
 
     var link = function(scope, element, attrs) {
+        var path = null;
+        var gmarker = null;
         // console.log('map directive: link', scope, element, Connect);
         //element.innerHTML="<div>map</div>";
 
@@ -1661,7 +1661,89 @@ angular.module('resources.logs', ['services.connect'])
 
 angular.module('resources.params', ['services.connect', 'ngResource'])
 
-.factory('Params', ['SERVER', '$resource', 'Connect', function (SERVER, $resource, Connect) {
+.factory('Params', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
+    console.log('-- params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+
+    var Params = {
+        skey: null,
+        value: null
+    };
+
+    // Запросить значения параметров для системы skey
+    Params.get = function(skey){
+        var defer = $q.defer();
+
+        console.log('-- params.Params.get');
+
+        $http({
+            method: 'GET',
+            url: SERVER.api + "/params/" + encodeURIComponent(skey)
+        }).success(function(data){
+            console.log('params.Params.get.success', data);
+            Params.skey = data.skey;
+            Params.value = data.value;
+
+            for (var k in data.value) {
+                var p = data.value[k];
+                p.newvalue = p.value;
+            };
+
+            defer.resolve();
+        });
+
+        return defer.promise;
+    }
+
+    // Поставить в очередь на изменение параметра (skey должен быть задан при вызове .get)
+    Params.set = function(k){
+        var defer = $q.defer();
+        var p = Params.value[k];
+
+        if(Params.skey == null) {
+            defer.reject();
+            return;
+        }
+
+        $http({
+            method: 'POST',
+            url: SERVER.api + "/params/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k),
+            data: {key: k, value: p.newvalue}
+        }).success(function(data){
+            console.log('params.Params.set.success', data);
+            defer.resolve();
+        });
+        //console.log("Params.set", k);
+        if(p.value != p.newvalue){
+          p.queue = p.newvalue;
+        } else {
+          p.queue = null;
+        }
+        return defer.promise;
+    }
+
+    // Отменить изменение параметра
+    Params.cancel = function(k){
+        var defer = $q.defer();
+        var p = Params.value[k];
+        p.newvalue = p.value;
+        p.queue = null;
+
+        $http({
+            method: 'DELETE',
+            url: SERVER.api + "/params/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
+        }).success(function(data){
+            console.log('params.Params.del.success', data);
+            defer.resolve();
+        });
+
+        return defer.promise;
+    }
+
+    return Params;
+
+}])
+
+.factory('ParamsOld', ['SERVER', '$resource', 'Connect', function (SERVER, $resource, Connect) {
 
     console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
@@ -2318,8 +2400,12 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
         //TODO: sure for fetch only one for the current user
         return Account;
       }],
-      params:['Params', '$route', function (Params, $route) {
-        return Params.get({skey:$route.current.params.skey});
+      // params:['Params', '$route', function (Params, $route) {
+      //   //return Params.get({skey:$route.current.params.skey});
+      // }],
+      params:['Params', function (Params) {
+        //return Params.get({skey:$route.current.params.skey});
+        return Params;
       }],
       system: ['System', function (System) {
         return  System;
@@ -2334,21 +2420,11 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
   $scope.skey = $routeParams['skey'];
   $scope.params = params;
   $scope.filtered = true;
-  //$scope.system = account.account.systems[$scope.skey];
-  /*
-  $scope.params = [];
-  for(var i=0; i<100; i++) {
-    $scope.params.push({
-      'index': i,
-      'name': 'name.' + i,
-      'desc': 'Описание ' + i,
-      'type': 'INT16',
-      'value': i % 10,
-      'default': i % 10,
-      'queue': null,
-      'filter': (i%10) === 1
-    });
-  }*/
+
+  $scope.params.get($route.current.params.skey).then(function(data){
+    console.log('params success', data);
+  });
+
   $scope.isFiltered = function(item) {
     if(!$scope.filtered) {
       return true;
@@ -2356,11 +2432,25 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     return item.filter;
   };
 
-  $scope.onChange = function(el){
+
+  /*$scope.onChange = function(el){
     // console.log('onChange', el);
     // console.log('onChange', el, $scope.account.account.systems[el].desc);
     system.change_desc(el, $scope.account.account.systems[el].desc);
+  };*/
+  $scope.onChangeValue = function(k){
+    params.set(k);  // Отправим значение в очередь на сервер
   };
+
+  $scope.cancelqueue = function(k){
+    params.cancel(k);  // Отправим на сервер команду отменить изменение параметра
+  }
+
+  $scope.stopqueue = function(){
+    for (var k in params.value) {
+      $scope.cancelqueue(k);
+    };
+  }
 
   $("[rel=tooltip]").tooltip();
 }])
@@ -2442,9 +2532,11 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
 
   $scope.gpsdata = [{lat: 1.0, lon: 1.0}];
 
-  var date = new Date();
+  /*var date = new Date();
   var tz = (new Date()).getTimezoneOffset()/60;
-  var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;
+  var hourfrom = Math.floor(date.valueOf() / 1000 / 3600 / 24) * 24 + tz;*/
+
+  var hourfrom = (new Date((new Date()).toDateString())).valueOf() / 1000 / 3600;
 
   $scope.mapconfig = {
       autobounds: true,   // Автоматическая центровка трека при загрузке
