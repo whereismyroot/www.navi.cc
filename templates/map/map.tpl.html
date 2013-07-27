@@ -6,7 +6,7 @@
     </ul>
     <ul class="mapsyslist">
         <mapsysitem zoom="{{zoomlist}}" ng-repeat="s in account.account.skeys" item="account.account.systems[s]" select="onSysSelect(s)"></mapsysitem>
-        <li>
+        <li style="padding-top: 15px;">
             <div style="white-space: normal;">
                 <div ng-show="account.account.skeys.length === 0">Вы еще не наблюдаете ни за одним трекером. Нажмите кнопку ниже чтобы добавить трекер в список наблюдения.</div>
                 <addtracker account="account"></addtracker>
