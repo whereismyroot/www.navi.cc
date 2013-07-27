@@ -1170,7 +1170,7 @@ angular.module('directives.timeline', [])
         //     .attr("text-anchor", "middle")
         //     .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
 
-        days.select("rect").transition().duration(500)
+        days.select("rect") //.transition().duration(500)
             .attr("x", function(d) { return (d.start.dt - offset) * zoom_factor / timescale; })
             .attr("width", function(d) { return (d.stop.dt - d.start.dt) * zoom_factor / timescale; });
 
