@@ -768,12 +768,10 @@ EventMarker.prototype.draw = function() {
         return d.title;
     });
 
-    points //.transition().duration(500)
-    // div.data(this.data)
-        // .attr("data-fake", function(d){
-        //     console.log('d=', d);
-        //     return "1";
-        // });
+    points
+        .attr("class", function(d){
+            return "track " + d.type;
+        })
         .attr("style", function(d){
             var px = overlayProjection.fromLatLngToDivPixel(d.pos);
             // console.log("d=", d, "px=", px);
@@ -957,46 +955,27 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
             }
 
             var eventdata = [];
-            for(i=0; i<data.track.length-1; i+=10){
+            var index = 1;
+            for(i=0; i<data.events.length; i++){
+                var e = data.events[i];
+                var title = "?";
+                if(e.type === "START"){
+                    title = "S";
+                } else if(e.type === "FINISH"){
+                    title =  "F";
+                } else {
+                    title = "" + index;
+                    index += 1;
+                }
                 eventdata.push({
-                    title: "" + (i/10),
-                    pos: data.track[i]
+                    title: title,
+                    type: e.type,
+                    pos: e.position,
+                    point: e.point
                 });
             }
 
             eventmarker.setData(eventdata);
-
-            // for(i=0; i<data.track.length-1; i+=10){
-            //     var marker = "" + (i/10);
-            //     if(!eventmarkers[marker]){
-            //         eventmarkers[marker] = new EventMarker(map, marker);
-            //     }
-            //     eventmarkers[marker].setPosition(data.track[i]);
-            // }
-
-            /*
-            if(begin_marker){
-                begin_marker.setPosition(data.track[0]);
-            } else {
-                begin_marker = new google.maps.Marker({
-                  map: map,
-                  position: data.track[0],
-                  title: 'Rabbit',
-                  icon: marker_begin
-                });
-            }
-
-            if(end_marker){
-                end_marker.setPosition(data.track[data.track.length-1]);
-            } else {
-                end_marker = new google.maps.Marker({
-                  map: map,
-                  position: data.track[data.track.length-1],
-                  title: 'Rabbit',
-                  icon: marker_end
-                });
-            }
-            */
 
         };
 
@@ -1144,6 +1123,9 @@ angular.module('directives.modal', []).directive('modal', ['$parse',function($pa
   };
 }]);
 
+var width = 2500;
+var timescale = 24 * 3600 / 2500.0;
+
 angular.module('directives.timeline', [])
 
 .directive('timeline', [function() {
@@ -1152,84 +1134,54 @@ angular.module('directives.timeline', [])
     var zoom_factor = 0.67;
     var svg;
 
+    var tz = (new Date()).getTimezoneOffset() / 60;
+    console.log('tz =', tz);
 
     var draw_data = function(data){
-        // // Пока сгенерируем фальшивые данные
-        // var start = 0;
-        // var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
-        //     var stop = start + ~~(Math.random() * 500);
-        //     var point = {
-        //         counter: i+1,
-        //         move: (i%2) === 1,
-        //         start: start,
-        //         stop: stop
-        //     };
-        //     start = stop;
-        //     return point;
-        // });
-        // if(data[data.length-1].stop < 2500){
-        //     data[data.length-1].stop = 2500;
-        // }
-        // console.log("data=", data);
+
+        var offset;
+        // Начальное смещение. Предполагам что данные будут за одни сутки.
+        if(data && (data.length > 0)){
+            offset = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600;
+        }
+        console.log("timeline data=", data, offset);
 
         var grid = d3.select(svg);
-
-        // var chart = function(el){
-        //     console.log("el=", el);
-        //     // el.append("text");
-        //     el.append("svg:rect")
-        //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
-        //     // .attr("class", "move")
-        //     .attr("x", function(d) { return d.start; })
-        //     .attr("y", "18")
-        //     .attr("width", function(d) { return d.stop - d.start; })
-        //     .attr("height", "12");
-        // };
 
         var days = grid.selectAll(".move")
             .data(data);
 
-        // days.enter().append("g").call(chart);
-
-        // days.enter().append("svg:rect")
-        //     .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
-        //     // .attr("class", "move")
-        //     .attr("x", function(d) { return d.start; })
-        //     .attr("y", "18")
-        //     .attr("width", function(d) { return d.stop - d.start; })
-        //     .attr("height", "12");
-
-        // days.transition()
-        //     .duration(500)
-        //     // .style("opacity", 1)
-        //     .attr("x", function(d) { return d.start; })
-        //     .attr("width", function(d) { return d.stop - d.start; });
-
         var g = days.enter().append("g")
-            .attr("class", function(d) { return "move " + (d.move?"run":"stop"); })
             .on('click', function(d) {
                 console.log(d3.select(this), d);
             });
 
         g.append("rect")
-            .attr("x", function(d) { return d.start * zoom_factor; })
+            // .attr("x", function(d) { return (d.start.dt - offset) * zoom_factor / timescale; })
             .attr("y", "16")
-            .attr("width", function(d) { return (d.stop - d.start) * zoom_factor; })
+            // .attr("width", function(d) { return (d.stop - d.start) * zoom_factor; })
+            // .attr("width", function(d) { return 10; })
             .attr("height", "16");
-        g.append("text")
-            .attr("x", function(d) { return zoom_factor * (d.stop + d.start) / 2; })
-            .attr("y", "28")
-            // .attr("dx", "0")
-            .attr("text-anchor", "middle")
-            .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
+
+        // g.append("text")
+        //     .attr("x", function(d) { return zoom_factor * (d.stop + d.start) / 2; })
+        //     .attr("y", "28")
+        //     // .attr("dx", "0")
+        //     .attr("text-anchor", "middle")
+        //     .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
 
         days.select("rect").transition().duration(500)
-            .attr("x", function(d) { return d.start * zoom_factor; })
-            .attr("width", function(d) { return (d.stop - d.start) * zoom_factor; });
+            .attr("x", function(d) { return (d.start.dt - offset) * zoom_factor / timescale; })
+            .attr("width", function(d) { return (d.stop.dt - d.start.dt) * zoom_factor / timescale; });
 
-        days.select("text").transition().duration(500)
-            .attr("x", function(d) { return zoom_factor * (d.stop + d.start)/2; });
-            // .attr("width", function(d) { return d.stop - d.start; });
+        // days.select("text").transition().duration(500)
+        //     .attr("x", function(d) { return zoom_factor * (d.stop + d.start)/2; });
+        //     // .attr("width", function(d) { return d.stop - d.start; });
+
+        days
+            .attr("class", function(d) {
+                return "move " + d.type;
+            });
 
         days.exit().remove();
 
@@ -1237,7 +1189,7 @@ angular.module('directives.timeline', [])
 
     var draw_axes = function(){
         // svg.width = "" + ~~(2500*zoom_factor) + "px";
-        d3.select(svg).attr("width", 2500*zoom_factor);
+        d3.select(svg).attr("width", width * zoom_factor);
 
         var data = d3.range(25).map(function(i){
             return {
@@ -1605,6 +1557,26 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   return Account;
 }]);
 
+/* Константы */
+FSOURCE_UNKNOWN     = 0;
+FSOURCE_SUDDENSTOP  = 1;
+FSOURCE_STOPACC     = 2;
+FSOURCE_TIMESTOPACC = 3;
+FSOURCE_SLOW        = 4;
+FSOURCE_TIMEMOVE    = 5;
+FSOURCE_START       = 6;
+FSOURCE_TIMESTOP    = 7;
+FSOURCE_ANGLE       = 8;
+FSOURCE_DELTALAT    = 9;
+FSOURCE_DELTALONG   = 10;
+FSOURCE_DELTA       = 11;
+FSOURCE_DU          = 12;    // Фиксация по дельте изменения внешнего напряжения
+FSOURCE_UMAX        = 13;    // Фиксация по превышению внешнего напряжения установленного порога
+FSOURCE_SUDDENSTART = 14;    // Это признак возможных проблем с акселерометром
+FSOURCE_SUDDENPOS   = 15;    // Это признак возможных проблем с акселерометром
+FSOURCE_TIMEINIT    = 16;    // Фиксация точек при первоначальной запитке
+
+
 angular.module('resources.geogps', [])
 
 .factory('GeoGPS', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
@@ -1670,16 +1642,22 @@ angular.module('resources.geogps', [])
         // console.log('parse');
         var track = [];
         var points = [];
+        var events = [];    // События на треке: Старт, стоп, стоянки (момент), остановки (момент), заправки и т.д.
+        var ranges = [];    // Интервалы: Движение, стоянка, остановка
         var bounds = null;
         var min_hour = 1e15;
         var max_hour = 0;
         var hours = {};
+        var range_start;
+        var stop_start = null;  // Точка начала стоянки/остановки
+        var move_start = null;  // Точка начала движения
+
+        var index = 0;
         for(var i=0; i<array.length; i+=32){
             point = parse_onebin(array.subarray(i, i+32));
             // console.log('point=', point);
             if(point){
                 var gpoint = new google.maps.LatLng(point.lat, point.lon);
-                track.push(gpoint);
                 points.push(point);
                 if(bounds === null){
                     bounds = new google.maps.LatLngBounds(gpoint, gpoint);
@@ -1691,15 +1669,117 @@ angular.module('resources.geogps', [])
                 if(hour < min_hour) min_hour = hour;
                 if(hour > max_hour) max_hour = hour;
                 hours[hour] = (hours[hour] || 0) + 1;
+
+                if(i===0){  // Первая точка
+                    events.push({
+                        point: point,
+                        position: gpoint,
+                        type: 'START',
+                        index: index
+                    });
+                    range_start = point;
+
+                    if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                        stop_start = 0;
+                        events.push({
+                            point: point,
+                            position: gpoint,
+                            type: 'STOP',   // Стоянка/остановка (тит пока не определен)
+                            index: index
+                        });
+                    } else {
+                        move_start = 0;
+                    }
+                }
+                if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                    if(stop_start === null){
+                        stop_start = index;
+                        events.push({
+                            point: point,
+                            position: gpoint,
+                            type: 'STOP',   // Стоянка/остановка (тит пока не определен)
+                            index: index
+                        });
+                    } else {
+                        gpoint = new google.maps.LatLng(points[stop_start].lat, points[stop_start].lon);
+                    }
+                    if(move_start !== null){
+                        ranges.push({
+                            type: 'MOVE',           // Движение
+                            start_index: move_start,
+                            start: points[move_start],
+                            stop_index: index,
+                            stop: points[index]
+                        });
+                        move_start = null;
+                    }
+                } else /*if(point['fsource'] === FSOURCE_START)*/{
+                    if(stop_start !== null){
+                        ranges.push({
+                            type: 'STOP',           // Стоянка/остановка (тит пока не определен)
+                            start_index: stop_start,
+                            start: points[stop_start],
+                            stop_index: index,
+                            stop: points[index]
+                        });
+                        stop_start = null;
+                    }
+                    if(move_start === null){
+                        move_start = index;
+                    }
+                }/* else {
+                    stop_start = null;
+                    if(!move_start){
+                        move_start = index;
+                    }
+                }*/
+                track.push(gpoint);
+
+                index += 1;
             }
         }
+
+        if(index > 0){
+            events.push({
+                point: points[index-1],
+                position: track[index-1],
+                type: 'FINISH',
+                index: index-1
+            });
+            if(stop_start !== null) {
+                ranges.push({
+                    type: 'STOP',           // Стоянка/остановка (тит пока не определен)
+                    start_index: stop_start,
+                    start: points[stop_start],
+                    stop_index: index-1,
+                    stop: points[index-1]
+                });
+            } else if(move_start !== null){
+                ranges.push({
+                    type: 'MOVE',           // Движение
+                    start_index: move_start,
+                    start: points[move_start],
+                    stop_index: index-1,
+                    stop: points[index-1]
+                });
+            }
+        }
+
+        // for(var i = 0; i < ranges.length; i++){
+        //     var r = ranges[i];
+        //     r.start = points[r.start_index];
+        //     r.stop = points[r.stop_index];
+        // }
+
         return {
             track: track,
             bounds: bounds,
             points: points,
             min_hour: min_hour,
             max_hour: max_hour,
-            hours: hours
+            hours: hours,
+            events: events,
+            ranges: ranges
         };
     };
 
@@ -3371,7 +3451,8 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
                     console.log(["getTrack: ", data]);
                     $scope.track = data;
                     $scope.points = data.track.length;
-                    fake_timeline();
+                    // fake_timeline();
+                    $scope.timeline = data.ranges;
                 });
         });
     });

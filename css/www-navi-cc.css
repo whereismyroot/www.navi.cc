@@ -951,25 +951,22 @@ ul.map-control-tools li:hover {
   padding: 0;
   margin: 0;
 }
-.map-timeline svg g.run {
+.map-timeline svg g.move {
   cursor: pointer;
 }
-.map-timeline svg g.run rect {
+.map-timeline svg g.MOVE rect {
   fill: #2CF306;
   opacity: 0.9;
 }
-.map-timeline svg g.run:hover rect {
+.map-timeline svg g.MOVE:hover rect {
   fill: #3CFF26;
   opacity: 1.0;
 }
-.map-timeline svg g.stop {
-  cursor: pointer;
-}
-.map-timeline svg g.stop rect {
+.map-timeline svg g.STOP rect {
   fill: #F57474;
   opacity: 0.9;
 }
-.map-timeline svg g.stop:hover rect {
+.map-timeline svg g.STOP:hover rect {
   fill: #FF9494;
   opacity: 1.0;
 }
@@ -1056,7 +1053,6 @@ div.mapcalendar {
 }
 .eventmarker {
   position: absolute;
-  border: 1px solid black;
   left: 0px;
   top: 0px;
 }
@@ -1071,6 +1067,29 @@ div.mapcalendar {
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 12px;
   text-align: center;
+  cursor: pointer;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+.eventmarker .track.START {
+  border: 2px solid #2d2;
+}
+.eventmarker .track.FINISH {
+  border: 2px solid #2dd;
+}
+.eventmarker .track:hover {
+  z-index: 1001;
+  -webkit-transform: scale(2);
+  -moz-transform: scale(2);
+  -ms-transform: scale(2);
+  -o-transform: scale(2);
+  transform: scale(2);
 }
 .eventmarker .track span {
   font-weight: bold;
