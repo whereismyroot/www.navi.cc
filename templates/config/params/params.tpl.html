@@ -74,7 +74,7 @@
         <tr>
             <th><i class="icon-filter cmd" rel="tooltip" title="Показать все параметры" ng-click="showall =! showall"></i>Имя</th>
             <th>Описание</th>
-            <th>Тип</th>
+            <!-- <th>Тип</th> -->
             <th>Значение</th>
             <th>Заводское значение</th>
             <th>Изменить на</th>
@@ -86,8 +86,9 @@
         <tr ng-repeat="(k, p) in filtered(params.value)">
             <td>{{k}}</td>
             <td>{{p.desc}}</td>
-            <td>{{p.type}}</td>
-            <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td>
+            <!-- <td>{{p.type}}</td> -->
+            <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
+            <td>{{p.value}}</td>
             <td>{{p.default}}</td>
             <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input type="text" ng-model="p.queue" style="width: 70%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
         </tr>
@@ -98,7 +99,7 @@
     </table>
     <div class="" style="text-align: right;">
         <button class="btn btn-danger" ng-click="stopqueue()"><i class="icon-trash icon-white"></i> Отменить внесенные изменения</button>
-        <button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button>
+        <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
     </div>
 <!--/div-->
 <!--/div-->
