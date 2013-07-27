@@ -573,7 +573,7 @@ body {
 }
 div.content {
   position: absolute;
-  top: 42px;
+  top: 50px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -979,7 +979,7 @@ ul.mapsyslist {
   padding: 0;
   position: absolute;
   top: 30px;
-  bottom: 230px;
+  bottom: 240px;
   left: 0px;
   width: 100%;
   overflow-x: hidden;
@@ -1012,7 +1012,7 @@ ul.mapsyslist li:hover {
 div.mapcalendar {
   position: absolute;
   bottom: 0px;
-  height: 230px;
+  height: 240px;
   left: 0px;
   width: 100%;
   border-top: 1px solid lightGrey;
@@ -1056,19 +1056,19 @@ div.mapcalendar {
 }
 div#geos_head {
   position: absolute;
-  top: 0px;
-  width: 450px;
-  height: 76px;
+  top: 20px;
+  width: 470px;
+  height: 176px;
   overflow: hidden;
   padding-top: 6px;
 }
 div#geos_body {
   position: absolute;
-  top: 76px;
+  top: 80px;
   bottom: 0px;
   left: 0px;
   right: 0px;
-  width: 449px;
+  width: 470px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -1083,7 +1083,7 @@ div#geos_body {
 div.geo_map {
   height: 99%;
   position: absolute;
-  left: 450px;
+  left: 480px;
   right: 16px;
   top: 0px;
   border: 1px solid black;

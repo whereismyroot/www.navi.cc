@@ -4,7 +4,7 @@
 <!--div class="span4"-->
 
 <div class="row">
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Информация о трекере</h4>
 
         <dl class="dl-horizontal">
@@ -18,7 +18,7 @@
         <!--button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button-->
     </div>
 
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Сведения о состоянии</h4>
 
         <dl class="dl-horizontal">
@@ -45,7 +45,7 @@
         <!--button class="btn btn-small" ng-click="update()">Обновить</button-->
     </div>
 
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Информация о транспортном средстве</h4>
 
         <dl class="dl-horizontal">
@@ -90,7 +90,7 @@
             <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
             <td>{{p.value}}</td>
             <td>{{p.default}}</td>
-            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input type="text" ng-model="p.queue" style="width: 70%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
+            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
         </tr>
         <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>

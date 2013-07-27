@@ -1,12 +1,13 @@
 <h4>События</h4>
 
-<div class="form-inline" style="display: inline-block; margin:10px 0 10px 0;">
-<select name="" id="" ng-model="skey" ng-select="onSelect()">
-    <option value="">Выберите систему</option>
-    <option ng-repeat="s in account.account.skeys" value="{{s}}">{{account.account.systems[s].desc}}</option>
-</select>
-<button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
-</div>
+    <form class="form-inline" style="margin:10px 0 10px 0;">
+    <!-- <form class="form-inline"> -->
+        <select class="form-control" name="" id="" ng-model="skey" ng-select="onSelect()" style="width: initial;">
+            <option value="">Выберите систему</option>
+            <option ng-repeat="s in account.account.skeys" value="{{s}}">{{account.account.systems[s].desc}}</option>
+        </select>
+        <button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
+    </form>
 
     <table class="table table-bordered table-condensed table-striped table-hover">
         <thead>

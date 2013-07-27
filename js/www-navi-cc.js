@@ -308,7 +308,8 @@ angular.module('directives.language', ['i18n'])
     return {
         restrict: 'E',
         replace: true,
-        template: '<div class="btn-group" data-toggle="buttons-radio"><button type="button" class="btn" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
+        // template: '<div class="btn-group" data-toggle="buttons-radio"><button type="button" class="btn" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
+        template: '<div class="btn-group"><button type="button" class="btn" ng-class="{active: l.code == active}" ng-repeat="l in langs" title="{{ l.title }}" ng-click="onSet(l)">{{ l.text }}</button></div>',
         // template:   '<select ng-model="lang">'+
         //             '<option value="">Выберите язык</option>'+
         //             '<option ng-repeat="l in langs" value="{{l.lang}}">{{l.title}}</option>'+
@@ -338,6 +339,7 @@ angular.module('directives.language', ['i18n'])
             // });
             scope.onSet = function(lang){
                 console.log("lang=", lang);
+                scope.active = lang.code;
                 $translate.uses(lang.code);
                 localStorage.setItem('language', lang.code);
             };
@@ -556,9 +558,9 @@ angular.module('directives.lists', [])
         },
         template: '<div><button class="btn btn-primary" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>' +
                     '<span ng-show="addform">' +
-                    '   <form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">' +
+                    '   <br><form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">' +
                     '        <label style="display:inline">IMEI</label>' +
-                    '       <input type="text" ng-model="newimei" required autofocus></input>' +
+                    '       <input class="form-control" type="text" ng-model="newimei" required autofocus></input>' +
                     '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\'>Добавить</button>' +
                     '       <fileload ng-model="files" ng-change="onFromFiles()"></fileload>' +
                     '    </form>' +
@@ -2878,7 +2880,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
       if(angular.isUndefined(skey) || (skey == null)){
         $location.path('/gps');
       } else {
-        $location.path('/gps/' + $scope.skey);
+        $location.path('/gps/' + $scope.skey + '/' + day);
       }
       //reload();
     }
