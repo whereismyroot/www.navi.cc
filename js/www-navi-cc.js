@@ -2859,18 +2859,15 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   var tz = (new Date()).getTimezoneOffset()/60;
 
   if((1*day) === 0){
-    // date = new Date();
     hourfrom = (new Date((new Date()).toDateString())).valueOf() / 1000 / 3600;
     date = new Date(hourfrom * 3600 * 1000);
   } else if((1*day) === -1){
     hourfrom = (new Date((new Date()).toDateString())).valueOf() / 1000 / 3600 - 24;
-    // date = new Date((new Date()) - 24 * 3600 * 1000);
   } else {
-    // date = new Date(day * 24 * 3600 * 1000);
-    // hourfrom = date.valueOf() / 1000 / 3600 + tz;
     hourfrom = day * 24 + tz;
   }
   date = new Date(hourfrom * 3600 * 1000);
+  $scope.datetime = hourfrom * 3600;
 
   console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
   console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));

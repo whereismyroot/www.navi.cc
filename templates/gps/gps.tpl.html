@@ -11,7 +11,7 @@
         <!-- <button class="btn" ng-click="selectday('choose')">Выбрать...</button> -->
         <!-- <input id="datepicker" data-date-language="ru" data-date-weekstart="1"></input> -->
         <!-- <a href="#" class="btn small" id="inputDate" data-date-language="ru" data-date-weekstart="1">Выбрать...</a> -->
-        <a href="#" class="btn small" id="inputDate">Выбрать...</a>
+        <a href="#" class="btn small" ng-class="{active: ((day!=0) && (day!=-1))}"  id="inputDate"><span ng-show="(day == 0) || (day == -1)">Выбрать...</span><span ng-hide="(day == 0) || (day == -1)">{{ datetime | datetime:false:'date' }}</span></a>
         <!-- <input class="inputDate" id="inputDate" value="06/14/2008" style="width: 100px"> -->
     </div>
     <br>
