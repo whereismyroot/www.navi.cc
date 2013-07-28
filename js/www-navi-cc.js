@@ -1691,7 +1691,8 @@ angular.module('resources.geogps', [])
                         move_start = 0;
                     }
                 }
-                if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                // if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
                     if(stop_start === null){
                         stop_start = index;
                         events.push({
@@ -3135,7 +3136,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
 
   $scope.mapconfig = {
       autobounds: true,   // Автоматическая центровка трека при загрузке
-      animation: true,   // Анимация направления трека
+      animation: false,   // Анимация направления трека
       numbers: true       // Нумерация стоянок/остановок
   };
 
