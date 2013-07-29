@@ -1,0 +1,47 @@
+<li ng-click="select()">
+    <!-- <i href="/#/config/{{ item.skey }}/params"><span class="icon-wrench"></span></i> -->
+    <div>
+        <span class="desc">
+            <i class="icon-wrench" title="Нажмите чтобы настроить трекер" ng-click="manageSystemParams(item.skey)"></i>
+                {{ item.desc }}
+                {{ skey }}
+        </span>
+    </div>
+
+    <div ng-show="zoom > 0">
+        <span class="status">
+            {{ item.dynamic.speed | number:1 }} км/ч
+        </span>
+        <span class="signal">
+            <datetime datetime="{{ item.dynamic.dt }}" seconds="false"></datetime>
+        </span>
+        <br>
+        <span class="status">
+            <span title="Основное питание"><i class="icon-ambulance"></i><strong>{{ item.dynamic.vout }}В</strong></span>
+            <span title="Резервное питание"><i class="icon-bolt"></i><strong>{{ item.dynamic.vin | number:2 }}В</strong></span>
+            <span title="Сигнал GSM"><i class="icon-signal"></i>{{ item.dynamic.csq * 100 / 32 | number:0}}%</span>
+            <i title="Сигнал GPS" class="fonticon">e</i>{{ item.dynamic.sats }}
+        </span>
+
+    </div>
+    <div ng-show="zoom > 1">
+            Выход на связь: <datetime datetime="{{ item.dynamic.lastping }}"></datetime><br>
+            Текущее состояние: {{ item.dynamic.speed | number:1 }} км/ч<br>
+            Число спутников: {{ item.dynamic.sats || '?'}}<br>
+            Уровень GSM: {{ item.dynamic.csq * 100 / 32 | number:0}}%<br>
+            Уровень GPS: {{ item.dynamic.sats * 100 / 12 | number:0}}%<br>
+            Основное питание: {{ item.dynamic.vout }} В<br>
+            Резервное питание: {{ item.dynamic.vin | number:2 }} В<br>
+            Координаты: <input class="clone" value="{{ item.dynamic.latitude | number:4 }}, {{ item.dynamic.longitude | number:4}}"/><br>
+            Дата метки: <datetime datetime="{{ item.dynamic.dt }}"></datetime><br>
+            Высота над ур.моря: ? м<br>
+            Температура: ? &deg;С<br>
+            Корпус: ?<br>
+            Вход 1: ?<br>
+            Вход 2: ?<br>
+            Вход 3: ?<br>
+            Выход 1: ?<br>
+            Выход 2: ?<br>
+            Уровень топлива: ? л<br>
+    </div>
+</li>

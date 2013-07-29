@@ -12,7 +12,8 @@ You need to install Node.js and then the development tools. Node.js comes with a
 * Install Grunt and Testacular as global npm modules:
 
     ```
-    npm install -g grunt@0.3.x testacular@0.4.x
+    sudo npm install -g grunt-cli
+    npm install
     ```
 
 ### Client App

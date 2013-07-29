@@ -10,6 +10,16 @@ angular.module('reports', ['resources.account'])
         return Account;
       }]
     }
+  }).
+  when('/reports/:skey', {
+    templateUrl:'templates/reports/reports.tpl.html',
+    controller:'ReportsViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }]
+    }
   });
 }])
 

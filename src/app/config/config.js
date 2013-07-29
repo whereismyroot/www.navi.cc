@@ -23,22 +23,17 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
 
   $scope.deleteenable = false;
   //$scope.addform = false;
-  $scope.onAdd = function(imei){
+  /*$scope.onAdd = function(imei){
     console.log('onAdd', imei, account, document.getElementById('config_add_file'));
 
     account.systemadd([imei]);
     $scope.addform = false;
-  };
+  };*/
 
   $scope.onFromFiles = function(){
     console.log('multiple add', $scope.files);
     account.systemadd($scope.files);
     $scope.addform = false;
-  };
-
-  $scope.onSort = function(){
-    console.log('onSort');
-    account.systemsort();
   };
 
   $scope.onChange = function(el){
@@ -51,20 +46,35 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
     console.log('onoff', el);
   };
 
+  $scope.sortableOptions = {
+    stop: function(e, ui) {
+      // console.log("Update", e, account.account.skeys);
+      account.systemsort();
+    },
+    handle: ".msp",
+    revert: true,
+    scrollSpeed: 5,
+    cursor: 'crosshair',
+    placeholder: 'ui-sortable-placeholder2',
+    axis: 'y'
+  };
+
   $scope.del = function(el){
     //delete el;
     console.log('del', el);
     account.systemdel(el);
     //$scope.account.systems[]
   };
-  var sortableEle = $('ul.config_sys_list').sortable({
-    handle: ".msp",
-    revert: true,
-    scrollSpeed: 5,
-    cursor: 'crosshair',
-    placeholder: 'ui-sortable-placeholder2',
-    stop: $scope.onSort
-  });
+  // var sortableEle = $('ul.config_sys_list').sortable({
+  //   handle: ".msp",
+  //   revert: true,
+  //   scrollSpeed: 5,
+  //   cursor: 'crosshair',
+  //   placeholder: 'ui-sortable-placeholder2',
+  //   end: $scope.onSort
+  // }).on('update', function(ev){
+  //   console.log('on update', ev);
+  // });
 
   /*$scope.$watch('account', function(){
     console.log('$watch:account');

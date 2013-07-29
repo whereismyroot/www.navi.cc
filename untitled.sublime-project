@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "src"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/home/baden/SDK/newgps.navi.cc/www.navi.cc"
+		}
+	]
+}

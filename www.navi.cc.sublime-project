@@ -3,6 +3,9 @@
 	[
 		{
 			"path": "src"
+		},
+		{
+			"path": "/home/baden/SDK/newgps.navi.cc/www.navi.cc"
 		}
 	]
 }

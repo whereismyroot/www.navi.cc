@@ -10,10 +10,13 @@ angular.module('app', [
   'reports',
   'config',
   'help',
-  'services.i18n',
-  'services.i18nNotifications',
-  'services.httpRequestTracker',
-  'templates']);
+  'i18n',
+  '$strap',
+  // 'services.i18n',
+  // 'services.i18nNotifications',
+  'services.httpRequestTracker'
+  // 'templates'
+]);
 
 
 var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
@@ -32,15 +35,15 @@ angular.module('app').constant('globals', {
 });
 
 //TODO: move those messages to a separate module
-angular.module('app').constant('I18N.MESSAGES', {
-  'errors.route.changeError':'Route change error',
-  'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
-  'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
-  'crud.user.save.error':"Something went wrong when saving a user...",
-  'login.error.notAuthorized':"Необходима авторизация чтобы пользоваться сервисом.",
-  'login.error.notAuthenticated':"Необходима авторизация чтобы пользоваться сервисом.",
-  'login.newUser':'Создана новая учетная запись {{name}}.'
-});
+// angular.module('app').constant('I18N.MESSAGES', {
+//   'errors.route.changeError':'Route change error',
+//   'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
+//   'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
+//   'crud.user.save.error':"Something went wrong when saving a user...",
+//   'login.error.notAuthorized':"Необходима авторизация чтобы пользоваться сервисом.",
+//   'login.error.notAuthenticated':"Необходима авторизация чтобы пользоваться сервисом.",
+//   'login.newUser':'Создана новая учетная запись {{name}}.'
+// });
 
 angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvider', 'SERVER', function ($routeProvider, $locationProvider, $httpProvider, SERVER) {
   console.log(['! App CONFIG !', $httpProvider, SERVER]);
@@ -60,27 +63,54 @@ angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
-//angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
-  console.log('app:AppCtrl', i18n);
-  $scope.i18n = i18n;
+angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', 'Account', function($scope, $location, $route, $rootScope, Account) {
+  console.log('app:AppCtrl', $location /*, $location.parse()*/);
+  // $scope.i18n = i18n;
 
-  $scope.notifications = i18nNotifications;
-  $scope.location = location;
+  // $scope.notifications = i18nNotifications;
+  $scope.account = Account;
+  $scope.location = $location;
+  $scope.$route = $route;
+  // $rootScope.skey = 'test';
 
-  $scope.removeNotification = function (notification) {
-    i18nNotifications.remove(notification);
-  };
-
-  $scope.$on('$routeChangeError', function(event, current, previous, rejection){
-    i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
+  $scope.$watch('account.skey', function(skey){
+    // if(!skey) return;
+    console.log('++=> account.skey = ', skey, $scope.account.skey);
+    // var params = $route.current.params;
+    // params.skey = skey;
+    // var search = $location.search(params).path($route.current.path);
+    // var search = $location.search('skey', skey);
+    // $location.path();
+    // var search = 0;
+    // console.log("++=> params = ", params, search);
+  //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
   });
+
+  $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
+    console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
+    Account.skey = current.params.skey;
+    // if(current.params.skey && !Account.skey){
+      // Account.setSkey(current.params.skey);
+    // }
+        // console.log('Changing route from ' + angular.toJson(current) + ' to ' + angular.toJson(next));
+  });
+
+  // $scope.removeNotification = function (notification) {
+  //   i18nNotifications.remove(notification);
+  // };
+
+  // $scope.$on('$routeChangeError', function(event, current, previous, rejection){
+  //   i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
+  // });
 }]);
 
 //angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'notifications', 'httpRequestTracker', function ($scope, $location, $route, notifications, httpRequestTracker) {
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'Account', 'httpRequestTracker', function ($scope, $location, $route, Account, httpRequestTracker) {
   $scope.location = $location;
   $scope.account = Account;
+  $scope.skey = Account.skey;
+
+  console.log('update Header');
 
   $scope.home = function () {
     /*if ($scope.currentUser.isAuthenticated()) {

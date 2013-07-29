@@ -13,12 +13,31 @@ angular.module('logs', ['resources.account', 'resources.logs'])
         return Logs;
       }]
     }
+  })
+  .when('/logs/:skey', {
+    templateUrl:'templates/logs/logs.tpl.html',
+    controller:'LogsViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }],
+      logs:['Logs', function(Logs){
+        return Logs;
+      }]
+    }
   });
 }])
 
-.controller('LogsViewCtrl', ['$scope', '$location', 'account', 'logs', function ($scope, $location, account, logs) {
+.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'logs', function ($scope, $location, $routeParams, account, logs) {
   $scope.account = account;
-  $scope.skey = "";
+  // $scope.skey = "";
+  var startskey = $routeParams['skey'];
+  // if(account.skey != startskey){
+  //   account.setSkey(startskey);
+  // }
+  $scope.skey = account.skey;
+
   $scope.logs = logs;
   $scope.comment = "Данные еще не получены";
   //$scope.skey = account.account.skeys[0];
@@ -27,13 +46,14 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   };
 
   var reload = function(){
-    if((!$scope.skey) || ($scope.skey === "")) {
+    console.log('reload', $scope.account.skey);
+    if((!$scope.account.skey) || ($scope.account.skey === "")) {
       return;
     }
     $scope.logs.logs = [];
     $scope.comment = "Данные загружаются...";
-    console.log(['change skey', $scope.skey, $scope.account]);
-    $scope.logs.get($scope.skey, $scope.account.akey, function(res){
+    console.log(['change skey', $scope.account.skey, $scope.account]);
+    $scope.logs.get($scope.account.skey, $scope.account.akey, function(res){
       if(res === 0) {
         $scope.comment = "Нет событий.";
       } else {
@@ -46,19 +66,33 @@ angular.module('logs', ['resources.account', 'resources.logs'])
     reload();
   };
 
-  $scope.$watch('skey', function(skey){
-    reload();
-
-    /*
-    var logs = [];
-    for(var i=0; i<100; i++) {
-      logs.push({
-        "dt": 0,
-        "text": "Hello"
-      });
+  $scope.onSysSelect = function(){
+    console.log('skey=', $scope.skey, $location);
+    if($scope.skey){
+      $location.path('/logs/' + $scope.skey);
+    } else {
+      $location.path('/logs');
     }
-    $scope.logs.logs = logs;
-    */
-  });
+    // account.setSkey($scope.skey);
+    // $location.path('/logs/' + $scope.account.skey);
+    // reload();
+  }
+  reload();
+
+  // $scope.$watch('skey', function(skey){
+  //   console.log('skey=', skey);
+  //   // reload();
+
+  //   if($scope.skey !== startskey) {
+  //     if(angular.isUndefined(skey) || (skey == null)){
+  //       $location.path('/logs');
+  //     } else {
+  //       $location.path('/logs/' + $scope.skey);
+  //       // $scope.$apply();
+  //     }
+  //   }
+  //   reload();
+  // });
+
   $("[rel=tooltip]").tooltip();
 }]);

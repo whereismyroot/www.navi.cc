@@ -1,43 +1,43 @@
-<div gmap="main"></div>
+<div gmap="main" track="track" config="mapconfig"></div>
 <div class="map-control">
+    <ul class="map-control-tools">
+        <li ng-click="doFilter()"><span class="icon-filter icon-large" title="Фильтр"></span></li>
+        <li ng-click="doZoomList()"><span class="icon-zoom-in icon-large" title="Размер"></span></li>
+    </ul>
     <ul class="mapsyslist">
-        <li ng-repeat="s in account.account.skeys">
-            <span class="desc">
-                {{ account.account.systems[s].desc }}
-            </span>
-            <!--span class="imei">
-                {{ account.account.systems[s].imei }}
-            </span-->
-            <span class="status">
-                Стоит
-            </span>
-            <span class="signal">
-                24/05/2013 24:55
-            </span>
-            <br>
-            <span class="status">
-                <span title="Основное питание"><i class="icon-ambulance"></i><strong>12В</strong></span>
-                <span title="Резервное питание"><i class="icon-bolt"></i><strong>4.2В</strong></span>
-                <span title="Сигнал GSM"><i class="icon-signal"></i></span>
-                <i title="Сигнал GPS" class="fonticon">e</i>
-            </span>
+        <mapsysitem zoom="{{zoomlist}}" class="{{s}}" ng-repeat="s in account.account.skeys" item="account.account.systems[s]" select="onSysSelect(s)"></mapsysitem>
+        <li style="padding-top: 15px;">
+            <div style="white-space: normal;">
+                <div ng-show="account.account.skeys.length === 0">Вы еще не наблюдаете ни за одним трекером. Нажмите кнопку ниже чтобы добавить трекер в список наблюдения.</div>
+                <addtracker account="account"></addtracker>
+            </div>
+        </li>
+        <li>
+            {{ skey }}
         </li>
     </ul>
     <div class="mapcalendar">
-      <!--div ng-model="date" value="02-16-2012" data-date="12-02-2012" data-date-format="dd-mm-yyyy" ui-date regional="ru"></div-->
       <div id="datepicker" data-date-language="ru" data-date-weekstart="1"></div>
-      <!--div class="input-append date" id="datepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-            <input size="16" type="text" value="12-02-2012" readonly>
-            <span class="add-on"><i class="icon-th"></i></span>
-        </div-->
     </div>
 
 
 </div>
 
-<div class="map-timeline">
-    Шкала
-    <div style="width: 40000px;">uu</div>
+<div class="map-timeline" id="timeline" data="timeline" timeline></div>
+
+<div class="map-toolbar">
+    <span class="icon-wrench icon-large" title="{{'Display Settings' | translate}}" ng-click="showconfig = !showconfig" style="padding: 7px;"></span>
+    <div class="map-toolbar-config" ng-show="showconfig">
+        <ul class="unstyled">
+            <li config-map-item item="mapconfig.autobounds" icon-off="unlock" icon-on="lock">{{ 'AUTO_BOUND_TRACK' | translate }}</li>
+            <li config-map-item item="mapconfig.animation" icon-off="truck" icon-on="truck">{{ 'ANIMATION_DIR' | translate}}</li>
+            <li config-map-item item="mapconfig.numbers" icon-off="map-marker" icon-on="map-marker">{{ 'STOP_NUMBERS' | translate}}</li>
+        </ul>
+    </div>
+    <button ng-click="hideTrack()" class="btn" translate>Hide track</button>
+    {{'points_in_track' | translate:{value: points} }}
+    <!--chooselang></chooselang-->
 </div>
+
 
 </div>

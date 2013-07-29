@@ -2,7 +2,7 @@ angular.module('error', [])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/error', {
-    templateUrl:'templates/en/error.tpl.html',
+    templateUrl:'templates/error/error.tpl.html',
     controller:'ErrorCtrl'
   });
 

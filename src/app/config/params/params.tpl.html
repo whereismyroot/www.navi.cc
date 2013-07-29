@@ -4,50 +4,52 @@
 <!--div class="span4"-->
 
 <div class="row">
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Информация о трекере</h4>
 
         <dl class="dl-horizontal">
-            <dt>Наименование</dt><dd>{{ account.account.systems[skey].desc }}</dd>
-            <dt>IMEI</dt><dd>{{ account.account.systems[skey].imei }} <i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
-            <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone }}</dd>
-            <dt>Зарегестрирована</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
-            <dt>Версия ПО</dt><dd>3021 <i class="icon-question-sign cmd" title="Проверить доступность обновления"></i></dd>
+            <dt>Модель</dt><dd>MT-400</dd>
+            <dt>IMEI</dt><dd><input class="clone" value="{{ account.account.systems[skey].imei }}"/></dd>
+            <dt>Телефон SIM-карты</dt><dd><input class="clone" value="{{ account.account.systems[skey].phone || '?'}}"/></dd>
+            <dt>Зарегестрирован</dt><dd><datetime seconds="false" datetime="{{ account.account.systems[skey].date }}"></datetime></dd>
+            <dt>Версия ПО</dt><dd>{{ account.account.systems[skey].swid || '?' }}<!--i class="icon-question-sign cmd" title="Проверить доступность обновления"></i--></dd>
         </dl>
 
-        <button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button>
+        <!--button class="btn btn-small" ng-click="new()">Добавить произвольное поле</button-->
     </div>
 
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Сведения о состоянии</h4>
 
         <dl class="dl-horizontal">
-            <dt>Выход на связь</dt><dd>{{ account.account.systems[skey].date | fromnow }}</dd>
-            <dt>Текущее состояние</dt><dd>Стоит</dd>
-            <dt>Уровень GSM</dt><dd>неизвестно</dd>
-            <dt>Уровень GPS</dt><dd>неизвестно</dd>
-            <dt>Основное питание</dt><dd>-</dd>
-            <dt>Резервное питание</dt><dd>-</dd>
-            <dt>Координаты</dt><dd>35.4, 46.2<i class="icon-copy cmd" title="{{ i18n.copy_to_buffer }}"></i></dd>
-            <dt>Высота над ур.моря</dt><dd>256м</dd>
-            <dt>Температура</dt><dd>52гЦ</dd>
-            <dt>Корпус</dt><dd>закрыт</dd>
-            <dt>Вход 1</dt><dd>активен</dd>
-            <dt>Вход 2</dt><dd>не активен</dd>
-            <dt>Вход 3</dt><dd>не активен</dd>
-            <dt>Выход 1</dt><dd>не активен</dd>
-            <dt>Выход 2</dt><dd>не активен</dd>
-            <dt>Уровень топлива</dt><dd>25л</dd>
+            <dt>Выход на связь</dt><dd><datetime datetime="{{ account.account.systems[skey].dynamic.lastping }}"></datetime></dd>
+            <dt>Текущее состояние</dt><dd>{{ account.account.systems[skey].dynamic.speed | number:1 }} км/ч</dd>
+            <dt>Число спутников</dt><dd>{{ account.account.systems[skey].dynamic.sats || '?'}}</dd>
+            <dt>Уровень GSM</dt><dd>{{ account.account.systems[skey].dynamic.csq * 100 / 32 | number:0}}%</dd>
+            <dt>Уровень GPS</dt><dd>{{ account.account.systems[skey].dynamic.sats * 100 / 12 | number:0}}%</dd>
+            <dt>Основное питание</dt><dd>{{ account.account.systems[skey].dynamic.vout }} В</dd>
+            <dt>Резервное питание</dt><dd>{{ account.account.systems[skey].dynamic.vin | number:2 }} В</dd>
+            <dt>Координаты</dt><dd><input class="clone" value="{{ account.account.systems[skey].dynamic.latitude | number:4 }}, {{ account.account.systems[skey].dynamic.longitude | number:4}}"/></dd>
+            <dt>Дата метки</dt><dd><datetime datetime="{{ account.account.systems[skey].dynamic.dt }}"></datetime></dd>
+            <dt>Высота над ур.моря</dt><dd>? м</dd>
+            <dt>Температура</dt><dd>? &deg;С</dd>
+            <dt>Корпус</dt><dd>?</dd>
+            <dt>Вход 1</dt><dd>?</dd>
+            <dt>Вход 2</dt><dd>?</dd>
+            <dt>Вход 3</dt><dd>?</dd>
+            <dt>Выход 1</dt><dd>?</dd>
+            <dt>Выход 2</dt><dd>?</dd>
+            <dt>Уровень топлива</dt><dd>? л</dd>
         </dl>
 
-        <button class="btn btn-small" ng-click="update()">Обновить</button>
+        <!--button class="btn btn-small" ng-click="update()">Обновить</button-->
     </div>
 
-    <div class="well well-small span4">
+    <div class="well well-small span4 col-lg-4">
         <h4>Информация о транспортном средстве</h4>
 
         <dl class="dl-horizontal">
-            <dt>Наименование</dt><dd>-</dd>
+            <dt>Наименование ТС</dt><dd contenteditable ng-model="account.account.systems[skey].desc" ng-change="onChange(skey)" title="Для изменения описания поместите курсор в поле"></dd>
             <dt>Гос номер</dt><dd>AA 0000 AA</dd>
             <dt>Год выпуска</dt><dd>-</dd>
             <dt>№ двигателя</dt><dd>-</dd>
@@ -65,38 +67,39 @@
 
 <div class="well well-small">
     <h4>Программирование параметров системы</h4>
+    <!-- a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a-->
 
     <table class="table table-bordered table-condensed table-striped table-hover">
         <thead>
         <tr>
-            <th>№</th>
-            <th>Имя</th>
-            <th>Описание<i class="icon-filter cmd" rel="tooltip" title="Показать все параметры" ng-click="filtered=!filtered"></i></th>
-            <th>Тип</th>
+            <th><i class="icon-filter cmd" rel="tooltip" title="Показать все параметры" ng-click="showall =! showall"></i>Имя</th>
+            <th>Описание</th>
+            <!-- <th>Тип</th> -->
             <th>Значение</th>
             <th>Заводское значение</th>
-            <th>Очередь</th>
+            <th>Изменить на</th>
         </tr>
         </thead>
         <tbody>
         <!--tr ng-repeat="p in params | isFiltered:filtered"-->
-        <tr ng-repeat="(k, p) in params.value | filter:isFiltered">
-            <td>{{p.index}}</td>
+        <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
+        <tr ng-repeat="(k, p) in filtered(params.value)">
             <td>{{k}}</td>
             <td>{{p.desc}}</td>
-            <td>{{p.type}}</td>
+            <!-- <td>{{p.type}}</td> -->
+            <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
             <td>{{p.value}}</td>
             <td>{{p.default}}</td>
-            <td>{{p.queue}}</td>
+            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
         </tr>
-        <tr ng-show="!params.length">
+        <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>
         </tr>
         </tbody>
     </table>
     <div class="" style="text-align: right;">
         <button class="btn btn-danger" ng-click="stopqueue()"><i class="icon-trash icon-white"></i> Отменить внесенные изменения</button>
-        <button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button>
+        <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
     </div>
 <!--/div-->
 <!--/div-->

@@ -1,9 +1,10 @@
-angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'directives.language'])
+angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
 
   $routeProvider.when('/login', {
-    templateUrl:'login.tpl.html',
+    // templateUrl:'login.tpl.html',
+    templateUrl:'templates/login/login.tpl.html',
     controller:'LoginViewCtrl',
     resolve:{
       account:['Account', function (Account) {
@@ -23,6 +24,8 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
       }]
     }
   });
+
+  $routeProvider.otherwise({ redirectTo: '/error' });
 
 }])
 

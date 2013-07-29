@@ -8,7 +8,7 @@ angular.module('services.connect', [])
     shared.updater.on = function(msg, foo){
         shared.updater.queue[msg] = shared.updater.queue[msg] || [];
         shared.updater.queue[msg].push(foo);
-        console.log(["shared.updater.on(", msg, foo, shared.updater.queue]);
+        // console.log(["shared.updater.on(", msg, foo, shared.updater.queue]);
         return foo;
     };
 
@@ -24,7 +24,7 @@ angular.module('services.connect', [])
                 shared.updater.queue['*'][i](msg);
             }
         }
-        console.log(["shared.updater.process(", msg, shared.updater.queue]);
+        // console.log(["shared.updater.process(", msg, shared.updater.queue]);
     };
 
     shared.updater.remove = function(msg, updater){
@@ -33,7 +33,7 @@ angular.module('services.connect', [])
         console.log(["===> TODO!!!! Not implemented.", updater, shared.updater.queue, index]);
     };
 
-    console.log("===> Connect:init");
+    // console.log("===> Connect:init");
 
 
     //var ws_server = "ws://gpsapi04.navi.cc:8888/socket";
@@ -56,8 +56,8 @@ angular.module('services.connect', [])
             //ws.send("First msg");
         };
         ws.onmessage = function(event) {
-            //console.log(['onmessage:', event.data]);
             var msg = JSON.parse(event.data);
+            console.log('onmessage:', msg);
             //msg.map(function f(m){ shared.updater.process(m); });
             shared.updater.process(msg);
             //shared.send(event.data);

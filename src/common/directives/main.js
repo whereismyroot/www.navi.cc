@@ -93,7 +93,7 @@ angular.module('directives.lists', [])
                 }
             });
             read = function() {
-                console.log("read()", scope, ngModel);
+                // console.log("read()", scope, ngModel);
                 ngModel.$setViewValue($.trim(element.text()));
                 element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
                 /*
@@ -169,7 +169,106 @@ angular.module('directives.lists', [])
             console.log(['fileload', scope, element, attr, ngModel]);
         }
     };
-});
+})
+
+.directive('addtracker', function() {
+    return {
+        restrict: 'E',
+        require: '?ngModel',
+        scope: {
+            account: "="
+        },
+        template: '<div><button class="btn btn-primary" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>' +
+                    '<span ng-show="addform">' +
+                    '   <br><form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">' +
+                    '        <label style="display:inline">IMEI</label>' +
+                    '       <input class="form-control" type="text" ng-model="newimei" required autofocus></input>' +
+                    '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\'>Добавить</button>' +
+                    '       <fileload ng-model="files" ng-change="onFromFiles()"></fileload>' +
+                    '    </form>' +
+                    '</span></div>',
+        replace: true,
+        link: function(scope, element, attr, ngModel) {
+        },
+        controller: ["$scope", function($scope){
+            $scope.addform = false;
+            $scope.onAdd = function(imei){
+                console.log('onAdd', imei, $scope.account, document.getElementById('config_add_file'));
+
+                $scope.account.systemadd([imei]);
+                $scope.addform = false;
+            };
+            $scope.onFromFiles = function(){
+                console.log('multiple add', $scope.files);
+                $scope.account.systemadd($scope.files);
+                $scope.addform = false;
+            };
+        }]
+    }
+})
+
+.directive('clone', function() {
+    return {
+        restrict: 'C',
+        // template: null,
+        // replace: true,
+        link: function(scope, element, attr, ngModel) {
+            console.log('clone component');
+            element.attr('readonly', 'readonly');
+            element.attr('type', 'text');
+            element.attr('title', "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'");
+            element.bind('mousedown', function(){this.select();});
+            //element.bind('mouseover', function(){this.select();});
+        }
+    }
+})
+
+.directive('datetime', [function(){
+    return {
+        restrict: 'E',
+        scope: {
+            datetime: "@",
+            "default": "@",
+            format: "@",
+            seconds: "="
+        },
+        template: '<span class="datelabel" title="{{ title }}" ng-click="switch()">{{ value }}</span>',
+        controller: ["$scope", "$filter", function($scope, $filter){
+            $scope.invert = $scope["default"] || false;
+            //$scope.format =
+            var update = function(){
+                // console.log("$scope.seconds", $scope.seconds);
+                // console.log('$scope.datetime=', $scope.datetime);
+                if(angular.isUndefined($scope.datetime) || $scope.datetime === ''){
+                    $scope.value = "?";
+                    $scope.title = "Значение неопределено";
+                    return;
+                }
+                if($scope.invert){
+                    $scope.value = $filter("datetime")($scope.datetime, $scope.seconds, $scope.format);
+                    $scope.title = $filter("fromnow")($scope.datetime);
+                } else {
+                    $scope.value = $filter("fromnow")($scope.datetime);
+                    $scope.title = $filter("datetime")($scope.datetime, $scope.seconds, $scope.format);
+                }
+            };
+            $scope.switch = function(){
+                $scope.invert = !$scope.invert;
+                update();
+            };
+            $scope.enter = function(){
+                $scope.invert = true;
+                update();
+            };
+            $scope.leave = function(){
+                $scope.invert = false;
+                update();
+            };
+            $scope.$watch("datetime", update);
+        }]
+    };
+}]);
+
 
 console.log("*=*=*=*= I'am a spammer");
 

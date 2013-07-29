@@ -1,6 +1,8 @@
-angular.module('resources.account', ['services.i18nNotifications']);
+// angular.module('resources.account', ['services.i18nNotifications']);
+angular.module('resources.account', []);
 
-angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+// angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', function (SERVER, $http, $q, $timeout, Connect, $rootScope) {
 
   var Account = {
     'name': 'noname-noface-nonumber',
@@ -8,7 +10,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
     'withCredentials': SERVER.api_withCredentials,
     'account': null,
     'hint': null,
-    'isAuthenticated': false
+    'isAuthenticated': false,
+    skey: null    // Выбранный skey. Используется как глобальное значение сквозь все страницы
   };
 
   if(!SERVER.api_withCredentials) {
@@ -78,7 +81,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
       Account.account = data.account;
       Account.isAuthenticated = true;
       if(data.result === "created") {
-        i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
+        // i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
+        console.warn("TODO: Add notification here");
         //$scope.label = "Создана новая учетная запись. Вход через 3 секунды.";
         //setTimeout(function(){location.reload();}, 3000);
       } else {
@@ -158,6 +162,26 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18n
   };
 
   //$scope.access_token = access_token;
+  var updater = Connect.updater.on('update_dynamic', function(msg) {
+      console.log('==Update dynamic', msg);
+      if(msg.skey in Account.account.systems){
+        if(!Account.account.systems[msg.skey].dynamic){
+          Account.account.systems[msg.skey].dynamic = {};
+        }
+        angular.extend(Account.account.systems[msg.skey].dynamic, msg.dynamic);
+      }
+      $rootScope.$apply();
+      //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
+      //lastpos.setPosition(newpos);
+  });
+
+  Account.setSkey = function(skey){
+    Account.skey = skey;
+  };
+
+  // Account.skey = function(){
+  //   return Account.skey;
+  // };
 
   return Account;
 }]);

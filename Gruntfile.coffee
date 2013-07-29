@@ -43,50 +43,59 @@ module.exports = (grunt) ->
           src: ['**']
           cwd: 'src/assets/'
           expand: true
-        ,
+        ]
+      templates:
+        files: [
           dest: '<%= distdir %>/templates'
           src: ['**/*.tpl.html']
           cwd: 'src/app'
           expand: true
         ]
+      sprites:
+        files: [
+          src: ["sprite-marker.png"]
+          dest: "dist/css/"
+          cwd: 'src/images'
+          expand: true
+        ]
 
     jade:
-      ru:
-        files:
-          '<%= tempdir %>/templates/ru': ['src/app/templates/*.jade']
+      templates:
         options:
           client: false
-          pretty: false
-          extension: '.tpl.html'
-          locals:
-            _: grunt.file.readJSON('src/i18n/ru.json')
-      en:
-        files:
-          '<%= tempdir %>/templates/en': ['src/app/templates/*.jade']
-        options:
-          client: false
-          pretty: false
-          extension: '.tpl.html'
-          locals:
-            _: grunt.file.readJSON('src/i18n/en.json')
-      ua:
-        files:
-          '<%= tempdir %>/templates/ua': ['src/app/templates/*.jade']
-        options:
-          client: false
-          pretty: false
-          extension: '.tpl.html'
-          locals:
-            _: grunt.file.readJSON('src/i18n/ua.json')
-      pl:
-        files:
-          '<%= tempdir %>/templates/pl': ['src/app/templates/*.jade']
-        options:
-          client: false
-          pretty: false
-          extension: '.tpl.html'
-          locals:
-            _: grunt.file.readJSON('src/i18n/pl.json')
+          # pretty: false
+          doctype: '5'
+          pretty: true
+          data:
+            debug: false
+            title: 'My awesome application'
+          # extension: '.tpl.html'
+          # locals:
+          #   _: grunt.file.readJSON('src/i18n/ru.json')
+        # files: grunt.file.expandMapping(["**/*.jade"], "dist/templates/",
+        files: grunt.file.expandMapping(["**/*.jade"], "dist/templates/",
+          # cwd: "src/app/templates"
+          cwd: "src/app"
+          rename: (destBase, destPath) ->
+            # console.log "Hello", destBase, destPath
+            destBase + destPath.replace(/\.jade$/, ".tpl.html")
+          # '<%= tempdir %>/templates': ['src/app/templates/*.jade']
+          # '<%= distdir %>/templates/': ['src/app/templates/*.jade']
+          )
+
+    # jade:
+    #   templates: {
+    #     files: {
+    #       'dist/templates/': ['src/app/templates*.jade']
+    #     },
+    #     options: {
+    #       client: false,
+    #       locals: {
+    #         title: 'Welcome to my website!'
+    #       }
+    #     }
+    #   }
+
 
     html2js:
       #templates:
@@ -96,33 +105,12 @@ module.exports = (grunt) ->
       #  dest: '<%= distdir %>/js/templates.js'
       #  module: 'templates'
 
-      templates_en:
+      templates:
         options:
-          base: '<%= tempdir %>/templates/en'
+          base: '<%= distdir %>'
           module: 'templates'
-        src: ['<%= tempdir %>/templates/en/*.tpl.html']
-        dest: '<%= distdir %>/js/templates-en.js'
-
-      templates_ru:
-        options:
-          base: '<%= tempdir %>/templates/ru'
-          module: 'templates'
-        src: ['<%= tempdir %>/templates/ru/*.tpl.html']
-        dest: '<%= distdir %>/js/templates-ru.js'
-
-      templates_ua:
-        options:
-          base: '<%= tempdir %>/templates/ua'
-          module: 'templates'
-        src: ['<%= tempdir %>/templates/ua/*.tpl.html']
-        dest: '<%= distdir %>/js/templates-ua.js'
-
-      templates_pl:
-        options:
-          base: '<%= tempdir %>/templates/pl'
-          module: 'templates'
-        src: ['<%= tempdir %>/templates/pl/*.tpl.html']
-        dest: '<%= distdir %>/js/templates-pl.js'
+        src: ['<%= distdir %>/templates/**/*.tpl.html']
+        dest: '<%= distdir %>/js/templates.js'
 
     concat:
       dist:
@@ -131,8 +119,53 @@ module.exports = (grunt) ->
       #  src:['src/i18n/ru.jade', 'src/*.jade']
       #  dest:'<%= distdir %>/tmp/jade/*.jade'
 
+    oversprite:
+      all:
+        # // List of sprites to create
+        spritelist: [
+          # // List of images to add to sprite
+          src: ["src/images/*.png"]
+          # // Address of target image
+          # dest: "dist/css/sprite-marker.png"
+          dest: "src/images/sprite-marker.png"
+          # // OPTIONAL: Image placing algorithm: top-down, left-right, diagonal, alt-diagonal
+          algorithm: "alt-diagonal"
+          # // OPTIONAL: Rendering engine: auto, canvas, gm
+          engine: "gm"
+          # // OPTIONAL: Preferences for resulting image
+          exportOpts:
+            # // Image formst (buy default will try to use dest extension)
+            format: "png"
+            # // Quality of image (gm only)
+            quality: 90
+        # ,
+        #   # // Second sprite config
+        #   src: ["src/images/img2.jpg", "images/img3.gif"]
+        #   dest: "dist/img/sprite-other.jpg"
+        ]
+        # // List of css to replace images
+        csslist: [
+          # // Source css file
+          src:  "src/images/style-sprite.css"
+          # src:  "style-sprite.css"
+          # // Target css file, can be the same as source
+          # dest: "src/images/sprite-marker.css"
+          dest: "dist/css/sprite-marker.css"
+          # // OPTIONAL: Normalization string. Will be added to css dir path, before paths in css.
+          # // Use if you move the css and paths to images aren't resolving correctly now.
+          # base: "../../../dist/css/images"
+          # base: "../../../src/images/marker/"
+          # base: "src"
+          # base: "../dist/css/"
+        # ,
+        #   # // Second css config
+        #   src: "style.ie.css"
+        #   dest: "sprite.ie.css"
+        ]
+
     clean:
       dist: ['<%= distdir %>/*']
+      sprites: ["src/images/sprite-*.png", "src/images/sprite-*.css"]
 
     connect:
       livereload:
@@ -150,6 +183,9 @@ module.exports = (grunt) ->
       html:
         files: '<%= src.html %>'
         tasks: ['index']
+      htmltemplate:
+        files: ['src/app/**/*.tpl.html']
+        tasks: ['copy:templates']
       js:
         files: ['src/i18n/**/*.js', 'src/common/**/*.js', 'src/app/**/*.js']
         tasks: ['concat']
@@ -160,12 +196,9 @@ module.exports = (grunt) ->
         files: ['<%= distdir %>/**']
         tasks: ['livereload']
       jade:
-        files: ['src/app/templates/*.jade']
+        # files: ['src/app/templates/*.jade']
+        files: ['src/app/**/*.jade']
         tasks: ['jade', 'html2js', 'concat']
-      jade_i18n:
-        files: ['src/i18n/*.json']
-        tasks: ['jade', 'html2js', 'concat']
-        spawn: true
       less:
         files: ['src/less/*.less']
         tasks: ['less']
@@ -177,11 +210,13 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-less"
   grunt.loadNpmTasks "grunt-contrib-clean"
   #grunt.loadNpmTasks "grunt-contrib-jade"
-  grunt.loadNpmTasks "grunt-jade"
+  # grunt.loadNpmTasks "grunt-jade"
+  grunt.loadNpmTasks "grunt-contrib-jade"
   grunt.loadNpmTasks "grunt-html2js"
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-contrib-livereload"
   grunt.loadNpmTasks "grunt-regarde"
+  grunt.loadNpmTasks "grunt-oversprite"
 
   # grunt-contrib-watch now not work with livereload :(
   #grunt.loadNpmTasks "grunt-contrib-watch"
@@ -191,9 +226,15 @@ module.exports = (grunt) ->
     grunt.file.copy 'src/index.html', 'dist/index.html',
       process: grunt.template.process
 
+  # Sprites
+  grunt.registerTask "sprites", [
+    "oversprite", "copy:sprites", "clean:sprites"
+  ]
+
   # Build
   grunt.registerTask "build", [
-    "clean", "jade", "less", "copy", "html2js", "index", "concat"
+    # "clean", "jade", "less", "copy", "html2js", "index", "concat"
+    "clean", "jade", "less", "copy", "index", "concat"
   ]
 
   # Development server
