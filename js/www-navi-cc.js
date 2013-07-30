@@ -650,8 +650,7 @@ angular.module('directives.lists', [])
 .directive('navtool', [function(){
     return {
         restrict: 'E',
-        template: '<div class="btn-group"><a type="button" class="btn btn-default" ng-click="back()" title="Назад">&lt;</a><a type="button" class="btn btn-default" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-default" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a></div>',
-        // <a ng-click="back()" class="btn btn-default"><i class="icon-backward"></i></a><a href="#/map" class="btn btn-default"><i class="icon-map-marker"></i></a>',
+        template: '<div class="btn-group"><a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a><a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a></div>',
         controller: ["$scope", "$window", function($scope, $window){
             $scope.back = function(){
                 $window.history.back();
