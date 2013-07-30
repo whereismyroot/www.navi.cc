@@ -800,7 +800,7 @@ EventMarker.prototype.draw = function() {
 }
 
 
-angular.module('directives.gmap', ['services.connect', 'ui'])
+angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
 
 .directive('gmap', ["Connect", function(Connect) {
     console.log('~~~~~~~~> gmap:directive');
@@ -2888,7 +2888,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 
 }]);
 
-angular.module('config', ['resources.account', 'resources.system', 'ui', 'config.system.params', 'directives.lists'])
+angular.module('config', ['resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
@@ -2937,7 +2937,8 @@ angular.module('config', ['resources.account', 'resources.system', 'ui', 'config
   };
 
   $scope.sortableOptions = {
-    stop: function(e, ui) {
+    // stop: function(e, ui) {
+    update: function(e, ui) {
       // console.log("Update", e, account.account.skeys);
       account.systemsort();
     },
