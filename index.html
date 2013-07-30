@@ -54,7 +54,7 @@
         <script src="scripts/vendor/json3.min.js"></script>
     <![endif]-->
 
-    <div ng-include="'templates/header.tpl.html'" style="z-index: 1001; position: absolute;top:0px;right:0px;left:0px;" ng-hide="location.path().match('^/map')"></div>
+    <!-- <div ng-include="'templates/header.tpl.html'" style="z-index: 1001; position: absolute;top:0px;right:0px;left:0px;" ng-hide="location.path().match('^/map')"></div> -->
 
     <div ng-view class="content" ng-class="{contentfixed: location.path().match('^/map')}"></div>
     <div ng-include="'templates/notifications.tpl.html'" class="container-fluid notification" ng-show="notifications.getCurrent().length"></div>

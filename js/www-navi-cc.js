@@ -2776,7 +2776,7 @@ angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', 'Account', function($scope, $location, $route, $rootScope, Account) {
+angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {
   console.log('app:AppCtrl', $location /*, $location.parse()*/);
   // $scope.i18n = i18n;
 
@@ -2785,6 +2785,10 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   $scope.location = $location;
   $scope.$route = $route;
   // $rootScope.skey = 'test';
+
+  $rootScope.back = function(){
+    $window.history.back();
+  };
 
   $scope.$watch('account.skey', function(skey){
     // if(!skey) return;

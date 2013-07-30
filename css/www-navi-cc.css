@@ -573,7 +573,7 @@ body {
 }
 div.content {
   position: absolute;
-  top: 50px;
+  top: 0px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -583,7 +583,6 @@ div.content {
 div.contentfixed {
   overflow-y: hidden;
   padding: 0;
-  top: 0;
 }
 #tabpagecontent {
   position: absolute;
@@ -1148,7 +1147,7 @@ div.mapcalendar {
 }
 div#geos_head {
   position: absolute;
-  top: 20px;
+  top: 60px;
   width: 470px;
   height: 176px;
   overflow: hidden;
@@ -1156,7 +1155,7 @@ div#geos_head {
 }
 div#geos_body {
   position: absolute;
-  top: 80px;
+  top: 120px;
   bottom: 0px;
   left: 0px;
   right: 0px;
