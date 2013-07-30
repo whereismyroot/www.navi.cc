@@ -645,6 +645,20 @@ angular.module('directives.lists', [])
             $scope.$watch("datetime", update);
         }]
     };
+}])
+
+.directive('navtool', [function(){
+    return {
+        restrict: 'E',
+        template: '<div class="btn-group"><a type="button" class="btn btn-default" ng-click="back()">&lt;</a><a type="button" class="btn btn-default" href="#/map"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-default" href="#/help"><i class="icon-medkit" style="margin:0"></i></a></div>',
+        // <a ng-click="back()" class="btn btn-default"><i class="icon-backward"></i></a><a href="#/map" class="btn btn-default"><i class="icon-map-marker"></i></a>',
+        controller: ["$scope", "$window", function($scope, $window){
+            $scope.back = function(){
+                $window.history.back();
+            };
+
+        }]
+    };
 }]);
 
 
@@ -2785,10 +2799,6 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   $scope.location = $location;
   $scope.$route = $route;
   // $rootScope.skey = 'test';
-
-  $rootScope.back = function(){
-    $window.history.back();
-  };
 
   $scope.$watch('account.skey', function(skey){
     // if(!skey) return;
