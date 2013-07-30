@@ -993,6 +993,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
 
         };
 
+        // TODO. Не нравится мне чтото это. Заменить бып на событие.
         scope.$watch("track", function(data){
             // console.log(['MAP:track change', data]);
             // $scope.hideTrack();
@@ -1001,7 +1002,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
                 path = null;
                 eventmarker.setData([]);
             }
-            if(data === null) return;
+            if((data === null) || (data.points.length === 0) ) return;
             showTrack(data);
         });
 
@@ -1103,12 +1104,17 @@ angular.module('directives.main', [])
         controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
 
             $scope.popup = false;
+            $scope.$routeParams = $routeParams;
 
             $scope.onClick = function(skey){
-                console.log('mapsyslist:onClick', skey);
+                // console.log('mapsyslist:onClick', skey);
                 // $location.path('/map/' + skey);
                 // $location.search('key', skey);
-                $location.search({skey: skey});
+                // $location.search({skey: skey});
+                var params = angular.copy($routeParams);
+                angular.extend(params, {skey: skey});
+                $location.search(params);
+
             };
 
             $scope.showPopup = function(){
@@ -1888,6 +1894,7 @@ angular.module('resources.geogps', [])
             days = {};
             if(!data || (data.hours.length === 0)){
                 // callback([]);
+                // defer.reject();
             } else {
                 // callback(data.hours);
                 for(var i=0, l=data.hours.length; i<l; i++){
@@ -1929,9 +1936,24 @@ angular.module('resources.geogps', [])
                 '/geo/get/' +
                 encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
         }).success(function(data){
-            console.log('GeoGPS.getTrack.success');
+            console.log('GeoGPS.getTrack.success', data);
+            if(!data) {
+                defer.resolve({
+                    track: [],
+                    bounds: null,
+                    points: [],
+                    min_hour: null,
+                    max_hour: null,
+                    hours: null,
+                    events: [],
+                    ranges: []
+                });
+                return;
+            }
             var uInt8Array = new Uint8Array(data);
             defer.resolve(bingpsparse(uInt8Array));
+        }).error(function(data, status) {
+            console.log('GeoGPS.getTrack.error', data, status);
         });
         return defer.promise;
     };
@@ -3596,10 +3618,11 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
 .controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, GeoGPS, $log) {
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
+    $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
     console.log('+-> map skey = ', $scope.skey);
 
-    var datepicker = $('#datepicker').datepicker({
+    var dp = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
             var hour = date.valueOf()/1000/3600,
                 day = hour/24;
@@ -3608,23 +3631,18 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         }
     }).on('changeDate', function(ev){
         var date = ev.date;
-        // var tz = (new Date()).getTimezoneOffset()/60;
+        var tz = (new Date()).getTimezoneOffset()/60;
         // var hourfrom = date.valueOf() / 1000 / 3600 + tz;
         var hourfrom = date.valueOf() / 1000 / 3600;
+        var day = (hourfrom - tz) / 24;
         // console.log(["datepicker: on changeDate", ev, date]);
         // $log.warn("datepicker:changeDate. Bad path point inn the $scope.path array ");
         // $log.error("datepicker:changeDate. Bad path point inn the $scope.path array ");
         $log.info("datepicker:changeDate.", $scope);
         $scope.$apply(function(){   // Без этого не будет индикации процесса загрузки
-
-            GeoGPS.getTrack(hourfrom, hourfrom+23)  // +23? не 24?
-                .then(function(data){
-                    console.log(["getTrack: ", data]);
-                    $scope.track = data;
-                    $scope.points = data.track.length;
-                    // fake_timeline();
-                    $scope.timeline = data.ranges;
-                });
+            var params = angular.copy($routeParams);
+            angular.extend(params, {day: day});
+            $location.search(params);
         });
     });
 
@@ -3659,21 +3677,78 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     //     // $scope.$apply();
     // });
 
+    var load_date = function(){
+        GeoGPS.select($scope.skey);
+        GeoGPS.getHours(0, 1000000)
+            .then(function(){
+                var day = $scope.day || 0;
+                // Недокументированный метод. Метод update изменяет текущий месяц
+                $('#datepicker').datepicker("fill");
+
+                var tz = (new Date()).getTimezoneOffset()/60;
+
+                if((1*day) === 0){
+                    hourfrom = (new Date((new Date()).toDateString())).valueOf() / 1000 / 3600;
+                    date = new Date(hourfrom * 3600 * 1000);
+                } else if((1*day) === -1){
+                    hourfrom = (new Date((new Date()).toDateString())).valueOf() / 1000 / 3600 - 24;
+                } else {
+                    hourfrom = day * 24 + tz;
+                }
+                date = new Date(hourfrom * 3600 * 1000);
+                $scope.datetime = hourfrom * 3600;
+
+                console.log("=> Selected day :", day);
+                console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
+                console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
+
+                // Имеет баг (я так думаю) UTC
+                dateline = dp.datepicker.DPGlobal.formatDate(new Date(date.valueOf() - tz * 3600 * 1000), "mm-dd-yyyy", "ru");
+                console.log('dateline=', dateline);
+                dp.datepicker("update", dateline);
+
+            });
+    }
+    var gettrack = function(){
+        if(angular.isUndefined($scope.day)) return;
+
+        var tz = (new Date()).getTimezoneOffset()/60;
+        // var day = (hourfrom - tz) / 24;
+        var hourfrom = $scope.day * 24 + tz;
+
+        GeoGPS.getTrack(hourfrom, hourfrom+23)  // +23? не 24?
+            .then(function(data){
+                console.log(["getTrack: ", data]);
+                $scope.track = data;
+                $scope.points = data.track.length;
+                // fake_timeline();
+                $scope.timeline = data.ranges;
+            });
+    }
+
+    if($scope.skey){
+        load_date();
+        gettrack();
+    }
+
     $scope.$on("$routeUpdate", function(a, b, c){
         console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
         $scope.skey = $routeParams['skey'];
+        $scope.day = $routeParams['day'];
+        load_date();
+        gettrack();
     });
 
-    $scope.onSysSelect = function(skey){
-        // loadTrack(skey);
+    // $scope.onSysSelect = function(skey){
+    //     // loadTrack(skey);
 
-        GeoGPS.select(skey);
-        GeoGPS.getHours(0, 1000000)
-            .then(function(){
-                // Недокументированный метод. Метод update изменяет текущий месяц
-                $('#datepicker').datepicker("fill");
-            });
-    };
+    //     GeoGPS.select(skey);
+    //     GeoGPS.getHours(0, 1000000)
+    //         .then(function(){
+    //             // Недокументированный метод. Метод update изменяет текущий месяц
+    //             $('#datepicker').datepicker("fill");
+    //         });
+    // };
 
     $scope.hideTrack = function(){
         // console.log("Hide track");
