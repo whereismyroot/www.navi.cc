@@ -2,25 +2,25 @@
     <a class="navbar-brand" href="#/login">newgps<span class="wide">.navi.cc</span></a>
     <ul class="nav navbar-nav">
         <li ng-class="{active:isNavbarActive('map')}">
-            <a href="#/map">
+            <a href="#/map/{{account.skey}}">
                 <i class="icon-map-marker"></i>
                 <span class="wide" translate>Map</span>
             </a>
         </li>
         <li ng-class="{active:isNavbarActive('logs')}">
-            <a href="#/logs">
+            <a href="#/logs/{{account.skey}}">
                 <i class="icon-eye-open"></i>
                 <span class="wide" translate>Logs</span>
             </a>
         </li>
         <li ng-class="{active:isNavbarActive('reports')}">
-            <a href="#/reports">
+            <a href="#/reports/{{account.skey}}">
                 <i class="icon-table"></i>
                 <span class="wide" translate>Reports</span>
             </a>
         </li>
         <li ng-class="{active:isNavbarActive('gps')}">
-            <a href="#/gps">
+            <a href="#/gps/{{account.skey}}">
                 <i class="icon-film"></i>
                 <span class="wide" translate>Export GPS</span>
             </a>

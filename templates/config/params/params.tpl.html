@@ -10,7 +10,7 @@
         <dl class="dl-horizontal">
             <dt>Модель</dt><dd>MT-400</dd>
             <dt>IMEI</dt><dd><input class="clone" value="{{ account.account.systems[skey].imei }}"/></dd>
-            <dt>Телефон SIM-карты</dt><dd>{{ account.account.systems[skey].phone || '?'}}</dd>
+            <dt>Телефон SIM-карты</dt><dd><input class="clone" value="{{ account.account.systems[skey].phone || '?'}}"/></dd>
             <dt>Зарегестрирован</dt><dd><datetime seconds="false" datetime="{{ account.account.systems[skey].date }}"></datetime></dd>
             <dt>Версия ПО</dt><dd>{{ account.account.systems[skey].swid || '?' }}<!--i class="icon-question-sign cmd" title="Проверить доступность обновления"></i--></dd>
         </dl>

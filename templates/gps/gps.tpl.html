@@ -1,9 +1,10 @@
 
 <div id="geos_head">
     <form class="form-inline" style="margin:10px 0 10px 0;">
-        <select class="form-control" ng-model="skey" ng-options="account.account.systems[s].desc for s in account.account.skeys"  style="width: 210px;">
-            <option value="">Выберите систему</option>
+        <select class="form-control" ng-model="skey" ng-options="account.account.systems[s].desc for s in account.account.skeys" style="width: 210px;" ng-change="onSysSelect()">
+            <option value="" ng-show="!skey">Выберите систему</option>
         </select>
+
         <div class="btn-group" ng-show="!!skey && (skey !== '+') && (skey != null)">
             <button class="btn" ng-class="{active: (day==0)}" ng-click="selectday(0)">Сегодня</button>
             <button class="btn" ng-class="{active: (day==-1)}" ng-click="selectday(-1)">Вчера</button>

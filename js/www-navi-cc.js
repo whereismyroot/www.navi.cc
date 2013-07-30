@@ -1,7 +1,7 @@
 angular.module('i18n', ['i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
 .config(['$translateProvider', function ($translateProvider) {
 
-    console.log(["$translateProvider", $translateProvider, $translateProvider.translations()]);
+    // console.log(["$translateProvider", $translateProvider, $translateProvider.translations()]);
 
     // All other langs
     // $translateProvider.translations({
@@ -53,7 +53,7 @@ I18n.translations.en = {
     enter_cmd: 'Confirm'
   };
 
-window.console.log('i18n.en init', I18n);
+// window.console.log('i18n.en init', I18n);
 
 })(this, I18n);
 
@@ -120,7 +120,7 @@ I18n.translations.pl = {
     enter_cmd: 'Wpisać'
   };
 
-window.console.log('i18n.pl init', I18n);
+// window.console.log('i18n.pl init', I18n);
 })(this, I18n);
 
 angular.module('i18n.pl', ['ngTranslate'])
@@ -185,7 +185,7 @@ I18n.translations.ru = {
     enter_cmd: 'Войти'
   };
 
-window.console.log('i18n.ru init', I18n);
+// window.console.log('i18n.ru init', I18n);
 })(this, I18n);
 
 
@@ -790,11 +790,12 @@ EventMarker.prototype.draw = function() {
 angular.module('directives.gmap', ['services.connect', 'ui'])
 
 .directive('gmap', ["Connect", function(Connect) {
-    console.log('gmap:directive');
+    console.log('~~~~~~~~> gmap:directive');
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
 
     var link = function(scope, element, attrs) {
+        console.log('~~~~~~~~> gmap:directive:link', scope, element, attrs);
         var path = null;
         var gmarker = null;
         // console.log('map directive: link', scope, element, Connect);
@@ -1021,29 +1022,93 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
 
 angular.module('directives.main', [])
 
-.directive('mapsysitem', ["$location", function($location) {
+.directive('mapsyslist', ["$location", "$routeParams", function($location, $routeParams) {
     return {
         restrict: 'E',
+        // require: '?ngModel',
         scope: {
-            zoom: "@",
+            // zoom: "@",
+            account: '=',
+            skey: '='
+            // select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"
+        },
+        templateUrl: 'templates/map/mapsyslist.tpl.html',
+        replace: true,
+        controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
+            console.log("====> mapsyslist", [$element, $scope, $attrs]);
+
+            $scope.filters = [
+                {
+                    desc: "личные"
+                },
+                {
+                    desc: "служебные"
+                },
+                {
+                    desc: "партнеры"
+                }
+            ];
+
+            $scope.zoomlist = 1;
+            $scope.doZoomList = function(){
+                console.log("doZoomList");
+                $scope.zoomlist += 1;
+                if($scope.zoomlist >= 3) $scope.zoomlist = 0;
+            };
+
+
+            $scope.popup = function(skey){
+                console.log('mapsyslist:popup', skey);
+            };
+        }]
+        // link: function(scope, element, attr, ngModel) {
+        //     console.log("====> mapsyslist", [scope, element, attr, ngModel]);
+        //     scope.skey = ngModel.$viewValue;
+        // }
+    }
+}])
+
+.directive('mapsysitem', ["$location", "$routeParams", function($location, $routeParams) {
+    return {
+        restrict: 'E',
+        require: '^mapsyslist',
+        scope: {
+            zoomlist: "@",
             item: "=",
+            skey: "=",
             select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"
          },
         replace: true,
-        // transclude: true,
         templateUrl: 'templates/map/mapsysitem.tpl.html',
-        link: function(scope, element, attrs) {
-             // console.log('mapsysitem directive: link', scope, element, attrs, scope.item);
+        // link: function(scope, element, attrs) {
+        //     scope.skey = $routeParams.skey;
+        //     scope.manageSystemParams = function(skey){
+        //         $location.path('/config/' + skey + '/params');
+        //     };
+        // },
 
-  // scope.onSysSelect = function(){
-  //   console.log("onSysSelect(2)", s, scope);
-  // };
-            scope.manageSystemParams = function(skey){
-                // console.log("manageSystemParams()", s, scope);
-                $location.path('/config/' + skey + '/params');
+        controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
+
+            $scope.popup = false;
+
+            $scope.onClick = function(skey){
+                console.log('mapsyslist:onClick', skey);
+                // $location.path('/map/' + skey);
+                // $location.search('key', skey);
+                $location.search({skey: skey});
             };
 
-        }
+            $scope.showPopup = function(){
+                // console.log('$element=', $element);
+                // $element.toggleClass('active');
+                if($scope.popup !== ''){
+                    $scope.popup = 'active';
+                } else {
+                    $scope.popup = '';
+                }
+            }
+        }]
+
     };
 }]);
 
@@ -1390,7 +1455,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
     'withCredentials': SERVER.api_withCredentials,
     'account': null,
     'hint': null,
-    'isAuthenticated': false
+    'isAuthenticated': false,
+    skey: null    // Выбранный skey. Используется как глобальное значение сквозь все страницы
   };
 
   if(!SERVER.api_withCredentials) {
@@ -1553,6 +1619,14 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
       //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
       //lastpos.setPosition(newpos);
   });
+
+  Account.setSkey = function(skey){
+    Account.skey = skey;
+  };
+
+  // Account.skey = function(){
+  //   return Account.skey;
+  // };
 
   return Account;
 }]);
@@ -2402,7 +2476,7 @@ angular.module('services.connect', [])
     shared.updater.on = function(msg, foo){
         shared.updater.queue[msg] = shared.updater.queue[msg] || [];
         shared.updater.queue[msg].push(foo);
-        console.log(["shared.updater.on(", msg, foo, shared.updater.queue]);
+        // console.log(["shared.updater.on(", msg, foo, shared.updater.queue]);
         return foo;
     };
 
@@ -2418,7 +2492,7 @@ angular.module('services.connect', [])
                 shared.updater.queue['*'][i](msg);
             }
         }
-        console.log(["shared.updater.process(", msg, shared.updater.queue]);
+        // console.log(["shared.updater.process(", msg, shared.updater.queue]);
     };
 
     shared.updater.remove = function(msg, updater){
@@ -2427,7 +2501,7 @@ angular.module('services.connect', [])
         console.log(["===> TODO!!!! Not implemented.", updater, shared.updater.queue, index]);
     };
 
-    console.log("===> Connect:init");
+    // console.log("===> Connect:init");
 
 
     //var ws_server = "ws://gpsapi04.navi.cc:8888/socket";
@@ -2702,14 +2776,37 @@ angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
 }]);
 
-// angular.module('app').controller('AppCtrl', ['$scope', '$location', 'i18nNotifications', 'localizedMessages', 'i18n', function($scope, location, i18nNotifications, localizedMessages, i18n) {
-angular.module('app').controller('AppCtrl', ['$scope', '$location', function($scope, location) {
-//angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
-  // console.log('app:AppCtrl', i18n);
+angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', 'Account', function($scope, $location, $route, $rootScope, Account) {
+  console.log('app:AppCtrl', $location /*, $location.parse()*/);
   // $scope.i18n = i18n;
 
   // $scope.notifications = i18nNotifications;
-  $scope.location = location;
+  $scope.account = Account;
+  $scope.location = $location;
+  $scope.$route = $route;
+  // $rootScope.skey = 'test';
+
+  $scope.$watch('account.skey', function(skey){
+    // if(!skey) return;
+    console.log('++=> account.skey = ', skey, $scope.account.skey);
+    // var params = $route.current.params;
+    // params.skey = skey;
+    // var search = $location.search(params).path($route.current.path);
+    // var search = $location.search('skey', skey);
+    // $location.path();
+    // var search = 0;
+    // console.log("++=> params = ", params, search);
+  //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
+  });
+
+  $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
+    console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
+    Account.skey = current.params.skey;
+    // if(current.params.skey && !Account.skey){
+      // Account.setSkey(current.params.skey);
+    // }
+        // console.log('Changing route from ' + angular.toJson(current) + ' to ' + angular.toJson(next));
+  });
 
   // $scope.removeNotification = function (notification) {
   //   i18nNotifications.remove(notification);
@@ -2724,6 +2821,9 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', function($sc
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'Account', 'httpRequestTracker', function ($scope, $location, $route, Account, httpRequestTracker) {
   $scope.location = $location;
   $scope.account = Account;
+  $scope.skey = Account.skey;
+
+  console.log('update Header');
 
   $scope.home = function () {
     /*if ($scope.currentUser.isAuthenticated()) {
@@ -2875,7 +2975,7 @@ angular.module('config.system.params.master', ['resources.account', 'resources.p
     console.log(['=== route', route]);
     return $route.current.params.skey;
   }];
-  console.log(['=== skey', skey]);
+  // console.log(['=== skey', skey]);
   $routeProvider.when('/config/:skey/params/master', {
     templateUrl:'templates/config/params/master.tpl.html',
     controller:'ConfigParamsMasterCtrl',
@@ -2936,7 +3036,7 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     console.log(['=== route', route]);
     return $route.current.params.skey;
   }];
-  console.log(['=== skey', skey]);
+  // console.log(['=== skey', skey]);
   $routeProvider.when('/config/:skey/params', {
     templateUrl:'templates/config/params/params.tpl.html',
     controller:'ConfigParamsCtrl',
@@ -3059,8 +3159,8 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
         return Account;
       }]
     }
-  });
-  $routeProvider.when('/gps/:skey', {
+  })
+  .when('/gps/:skey', {
     templateUrl:'templates/gps/gps.tpl.html',
     controller:'GPSViewCtrl',
     resolve:{
@@ -3071,8 +3171,8 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
         return  System;
       }]
     }
-  });
-  $routeProvider.when('/gps/:skey/:day', {
+  })
+  .when('/gps/:skey/:day', {
     templateUrl:'templates/gps/gps.tpl.html',
     controller:'GPSViewCtrl',
     resolve:{
@@ -3088,10 +3188,10 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
 }])
 
 .controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, GeoGPS) {
-  var startskey = $scope.skey = $routeParams['skey'];
   var day = $scope.day = $routeParams['day'] || 0;
   console.log('gps select: ', $scope.skey, day);
 
+  $scope.skey = $routeParams['skey'];
   $scope.account = account;
   $scope.track = null;
 
@@ -3114,17 +3214,26 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
   console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
 
-  $scope.$watch('skey', function(skey){
-    if($scope.skey !== startskey) {
-      console.log('reload', $scope.skey, skey);
-      if(angular.isUndefined(skey) || (skey == null)){
-        $location.path('/gps');
-      } else {
-        $location.path('/gps/' + $scope.skey + '/' + day);
-      }
-      //reload();
+  $scope.onSysSelect = function(){
+    console.log('skey=', $scope.skey, $location);
+    if($scope.skey){
+      $location.path('/gps/' + $scope.skey);
+    } else {
+      $location.path('/gps');
     }
-  });
+  }
+
+  // $scope.$watch('skey', function(skey){
+  //   if($scope.skey !== startskey) {
+  //     console.log('reload', $scope.skey, skey);
+  //     if(angular.isUndefined(skey) || (skey == null)){
+  //       $location.path('/gps');
+  //     } else {
+  //       $location.path('/gps/' + $scope.skey + '/' + day);
+  //     }
+  //     //reload();
+  //   }
+  // });
 
   $scope.gpsdata = [{lat: 1.0, lon: 1.0}];
 
@@ -3360,12 +3469,31 @@ angular.module('logs', ['resources.account', 'resources.logs'])
         return Logs;
       }]
     }
+  })
+  .when('/logs/:skey', {
+    templateUrl:'templates/logs/logs.tpl.html',
+    controller:'LogsViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }],
+      logs:['Logs', function(Logs){
+        return Logs;
+      }]
+    }
   });
 }])
 
-.controller('LogsViewCtrl', ['$scope', '$location', 'account', 'logs', function ($scope, $location, account, logs) {
+.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'logs', function ($scope, $location, $routeParams, account, logs) {
   $scope.account = account;
-  $scope.skey = "";
+  // $scope.skey = "";
+  var startskey = $routeParams['skey'];
+  // if(account.skey != startskey){
+  //   account.setSkey(startskey);
+  // }
+  $scope.skey = account.skey;
+
   $scope.logs = logs;
   $scope.comment = "Данные еще не получены";
   //$scope.skey = account.account.skeys[0];
@@ -3374,13 +3502,14 @@ angular.module('logs', ['resources.account', 'resources.logs'])
   };
 
   var reload = function(){
-    if((!$scope.skey) || ($scope.skey === "")) {
+    console.log('reload', $scope.account.skey);
+    if((!$scope.account.skey) || ($scope.account.skey === "")) {
       return;
     }
     $scope.logs.logs = [];
     $scope.comment = "Данные загружаются...";
-    console.log(['change skey', $scope.skey, $scope.account]);
-    $scope.logs.get($scope.skey, $scope.account.akey, function(res){
+    console.log(['change skey', $scope.account.skey, $scope.account]);
+    $scope.logs.get($scope.account.skey, $scope.account.akey, function(res){
       if(res === 0) {
         $scope.comment = "Нет событий.";
       } else {
@@ -3393,20 +3522,34 @@ angular.module('logs', ['resources.account', 'resources.logs'])
     reload();
   };
 
-  $scope.$watch('skey', function(skey){
-    reload();
-
-    /*
-    var logs = [];
-    for(var i=0; i<100; i++) {
-      logs.push({
-        "dt": 0,
-        "text": "Hello"
-      });
+  $scope.onSysSelect = function(){
+    console.log('skey=', $scope.skey, $location);
+    if($scope.skey){
+      $location.path('/logs/' + $scope.skey);
+    } else {
+      $location.path('/logs');
     }
-    $scope.logs.logs = logs;
-    */
-  });
+    // account.setSkey($scope.skey);
+    // $location.path('/logs/' + $scope.account.skey);
+    // reload();
+  }
+  reload();
+
+  // $scope.$watch('skey', function(skey){
+  //   console.log('skey=', skey);
+  //   // reload();
+
+  //   if($scope.skey !== startskey) {
+  //     if(angular.isUndefined(skey) || (skey == null)){
+  //       $location.path('/logs');
+  //     } else {
+  //       $location.path('/logs/' + $scope.skey);
+  //       // $scope.$apply();
+  //     }
+  //   }
+  //   reload();
+  // });
+
   $("[rel=tooltip]").tooltip();
 }]);
 
@@ -3421,13 +3564,27 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
                 //TODO: need to know the current user here
                 return Account;
             }]
-        }
+        },
+        reloadOnSearch: false
+    }).
+    when('/map/:skey', {
+        templateUrl:'templates/map/map.tpl.html',
+        controller:'MapCtrl',
+        resolve:{
+            account:['Account', function (Account) {
+                //TODO: need to know the current user here
+                return Account;
+            }]
+        },
+        reloadOnSearch: false
     });
 }])
 
-.controller('MapCtrl', ['$scope', '$location', 'account', 'GeoGPS', '$log', function ($scope, $location, account, GeoGPS, $log) {
+.controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, GeoGPS, $log) {
     $scope.account = account;
+    $scope.skey = $routeParams['skey'];
     $scope.track = null;
+    console.log('+-> map skey = ', $scope.skey);
 
     var datepicker = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
@@ -3479,6 +3636,20 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         $scope.timeline = data;
     }
 
+    // WARNING!!! Это грязный хак!!!
+    // Это подавит перезагрузку ng-view и устранит мерцание страницы.
+    // var lastRoute = $route.current;
+    // $scope.$on('$locationChangeSuccess', function(event) {
+    //     $route.current = lastRoute;
+    //     console.log("~~~~~~~~~~~~~~~~====> $locationChangeSuccess:", $route, event);
+    //     // account.setSkey(skey);
+    //     // $scope.$apply();
+    // });
+
+    $scope.$on("$routeUpdate", function(a, b, c){
+        console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
+        $scope.skey = $routeParams['skey'];
+    });
 
     $scope.onSysSelect = function(skey){
         // loadTrack(skey);
@@ -3502,12 +3673,6 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         $scope.timeline = [];
     };
 
-    $scope.zoomlist = 0;
-    $scope.doZoomList = function(){
-        // console.log("doZoomList");
-        $scope.zoomlist += 1;
-        if($scope.zoomlist >= 3) $scope.zoomlist = 0;
-    };
 
     $scope.mapconfig = {
         autobounds: true,   // Автоматическая центровка трека при загрузке
@@ -3559,6 +3724,16 @@ angular.module('reports', ['resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/reports', {
+    templateUrl:'templates/reports/reports.tpl.html',
+    controller:'ReportsViewCtrl',
+    resolve:{
+      account:['Account', function (Account) {
+        //TODO: sure for fetch only one for the current user
+        return Account;
+      }]
+    }
+  }).
+  when('/reports/:skey', {
     templateUrl:'templates/reports/reports.tpl.html',
     controller:'ReportsViewCtrl',
     resolve:{

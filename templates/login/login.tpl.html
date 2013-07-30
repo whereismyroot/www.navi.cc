@@ -35,8 +35,11 @@
       <dt title="{{ 'for_recovery' | translate}}">email</dt>
       <dd>{{ account.account.email }}</dd>
     </dl>
-    <div style="text-align: center;">
-      <button ng-click="onLogout();" class="btn btn-warning"><i class="icon-off"></i>Выйти из учетной записи</button>
+    <div ng-show="account.account.skeys.length === 0">
+      Добро пожаловать на сервис поддержки трекеров. Для того, чтобы начать пользоваться сервисом, необходимо добавить трекер введя его IMEI.
+      Это можно сделать на странице настроек<br><a href="#/config" class="btn btn-primary"><i class="icon-cogs"></i><span translate>Config</span></a>
     </div>
+    <div ng-hide="account.account.skeys.length === 0"><a href="#/map" class="btn btn-primary"><i class="icon-map-marker"></i><span translate>Map</span></a>&nbsp;<a href="#/logs" class="btn btn-primary"><i class="icon-eye-open"></i><span translate>Logs</span></a>&nbsp;<a href="#/reports" class="btn btn-primary"><i class="icon-table"></i><span translate>Reports</span></a>&nbsp;<a href="#/gps" class="btn btn-primary"><i class="icon-film"></i><span translate>Export GPS</span></a>&nbsp;<a href="#/config" class="btn btn-primary"><i class="icon-cogs"></i><span translate>Config</span></a>&nbsp;<a href="#/help" class="btn btn-primary"><i class="icon-medkit"></i><span translate>Help</span></a></div><br>
+    <button ng-click="onLogout();" class="btn btn-warning"><i class="icon-off"></i>Выйти из учетной записи</button>
   </div>
 </div>

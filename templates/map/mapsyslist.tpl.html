@@ -1,0 +1,24 @@
+<div class="mapsyslist">
+    <div class="input-group">
+        <!-- <span class="input-group-addon input-small"><i class="icon-filter"></i></span> -->
+        <select class="form-control input-small" ng-model="sfilter" ng-options="f.desc for f in filters"><option value="">все</option></select>
+        <span class="input-group-addon input-small" ng-click="doZoomList()"><span class="icon-zoom-in icon-large" title="Размер"></span></span>
+        <span class="input-group-addon input-small"><a href="#/config" class="icon-wrench icon-large" title="Размер"></a></span>
+    </div>
+
+    <ul class="mapsyslist">
+
+        <mapsysitem zoomlist="{{zoomlist}}" class="{{s}}" ng-repeat="s in account.account.skeys" item="account.account.systems[s]" select="onSysSelect(s)" skey="skey"></mapsysitem>
+
+        <li style="padding-top: 15px;">
+            <div style="white-space: normal;">
+                <div ng-show="account.account.skeys.length === 0">Вы еще не наблюдаете ни за одним трекером. Нажмите кнопку ниже чтобы добавить трекер в список наблюдения.</div>
+                <addtracker account="account"></addtracker>
+            </div>
+        </li>
+    <!--     <li>1</li>
+        <li>{{ skey }}</li>
+     -->
+    </ul>
+
+</div>
