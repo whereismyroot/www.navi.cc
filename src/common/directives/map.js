@@ -137,11 +137,12 @@ EventMarker.prototype.draw = function() {
 angular.module('directives.gmap', ['services.connect', 'ui'])
 
 .directive('gmap', ["Connect", function(Connect) {
-    console.log('gmap:directive');
+    console.log('~~~~~~~~> gmap:directive');
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
 
     var link = function(scope, element, attrs) {
+        console.log('~~~~~~~~> gmap:directive:link', scope, element, attrs);
         var path = null;
         var gmarker = null;
         // console.log('map directive: link', scope, element, Connect);
@@ -326,6 +327,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
 
         };
 
+        // TODO. Не нравится мне чтото это. Заменить бып на событие.
         scope.$watch("track", function(data){
             // console.log(['MAP:track change', data]);
             // $scope.hideTrack();
@@ -334,7 +336,7 @@ angular.module('directives.gmap', ['services.connect', 'ui'])
                 path = null;
                 eventmarker.setData([]);
             }
-            if(data === null) return;
+            if((data === null) || (data.points.length === 0) ) return;
             showTrack(data);
         });
 

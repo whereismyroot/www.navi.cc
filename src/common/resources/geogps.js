@@ -242,6 +242,7 @@ angular.module('resources.geogps', [])
             days = {};
             if(!data || (data.hours.length === 0)){
                 // callback([]);
+                // defer.reject();
             } else {
                 // callback(data.hours);
                 for(var i=0, l=data.hours.length; i<l; i++){
@@ -283,9 +284,24 @@ angular.module('resources.geogps', [])
                 '/geo/get/' +
                 encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
         }).success(function(data){
-            console.log('GeoGPS.getTrack.success');
+            console.log('GeoGPS.getTrack.success', data);
+            if(!data) {
+                defer.resolve({
+                    track: [],
+                    bounds: null,
+                    points: [],
+                    min_hour: null,
+                    max_hour: null,
+                    hours: null,
+                    events: [],
+                    ranges: []
+                });
+                return;
+            }
             var uInt8Array = new Uint8Array(data);
             defer.resolve(bingpsparse(uInt8Array));
+        }).error(function(data, status) {
+            console.log('GeoGPS.getTrack.error', data, status);
         });
         return defer.promise;
     };

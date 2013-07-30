@@ -267,6 +267,19 @@ angular.module('directives.lists', [])
             $scope.$watch("datetime", update);
         }]
     };
+}])
+
+.directive('navtool', [function(){
+    return {
+        restrict: 'E',
+        template: '<div class="btn-group"><a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a><a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a></div>',
+        controller: ["$scope", "$window", function($scope, $window){
+            $scope.back = function(){
+                $window.history.back();
+            };
+
+        }]
+    };
 }]);
 
 

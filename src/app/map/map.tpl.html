@@ -1,10 +1,8 @@
 <div gmap="main" track="track" config="mapconfig"></div>
 <div class="map-control">
-    <ul class="map-control-tools">
-        <li ng-click="doFilter()"><span class="icon-filter icon-large" title="Фильтр"></span></li>
-        <li ng-click="doZoomList()"><span class="icon-zoom-in icon-large" title="Размер"></span></li>
-    </ul>
-    <ul class="mapsyslist">
+    <mapsyslist skey="skey" account="account" zoom="{{zoomlist}}"></mapsyslist>
+
+<!--     <ul class="mapsyslist">
         <mapsysitem zoom="{{zoomlist}}" class="{{s}}" ng-repeat="s in account.account.skeys" item="account.account.systems[s]" select="onSysSelect(s)"></mapsysitem>
         <li style="padding-top: 15px;">
             <div style="white-space: normal;">
@@ -16,7 +14,7 @@
             {{ skey }}
         </li>
     </ul>
-    <div class="mapcalendar">
+ -->    <div class="mapcalendar">
       <div id="datepicker" data-date-language="ru" data-date-weekstart="1"></div>
     </div>
 
@@ -26,7 +24,8 @@
 <div class="map-timeline" id="timeline" data="timeline" timeline></div>
 
 <div class="map-toolbar">
-    <span class="icon-wrench icon-large" title="{{'Display Settings' | translate}}" ng-click="showconfig = !showconfig" style="padding: 7px;"></span>
+    <a title="Пользователь" href="#/login"><i class="icon-user icon-large"></i> {{account.account.name}}</a>
+    <a title="{{'Display Settings' | translate}}" ng-click="showconfig = !showconfig"><i class="icon-wrench icon-large"></i></a>
     <div class="map-toolbar-config" ng-show="showconfig">
         <ul class="unstyled">
             <li config-map-item item="mapconfig.autobounds" icon-off="unlock" icon-on="lock">{{ 'AUTO_BOUND_TRACK' | translate }}</li>
