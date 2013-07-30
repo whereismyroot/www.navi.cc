@@ -1010,16 +1010,21 @@ ul.mapsyslist li ul.popup {
   height: 30px;
   margin: 0;
   padding: 0;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
 ul.mapsyslist li ul.popup.active {
+  right: 0px;
+  box-shadow: 1px 1px 16px #000000;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+ul.mapsyslist li ul.popup:hover {
   right: 0px;
   box-shadow: 1px 1px 16px #000000;
   background-color: rgba(255, 255, 255, 0.9);
