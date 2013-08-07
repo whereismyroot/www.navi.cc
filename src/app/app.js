@@ -59,8 +59,28 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
   //$routeProvider.otherwise({redirectTo:'/error'});
 }]);
 
-angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
+// TIMETICK_UPDATE = 30000;  // Отправлять глобальное событие каждые 30 секунд.
+TIMETICK_UPDATE = 1000;  // Отправлять глобальное событие каждые 30 секунд.
+
+angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function($http, SERVER, $rootScope, $timeout){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
+
+  $rootScope.now = function(){
+    return Math.round((new Date()).valueOf() / 1000);
+  }
+
+  var timetick = function(){
+    // $rootScope.now = Math.round((new Date()).valueOf() / 1000);
+    $rootScope.$broadcast("timetick");
+    $timeout(function(){
+      timetick();
+    }, TIMETICK_UPDATE);
+  }
+
+  $timeout(function(){
+    timetick();
+  }, TIMETICK_UPDATE);
+
 }]);
 
 angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {

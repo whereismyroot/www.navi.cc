@@ -93,4 +93,67 @@ angular.module('directives.main', [])
         }]
 
     };
+}])
+
+.directive('freshmark', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            item: "=",
+            skey: "="
+        },
+        replace: true,
+        // templateUrl: 'templates/map/mapsysitem.tpl.html',
+        // template: '<span class="freshmark">{{ item.dynamic.lastping }}</span>',
+        template: '<span class="freshmark {{ class }}" title="{{ state }}">{{ value }}</span>',
+        // link: function(scope, element, attrs) {
+        //     scope.skey = $routeParams.skey;
+        //     scope.manageSystemParams = function(skey){
+        //         $location.path('/config/' + skey + '/params');
+        //     };
+        // },
+
+        controller: ['$element', '$scope', '$attrs', '$timeout', '$rootScope', function($element, $scope, $attrs, $timeout, $rootScope) {
+            $scope.value = "";
+            $scope.now = $rootScope.now;
+
+            var update = function(){
+                // $element.
+
+                // 1) Зелёный - объект движется. (move)
+                // 2) Красный - объект стоит. (stop)
+                // 3) Синий - трекер не выходил на связь более 10 минут. (old)
+                // 4) Серый - трекер выключен. (off)
+                var now = Math.round((new Date()).valueOf() / 1000);
+                var delta = now - $scope.item.dynamic.lastping;
+                // console.log('freshmark element', delta);
+                $scope.value = Math.floor(delta / 60);
+                if(delta > 10 * 60){  // 10 минут
+                    $scope.class = "old";
+                    $scope.state = "Не выходит на связь";
+                } else {
+                    $scope.class = "move";
+                    $scope.state = "Движется";
+                }
+                // if(dt_days > 0) {
+                //     el.innerHTML = '' + dt_days + 'д';
+                // } else if(dt_hours > 0) {
+                //     el.innerHTML = '' + dt_hours + 'ч';
+                // } else if(dt_mins > 0) {
+                //     el.innerHTML = '' + dt_mins + 'м';
+                // } else {
+                //     el.innerHTML = 'Ok';
+                // }
+            }
+
+            $scope.$watch('item.dynamic.lastping', function(){
+                update();
+            });
+
+            $scope.$on('timetick', function(){
+                // console.log('timetick');
+                update();
+            });
+        }]
+    };
 }]);

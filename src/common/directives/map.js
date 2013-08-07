@@ -134,7 +134,7 @@ EventMarker.prototype.draw = function() {
 }
 
 
-angular.module('directives.gmap', ['services.connect', 'ui'])
+angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
 
 .directive('gmap', ["Connect", function(Connect) {
     console.log('~~~~~~~~> gmap:directive');

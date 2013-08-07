@@ -213,7 +213,7 @@ angular.module('directives.lists', [])
         // template: null,
         // replace: true,
         link: function(scope, element, attr, ngModel) {
-            console.log('clone component');
+            // console.log('clone component');
             element.attr('readonly', 'readonly');
             element.attr('type', 'text');
             element.attr('title', "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'");
@@ -265,6 +265,8 @@ angular.module('directives.lists', [])
                 update();
             };
             $scope.$watch("datetime", update);
+            $scope.$on('timetick', update);
+
         }]
     };
 }])
