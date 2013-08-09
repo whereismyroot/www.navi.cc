@@ -1,0 +1,37 @@
+<h4><navtool></navtool> Топливо</h4>
+
+Настройка датчика топлива.
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Литры</th>
+            <th>Напряжение</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="l in fuel">
+            <td><input type="number" ng-model="l.liters"></td>
+            <td><input type="number" ng-model="l.voltage"></td>
+        </tr>
+        <tr><td colspan="2"><button class="btn btn-small" ng-click="onAdd()">Добавить строку</button></td></tr>
+    </tbody>
+</table>
+
+<style>
+    svg.chart{
+        border: 1px solid blue;
+    }
+
+    svg path.line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 4px;
+    }
+
+</style>
+
+<chart data="fuel"></chart>
+
+<!-- {{ fuel }} -->

@@ -591,7 +591,7 @@ angular.module('directives.lists', [])
         // template: null,
         // replace: true,
         link: function(scope, element, attr, ngModel) {
-            console.log('clone component');
+            // console.log('clone component');
             element.attr('readonly', 'readonly');
             element.attr('type', 'text');
             element.attr('title', "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'");
@@ -643,6 +643,8 @@ angular.module('directives.lists', [])
                 update();
             };
             $scope.$watch("datetime", update);
+            $scope.$on('timetick', update);
+
         }]
     };
 }])
@@ -1128,6 +1130,69 @@ angular.module('directives.main', [])
             }
         }]
 
+    };
+}])
+
+.directive('freshmark', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            item: "=",
+            skey: "="
+        },
+        replace: true,
+        // templateUrl: 'templates/map/mapsysitem.tpl.html',
+        // template: '<span class="freshmark">{{ item.dynamic.lastping }}</span>',
+        template: '<span class="freshmark {{ class }}" title="{{ state }}">{{ value }}</span>',
+        // link: function(scope, element, attrs) {
+        //     scope.skey = $routeParams.skey;
+        //     scope.manageSystemParams = function(skey){
+        //         $location.path('/config/' + skey + '/params');
+        //     };
+        // },
+
+        controller: ['$element', '$scope', '$attrs', '$timeout', '$rootScope', function($element, $scope, $attrs, $timeout, $rootScope) {
+            $scope.value = "";
+            $scope.now = $rootScope.now;
+
+            var update = function(){
+                // $element.
+
+                // 1) Зелёный - объект движется. (move)
+                // 2) Красный - объект стоит. (stop)
+                // 3) Синий - трекер не выходил на связь более 10 минут. (old)
+                // 4) Серый - трекер выключен. (off)
+                var now = Math.round((new Date()).valueOf() / 1000);
+                var delta = now - $scope.item.dynamic.lastping;
+                // console.log('freshmark element', delta);
+                $scope.value = Math.floor(delta / 60);
+                if(delta > 10 * 60){  // 10 минут
+                    $scope.class = "old";
+                    $scope.state = "Не выходит на связь";
+                } else {
+                    $scope.class = "move";
+                    $scope.state = "Движется";
+                }
+                // if(dt_days > 0) {
+                //     el.innerHTML = '' + dt_days + 'д';
+                // } else if(dt_hours > 0) {
+                //     el.innerHTML = '' + dt_hours + 'ч';
+                // } else if(dt_mins > 0) {
+                //     el.innerHTML = '' + dt_mins + 'м';
+                // } else {
+                //     el.innerHTML = 'Ok';
+                // }
+            }
+
+            $scope.$watch('item.dynamic.lastping', function(){
+                update();
+            });
+
+            $scope.$on('timetick', function(){
+                // console.log('timetick');
+                update();
+            });
+        }]
     };
 }]);
 
@@ -2807,8 +2872,28 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
   //$routeProvider.otherwise({redirectTo:'/error'});
 }]);
 
-angular.module('app').run(['$http', 'SERVER', function($http, SERVER){
+// TIMETICK_UPDATE = 30000;  // Отправлять глобальное событие каждые 30 секунд.
+TIMETICK_UPDATE = 1000;  // Отправлять глобальное событие каждые 30 секунд.
+
+angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function($http, SERVER, $rootScope, $timeout){
   console.log(['! App RUN ! ', $http.defaults, SERVER]);
+
+  $rootScope.now = function(){
+    return Math.round((new Date()).valueOf() / 1000);
+  }
+
+  var timetick = function(){
+    // $rootScope.now = Math.round((new Date()).valueOf() / 1000);
+    $rootScope.$broadcast("timetick");
+    $timeout(function(){
+      timetick();
+    }, TIMETICK_UPDATE);
+  }
+
+  $timeout(function(){
+    timetick();
+  }, TIMETICK_UPDATE);
+
 }]);
 
 angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {
@@ -3004,6 +3089,139 @@ angular.module('config.system.data', ['resources.account'])
   $scope.account = account;
 }]);
 
+angular.module('config.system.params.fuel', ['resources.account', 'resources.params', 'app.filters'])
+
+.config(['$routeProvider', function ($routeProvider) {
+    var skey = ['$route', function($route){
+        console.log(['=== route', route]);
+        return $route.current.params.skey;
+    }];
+    // console.log(['=== skey', skey]);
+    $routeProvider.when('/config/:skey/params/fuel', {
+        templateUrl:'templates/config/params/fuel.tpl.html',
+        controller:'ConfigParamsFuelCtrl',
+        resolve:{
+            account:['Account', function (Account) {
+                //TODO: sure for fetch only one for the current user
+                return Account;
+            }],
+            // params:['Params', '$route', function (Params, $route) {
+            //   //return Params.get({skey:$route.current.params.skey});
+            // }],
+            params:['Params', function (Params) {
+                //return Params.get({skey:$route.current.params.skey});
+                return Params;
+            }],
+            system: ['System', function (System) {
+                return  System;
+            }]
+        }
+    });
+}])
+
+.controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', function ($scope, $route, $routeParams, account, params, system) {
+    console.log('ConfigParamsFuelCtrl', $scope, $route, $routeParams, account, params);
+    $scope.account = account;
+    $scope.skey = $routeParams['skey'];
+    $scope.params = params;
+    $scope.filtered = true;
+
+    $scope.fuel = [
+        {
+            liters: 0,
+            voltage: 0.0
+        },
+        {
+            liters: 80,
+            voltage: 10.0
+        },
+    ];
+
+    $scope.onAdd = function(){
+        var liters = 0;
+        var voltage = 0;
+        angular.forEach($scope.fuel, function(l){
+            if(l.liters > liters) liters = l.liters;
+            if(l.voltage > voltage) voltage = l.voltage;
+        });
+
+        $scope.fuel.push({
+            liters: liters + 1,
+            voltage: voltage
+        });
+    }
+}])
+
+.directive('chart', [function(){
+    var path = null;
+
+    var draw = function(element, data){
+        var chart = d3.select(element[0]).select('svg');
+        var points = chart.selectAll(".point").data(data);
+
+        var line = d3.svg.line()
+            .x(function(d) { return d.liters * 5 + 10; })
+            .y(function(d) { return 240 - d.voltage * 20; });
+
+        if(!path){
+            path = chart.append("path")
+                .datum(data)
+                .attr("class", "line")
+                .attr("d", line);
+        } else {
+            path.transition()
+                .attr("d", line);
+        }
+
+        var g = points.enter()
+            .append("g")
+            .attr("class", "point");
+
+        chart.selectAll(".point").transition()
+            .attr("transform", function(d) { return "translate(" + (d.liters * 5 + 10) + "," + (240 - d.voltage * 20)+ ")";});
+
+        g.append("text")
+            .attr("x", 0)
+            .attr("y", -15)
+            .attr("dx", 0)
+            .attr("text-anchor", "middle")
+            .text(function(d) { return d.liters; });
+
+        g.append("circle")
+            .attr("x", 0)
+            .attr("y", 0)
+            .style("fill", "none")
+            .style("stroke", "#00f")
+            .style("stroke-opacity", 1)
+            .style("stroke-width", 3)
+            .attr("r", 5)
+
+        points.exit().remove();
+
+        console.log('chart:draw', chart);
+
+    }
+
+    var link = function(scope, element, attrs) {
+        //svg = element[0].querySelector('svg');
+        console.log('chart:link', element);
+        scope.$watch('data', function(data){
+            draw(element, scope.data);
+        }, true);
+    }
+
+    return {
+        restrict: 'E',
+        scope: {
+            data: "="
+        },
+        template: '<svg width="500px" height="250px" class="chart"></svg>',
+        link: link
+    };
+
+}]);
+
+
 angular.module('config.system.params.master', ['resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -3065,7 +3283,7 @@ angular.module('config.system.params.master', ['resources.account', 'resources.p
 }]);
 
 
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){

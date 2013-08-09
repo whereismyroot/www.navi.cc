@@ -1150,6 +1150,33 @@ div.mapcalendar {
   font-weight: bold;
   line-height: 20px;
 }
+span.freshmark {
+  float: left;
+  width: 120px;
+  height: 16px;
+  font-size: 80%;
+  font-weight: normal;
+  text-align: right;
+  color: black;
+  border-radius: 3px;
+  margin-right: 2px;
+  padding: 1px 2px 1px 0px;
+  overflow: hidden;
+  background-color: #c0c0c0;
+}
+span.freshmark.move {
+  background-color: #5f5;
+}
+span.freshmark.stop {
+  background-color: #f55;
+}
+span.freshmark.old {
+  background-color: #55f;
+  color: white;
+}
+span.freshmark.off {
+  background-color: #444;
+}
 div#geos_head {
   position: absolute;
   top: 60px;
