@@ -3132,6 +3132,10 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             voltage: 0.0
         },
         {
+            liters: 40,
+            voltage: 6.0
+        },
+        {
             liters: 80,
             voltage: 10.0
         },
@@ -3150,12 +3154,119 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             voltage: voltage
         });
     }
+
+    $scope.onRemove = function(index){
+        console.log('remove', index);
+        $scope.fuel.splice(index, 1);
+    }
 }])
 
 .directive('chart', [function(){
     var path = null;
 
+    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = 500 - margin.left - margin.right,
+        height = 250 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    var line = d3.svg.line()
+        .x(function(d) { return x(d.liters); })
+        .y(function(d) { return y(d.voltage); });
+
+    var svg;
+
     var draw = function(element, data){
+        console.log('draw', element[0]);
+
+        x.domain(d3.extent(data, function(d) { return d.liters; }));
+        y.domain([d3.min(data, function(d) { return 0.0; }), d3.max(data, function(d) { return 10.0; })]);
+
+        svg = d3.select(element[0]).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Ось X: 0..емкость_бака
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+                .append("text")
+                .attr("x", width)
+                .attr("y", -6)
+                .style("text-anchor", "end")
+                .text("Объем топлива (l)");
+
+        // Ось Y: 0..10V
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Напряжение (V)");
+
+        svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+
+    }
+
+    var redraw = function(element, data){
+        // console.log('redraw', data);
+
+        x.domain(d3.extent(data, function(d) { return d.liters; }));
+        svg.select("g.x.axis").transition()
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        var line = d3.svg.line()
+            .x(function(d) { return x(d.liters); })
+            .y(function(d) { return y(d.voltage); });
+
+        svg.select("path.line")
+            .datum(data).transition()
+            .attr("d", line);
+
+        var dots = svg.selectAll(".dot")
+            .data(data);
+
+        dots.enter().append("circle")
+                .attr("class", "dot")
+                .attr("r", 5)
+                .append("title")
+                    .text(function(d) { return d.liters; })
+                    .attr("y1", 0)
+                    .attr("y2", 0);
+
+        dots
+            .transition()
+            .attr("cx", function(d) { return x(d.liters); })
+            .attr("cy", function(d) { return y(d.voltage); })
+            .select('title')
+                .text(function(d) { return d.liters + "l -> " + d.voltage + "V"; })
+
+        dots.exit().remove();
+
+        return;
+
         var chart = d3.select(element[0]).select('svg');
         var points = chart.selectAll(".point").data(data);
 
@@ -3177,15 +3288,17 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             .append("g")
             .attr("class", "point");
 
-        chart.selectAll(".point").transition()
+        // chart.selectAll(".point").transition()
+        points.transition()
             .attr("transform", function(d) { return "translate(" + (d.liters * 5 + 10) + "," + (240 - d.voltage * 20)+ ")";});
 
         g.append("text")
             .attr("x", 0)
             .attr("y", -15)
             .attr("dx", 0)
-            .attr("text-anchor", "middle")
-            .text(function(d) { return d.liters; });
+            .attr("text-anchor", "middle");
+
+        points.select("text").text(function(d) { return d.liters; });
 
         g.append("circle")
             .attr("x", 0)
@@ -3198,15 +3311,14 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 
         points.exit().remove();
 
-        console.log('chart:draw', chart);
-
     }
 
     var link = function(scope, element, attrs) {
         //svg = element[0].querySelector('svg');
         console.log('chart:link', element);
+        draw(element, scope.data);
         scope.$watch('data', function(data){
-            draw(element, scope.data);
+            redraw(element, scope.data);
         }, true);
     }
 
@@ -3215,7 +3327,9 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         scope: {
             data: "="
         },
-        template: '<svg width="500px" height="250px" class="chart"></svg>',
+        // template: '<svg width="500px" height="250px" class="chart"></svg>',
+        template: '<div class="chart"></div>',
+        replace: true,
         link: link
     };
 

@@ -1,37 +1,67 @@
 <h4><navtool></navtool> Топливо</h4>
 
-Настройка датчика топлива.
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Литры</th>
-            <th>Напряжение</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="l in fuel">
-            <td><input type="number" ng-model="l.liters"></td>
-            <td><input type="number" ng-model="l.voltage"></td>
-        </tr>
-        <tr><td colspan="2"><button class="btn btn-small" ng-click="onAdd()">Добавить строку</button></td></tr>
-    </tbody>
-</table>
-
 <style>
-    svg.chart{
-        border: 1px solid blue;
+    .chart{
+        /*border: 1px solid blue;*/
+        box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
     }
 
-    svg path.line {
+    .chart svg path.line {
         fill: none;
         stroke: steelblue;
-        stroke-width: 4px;
+        stroke-width: 5px;
     }
 
+    .chart svg .axis path,
+    .chart svg .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+/*    .chart svg .x.axis path {
+        display: none;
+    }
+*/
+
+    .chart svg .dot {
+        fill: steelblue;
+        stroke: #000;
+        stroke-width: 1px;
+    }
+
+    .chart svg .dot:hover {
+        fill: lightblue;
+    }
 </style>
 
-<chart data="fuel"></chart>
+Настройка датчика топлива.
+<div class="row">
+    <div class="col-lg-6">
+
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Литры</th>
+                    <th>Напряжение</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="l in fuel">
+                    <td><input type="number" ng-model="l.liters"></td>
+                    <td><input type="number" ng-model="l.voltage"></td>
+                    <td><a class="btn btn-small btn-warning" ng-click="onRemove($index)"><i class="icon-remove"></i>Удалить</a></td>
+                </tr>
+                <tr><td colspan="3"><button class="btn btn-primary" ng-click="onAdd()">Добавить строку</button></td></tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="col-lg-6">
+        <chart data="fuel"></chart>
+    </div>
+</div>
 
 <!-- {{ fuel }} -->
