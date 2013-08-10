@@ -49,8 +49,8 @@
             </thead>
             <tbody>
                 <tr ng-repeat="l in fuel">
-                    <td><input type="number" ng-model="l.liters"></td>
-                    <td><input type="number" ng-model="l.voltage"></td>
+                    <td><input type="number" ng-model="l.liters" min="0"></td>
+                    <td><input type="number" ng-model="l.voltage" min="0" max="10"></td>
                     <td><a class="btn btn-small btn-warning" ng-click="onRemove($index)"><i class="icon-remove"></i>Удалить</a></td>
                 </tr>
                 <tr><td colspan="3"><button class="btn btn-primary" ng-click="onAdd()">Добавить строку</button></td></tr>
