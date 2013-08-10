@@ -1241,3 +1241,73 @@ div.geos_vis {
 #geos_body table td:first-child {
   cursor: pointer;
 }
+.chart {
+  /*border: 1px solid blue;*/
+
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  width: 650px;
+  height: 350px;
+  border-radius: 10px;
+  padding: 0;
+  margin: 0;
+}
+.chart svg path.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 5px;
+}
+.chart svg .axis path,
+.chart svg .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+/*    .chart svg .x.axis path {
+    display: none;
+}
+*/
+.chart svg .dot {
+  fill: steelblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+.chart svg .dot:hover {
+  fill: lightblue;
+}
+tr.ui-sortable-placeholder2 {
+  /*background-color: green !important;*/
+
+  /*opacity: 0.5;*/
+
+  height: 41px;
+  width: 100px;
+}
+div.config-fuel span {
+  display: inline-block;
+  width: 140px;
+  font-weight: bold;
+  padding-top: 20px;
+}
+ul.config-fuel {
+  list-style-type: none;
+  margin: 0;
+  padding: 4px 0 40px 0;
+  width: 100%;
+}
+ul.config-fuel li {
+  padding: 2px;
+  border-bottom: 1px solid #eee;
+}
+ul.config-fuel li:first-child {
+  border-top: 1px solid #eee;
+}
+ul.config-fuel li input {
+  width: 80px;
+  margin-left: 15px;
+  margin-right: 10px;
+}
+.config-fuel-ui-sortable-placeholder {
+  background-color: rgba(0, 255, 0, 0.05) !important;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+  height: 34px;
+}

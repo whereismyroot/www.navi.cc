@@ -1,70 +1,34 @@
 <h4><navtool></navtool> Топливо</h4>
 
 <style>
-    .chart{
-        /*border: 1px solid blue;*/
-        box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-        width: 500px;
-        height: 250px;
-        border-radius: 10px;
-        padding: 0;
-        margin: 0;
-    }
-
-    .chart svg path.line {
-        fill: none;
-        stroke: steelblue;
-        stroke-width: 5px;
-    }
-
-    .chart svg .axis path,
-    .chart svg .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
-
-/*    .chart svg .x.axis path {
-        display: none;
-    }
-*/
-
-    .chart svg .dot {
-        fill: steelblue;
-        stroke: #000;
-        stroke-width: 1px;
-    }
-
-    .chart svg .dot:hover {
-        fill: lightblue;
-    }
 </style>
 
 Настройка датчика топлива.
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
 
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Объем топлива, л</th>
-                    <th>Напряжение, В</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="l in fuel">
-                    <td><input type="number" ng-model="l.liters" min="0"></td>
-                    <td><input type="number" ng-model="l.voltage" min="0" max="10" step="0.1"></td>
-                    <td><a class="btn btn-small btn-warning" ng-click="onRemove($index)"><i class="icon-remove"></i>Удалить</a></td>
-                </tr>
-                <tr><td colspan="3"><button class="btn btn-primary" ng-click="onAdd()">Добавить строку</button></td></tr>
-            </tbody>
-        </table>
+        <div class="config-fuel">
+            <span>Объем топлива, л</span>
+            <span>Напряжение, В</span>
+        </div>
+        <ul class="config-fuel" ui-sortable="sortableOptions" ng-model="fuel">
+            <li ng-repeat="l in fuel">
+                <i class="msp icon-reorder icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i>
+                <input type="number" ng-model="l.liters" min="0" ng-readonly="$index == 0">
+                <input type="number" ng-model="l.voltage" min="0" max="10" step="0.1">
+                <a class="btn btn-small btn-warning" ng-click="onRemove($index)" ng-show="($index !== 0) && ($index !== fuel.length-1)"><i class="icon-remove"></i>Удалить</a>
+            </li>
+        </ul>
+        <button class="btn btn-primary" ng-click="onAdd()"><i class="icon-plus-sign"></i> Добавить строку</button>
+        <button class="btn btn-primary" ng-click="onSave()"><i class="icon-save"></i> Сохранить</button>
+        <div ng-show="valid() !== 'Ok'" class="alert warning">
+            <i class="icon-warning-sign"></i>
+            {{ valid() }}
+        </div>
 
     </div>
 
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <chart data="fuel"></chart>
     </div>
 </div>

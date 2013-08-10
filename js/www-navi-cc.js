@@ -3132,14 +3132,39 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             voltage: 0.0
         },
         {
+            liters: 20,
+            voltage: 3.0
+        },
+        {
             liters: 40,
             voltage: 6.0
+        },
+        {
+            liters: 60,
+            voltage: 8.0
         },
         {
             liters: 80,
             voltage: 10.0
         },
     ];
+
+    $scope.valid = function(){
+        var ok = "";
+        if($scope.fuel.length === 0) {
+            return "Нет даннных";
+        }
+
+        for(var i = 1; i < $scope.fuel.length; i++){
+            if($scope.fuel[i].liters <= $scope.fuel[i-1].liters) {
+                return "Значения объема топлива должны быть в возрастающей последовательности!";
+            }
+            if($scope.fuel[i].voltage <= $scope.fuel[i-1].voltage) {
+                return "Значение напряжения должны быть в возрастающей последовательности!";
+            }
+        }
+        return "Ok";
+    }
 
     $scope.onAdd = function(){
         var liters = 0;
@@ -3150,7 +3175,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         });
 
         $scope.fuel.push({
-            liters: liters + 1,
+            liters: liters + 5,
             voltage: voltage
         });
     }
@@ -3159,14 +3184,24 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         console.log('remove', index);
         $scope.fuel.splice(index, 1);
     }
+
+    $scope.sortableOptions = {
+        handle: ".msp",
+        revert: true,
+        scrollSpeed: 5,
+        cursor: 'crosshair',
+        placeholder: 'config-fuel-ui-sortable-placeholder',
+        axis: 'y'
+    };
+
 }])
 
 .directive('chart', [function(){
     var path = null;
 
     var margin = {top: 20, right: 20, bottom: 30, left: 35},
-        width = 500 - margin.left - margin.right,
-        height = 250 - margin.top - margin.bottom;
+        width = 650 - margin.left - margin.right,
+        height = 350 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
         .range([0, width]);
@@ -3176,20 +3211,25 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 
     var xAxis = d3.svg.axis()
         .scale(x)
+        .tickSubdivide(3)
+        .tickSize(5, 3, 0)
         .orient("bottom");
 
     var yAxis = d3.svg.axis()
         .scale(y)
+        // .tickValues([1, 2, 3, 5, 8, 13, 21])
+        .tickSubdivide(1)
+        .tickSize(4, 2, 0)
         .orient("left");
 
     var line = d3.svg.line()
+        .interpolate("monotone")
         .x(function(d) { return x(d.liters); })
         .y(function(d) { return y(d.voltage); });
 
     var svg;
 
     var draw = function(element, data){
-        console.log('draw', element[0]);
 
         x.domain(d3.extent(data, function(d) { return d.liters; }));
         y.domain([d3.min(data, function(d) { return 0.0; }), d3.max(data, function(d) { return 10.0; })]);
@@ -3206,21 +3246,31 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
                 .append("text")
-                .attr("x", width)
-                .attr("y", -6)
-                .style("text-anchor", "end")
-                .text("Объем топлива (л)");
+                    .attr("x", width)
+                    .attr("y", -6)
+                    .style("text-anchor", "end")
+                    .text("Объем топлива (л)");
+
+        // var range = d3.range([0, 4]);
+        // console.log('range', range);
+        svg.selectAll('.yline').data([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).enter().append("line")
+            .attr("class", "tick minor yline")
+            .attr("x1", 0)
+            .attr("y1", function(d){return d * height / 10;})
+            .attr("x2", width)
+            .attr("y2", function(d){return d * height / 10;})
+            .attr("stroke", "#eee");
 
         // Ось Y: 0..10V
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis)
                 .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .text("Напряжение (В)");
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Напряжение (В)");
 
         svg.append("path")
             .datum(data)
@@ -3230,7 +3280,6 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
     }
 
     var redraw = function(element, data){
-        // console.log('redraw', data);
 
         x.domain(d3.extent(data, function(d) { return d.liters; }));
         svg.select("g.x.axis").transition()
@@ -3238,6 +3287,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             .call(xAxis);
 
         var line = d3.svg.line()
+            .interpolate("monotone")
             .x(function(d) { return x(d.liters); })
             .y(function(d) { return y(d.voltage); });
 
@@ -3320,6 +3370,15 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         scope.$watch('data', function(data){
             redraw(element, scope.data);
         }, true);
+
+        scope.sortableOptions = {
+            handle: ".msp",
+            revert: true,
+            scrollSpeed: 5,
+            cursor: 'crosshair',
+            placeholder: 'ui-sortable-placeholder2',
+            axis: 'y'
+        };
     }
 
     return {
@@ -3331,6 +3390,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         template: '<div class="chart"></div>',
         replace: true,
         link: link
+        // controller: ['$scope', '$element', function($scope, $element){}]
     };
 
 }]);
