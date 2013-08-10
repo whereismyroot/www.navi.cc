@@ -3164,7 +3164,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 .directive('chart', [function(){
     var path = null;
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    var margin = {top: 20, right: 20, bottom: 30, left: 35},
         width = 500 - margin.left - margin.right,
         height = 250 - margin.top - margin.bottom;
 
