@@ -3209,7 +3209,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
                 .attr("x", width)
                 .attr("y", -6)
                 .style("text-anchor", "end")
-                .text("Объем топлива (l)");
+                .text("Объем топлива (л)");
 
         // Ось Y: 0..10V
         svg.append("g")
@@ -3220,7 +3220,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
-                .text("Напряжение (V)");
+                .text("Напряжение (В)");
 
         svg.append("path")
             .datum(data)
@@ -3261,7 +3261,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             .attr("cx", function(d) { return x(d.liters); })
             .attr("cy", function(d) { return y(d.voltage); })
             .select('title')
-                .text(function(d) { return d.liters + "l -> " + d.voltage + "V"; })
+                .text(function(d) { return d.liters + " л -> " + d.voltage + " B"; })
 
         dots.exit().remove();
 
