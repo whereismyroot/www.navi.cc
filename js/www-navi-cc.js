@@ -1721,6 +1721,19 @@ filter('fromnow', function(){
 })
 */
 
+// Преобразование значения напряжения на резервном аккумуляторе в остаточную емкость в %
+filter('vin', function(){
+    return function (vin) {
+        if(vin){
+            var v = Math.max(0, Math.min(4.2, vin));
+            // Пока делаем линейно 3.5...4.2  -> 0% .. 100%
+            var per = Math.round((v - 3.5) * 100 / (4.2 - 3.5));
+            return per + "%";
+        }
+        return '?';
+    };
+}).
+
 filter('yesno', function(){
     return function (state, length, end) {
         return state?"да":"нет";
