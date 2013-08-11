@@ -1,8 +1,5 @@
 <h4><navtool></navtool> Топливо</h4>
 
-<style>
-</style>
-
 Настройка датчика топлива.
 <div class="row">
     <div class="col-lg-4">
@@ -14,13 +11,14 @@
         <ul class="config-fuel" ui-sortable="sortableOptions" ng-model="fuel">
             <li ng-repeat="l in fuel">
                 <i class="msp icon-reorder icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i>
-                <input type="number" ng-model="l.liters" min="0" ng-readonly="$index == 0">
+                <!-- <input type="number" ng-model="l.liters" min="0" ng-readonly="$index == 0"> -->
+                <input type="number" ng-model="l.liters" min="0">
                 <input type="number" ng-model="l.voltage" min="0" max="10" step="0.1">
-                <a class="btn btn-small btn-warning" ng-click="onRemove($index)" ng-show="($index !== 0) && ($index !== fuel.length-1)"><i class="icon-remove"></i>Удалить</a>
+                <a class="btn btn-small btn-warning" ng-click="onRemove($index)" ng-show="fuel.length > 2"><i class="icon-remove"></i>Удалить</a>
             </li>
         </ul>
         <button class="btn btn-primary" ng-click="onAdd()"><i class="icon-plus-sign"></i> Добавить строку</button>
-        <button class="btn btn-primary" ng-click="onSave()"><i class="icon-save"></i> Сохранить</button>
+        <button class="btn btn-primary" ng-click="onSave()" ng-show="valid() === 'Ok'"><i class="icon-save"></i> Сохранить</button>
         <div ng-show="valid() !== 'Ok'" class="alert warning">
             <i class="icon-warning-sign"></i>
             {{ valid() }}

@@ -302,6 +302,207 @@ angular.module('i18n.ua', ['ngTranslate'])
     });
 }]);
 
+angular.module('directives.chart', ['i18n'])
+
+.directive('chart', [function(){
+    var path = null;
+
+    var margin = {top: 20, right: 20, bottom: 30, left: 35},
+        width = 650 - margin.left - margin.right,
+        height = 350 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .tickSubdivide(3)
+        .tickSize(5, 3, 0)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        // .tickValues([1, 2, 3, 5, 8, 13, 21])
+        .tickSubdivide(1)
+        .tickSize(4, 2, 0)
+        .orient("left");
+
+    var line = d3.svg.line()
+        .interpolate("monotone")
+        .x(function(d) { return x(d.liters); })
+        .y(function(d) { return y(d.voltage); });
+
+    var svg;
+
+    var draw = function(element, data){
+
+        x.domain(d3.extent(data, function(d) { return d.liters; }));
+        y.domain([d3.min(data, function(d) { return 0.0; }), d3.max(data, function(d) { return 10.0; })]);
+
+        svg = d3.select(element[0]).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Ось X: 0..емкость_бака
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+                .append("text")
+                    .attr("x", width)
+                    .attr("y", -6)
+                    .style("text-anchor", "end")
+                    .text("Объем топлива (л)");
+
+        // var range = d3.range([0, 4]);
+        // console.log('range', range);
+        svg.selectAll('.yline').data([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).enter().append("line")
+            .attr("class", "tick minor yline")
+            .attr("x1", 0)
+            .attr("y1", function(d){return d * height / 10;})
+            .attr("x2", width)
+            .attr("y2", function(d){return d * height / 10;})
+            .attr("stroke", "#eee");
+
+        // Ось Y: 0..10V
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+                .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Напряжение (В)");
+
+        svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
+
+    }
+
+    var redraw = function(element, data){
+
+        x.domain(d3.extent(data, function(d) { return d.liters; }));
+        svg.select("g.x.axis").transition()
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        var line = d3.svg.line()
+            .interpolate("monotone")
+            .x(function(d) { return x(d.liters); })
+            .y(function(d) { return y(d.voltage); });
+
+        svg.select("path.line")
+            .datum(data).transition()
+            .attr("d", line);
+
+        var dots = svg.selectAll(".dot")
+            .data(data);
+
+        dots.enter().append("circle")
+                .attr("class", "dot")
+                .attr("r", 5)
+                .append("title")
+                    .text(function(d) { return d.liters; })
+                    .attr("y1", 0)
+                    .attr("y2", 0);
+
+        dots
+            .transition()
+            .attr("cx", function(d) { return x(d.liters); })
+            .attr("cy", function(d) { return y(d.voltage); })
+            .select('title')
+                .text(function(d) { return d.liters + " л -> " + d.voltage + " B"; })
+
+        dots.exit().remove();
+
+        return;
+
+        var chart = d3.select(element[0]).select('svg');
+        var points = chart.selectAll(".point").data(data);
+
+        var line = d3.svg.line()
+            .x(function(d) { return d.liters * 5 + 10; })
+            .y(function(d) { return 240 - d.voltage * 20; });
+
+        if(!path){
+            path = chart.append("path")
+                .datum(data)
+                .attr("class", "line")
+                .attr("d", line);
+        } else {
+            path.transition()
+                .attr("d", line);
+        }
+
+        var g = points.enter()
+            .append("g")
+            .attr("class", "point");
+
+        // chart.selectAll(".point").transition()
+        points.transition()
+            .attr("transform", function(d) { return "translate(" + (d.liters * 5 + 10) + "," + (240 - d.voltage * 20)+ ")";});
+
+        g.append("text")
+            .attr("x", 0)
+            .attr("y", -15)
+            .attr("dx", 0)
+            .attr("text-anchor", "middle");
+
+        points.select("text").text(function(d) { return d.liters; });
+
+        g.append("circle")
+            .attr("x", 0)
+            .attr("y", 0)
+            .style("fill", "none")
+            .style("stroke", "#00f")
+            .style("stroke-opacity", 1)
+            .style("stroke-width", 3)
+            .attr("r", 5)
+
+        points.exit().remove();
+
+    }
+
+    var link = function(scope, element, attrs) {
+        //svg = element[0].querySelector('svg');
+        console.log('chart:link', element);
+        draw(element, scope.data);
+        scope.$watch('data', function(data){
+            redraw(element, scope.data);
+        }, true);
+
+        scope.sortableOptions = {
+            handle: ".msp",
+            revert: true,
+            scrollSpeed: 5,
+            cursor: 'crosshair',
+            placeholder: 'ui-sortable-placeholder2',
+            axis: 'y'
+        };
+    }
+
+    return {
+        restrict: 'E',
+        scope: {
+            data: "="
+        },
+        // template: '<svg width="500px" height="250px" class="chart"></svg>',
+        template: '<div class="chart"></div>',
+        replace: true,
+        link: link
+        // controller: ['$scope', '$element', function($scope, $element){}]
+    };
+
+}]);
+
 angular.module('directives.language', ['i18n'])
 
 .directive('chooselang', ['$translate', function($translate) {
@@ -2226,6 +2427,7 @@ var params_descs = {
     "gps.TF.MOVE": {
         "desc": "Период принудительной регистрации координат при движении объекта, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60"
     },
     "gps.TF.STOP.0": {
@@ -2300,11 +2502,13 @@ var params_descs = {
     "gps.flush.move": {
         "desc": "Период отправки данных на сервер при движении, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60 180"
     },
     "gps.flush.stop": {
         "desc": "Период отправки данных на сервер при стоянке, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60"
     },
     "gps.maxsendfails": {
@@ -2355,16 +2559,35 @@ var params_descs = {
     "in.foo.1": {
         "desc": "Конфигурация входа 1: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"}
+        ],
         "comment": " INT 0 0"
     },
     "in.foo.2": {
         "desc": "Конфигурация входа 2: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"}
+        ],
         "comment": " INT 0 0"
     },
     "in.foo.3": {
-        "desc": "Конфигурация входа 3: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
+        "desc": "Конфигурация входа 3: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание / 4-Датчик топлива",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"},
+            {"value": 4, "title": "датчик топлива"}
+        ],
         "comment": " INT 0 0"
     },
     "out.1": {
@@ -2536,9 +2759,50 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
 angular.module('resources.system', [])
 
-.factory('System', ['SERVER', '$http', function (SERVER, $http) {
+.factory('System', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
     var System = {};
 
+    // Запросить подробности для системы skey
+    System.get = function(skey){
+        var defer = $q.defer();
+
+        console.log('-- System.get');
+
+        $http({
+            method: 'GET',
+            url: SERVER.api + "/system/" + encodeURIComponent(skey)
+        }).success(function(data){
+            console.log('System.get.success', data);
+            // System.skey = data.skey;
+
+            defer.resolve(data);
+        });
+
+        return defer.promise;
+    }
+
+    // Установить значение одного из параметров (или нескольких)
+    System.setParams = function(skey, params){
+        var defer = $q.defer();
+
+        console.log('-- System.get');
+
+        $http({
+            method: 'PATCH',
+            url: SERVER.api + "/system/" + encodeURIComponent(skey),
+            withCredentials: SERVER.api_withCredentials,
+            data: JSON.stringify({params: params})
+        }).success(function(data){
+            console.log('System.patch.success', data);
+            // System.skey = data.skey;
+
+            defer.resolve();
+        });
+
+        return defer.promise;
+    }
+
+    // Изменения описания (наименования системы)
     System.change_desc = function(skey, desc){
         console.log(['System.change_desc', skey, desc]);
         $http({
@@ -3089,7 +3353,7 @@ angular.module('config.system.data', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('config.system.params.fuel', ['resources.account', 'resources.params', 'app.filters'])
+angular.module('config.system.params.fuel', ['resources.account', 'resources.params', 'app.filters', 'directives.chart'])
 
 .config(['$routeProvider', function ($routeProvider) {
     var skey = ['$route', function($route){
@@ -3120,34 +3384,29 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 }])
 
 .controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', function ($scope, $route, $routeParams, account, params, system) {
-    console.log('ConfigParamsFuelCtrl', $scope, $route, $routeParams, account, params);
+    // console.log('ConfigParamsFuelCtrl', $scope, $route, $routeParams, account, params);
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
 
+    // console.log('account.account.systems@ConfigParamsFuelCtrl=', account.account.systems);
+
+    // $scope.fuel = [];
     $scope.fuel = [
-        {
-            liters: 0,
-            voltage: 0.0
-        },
-        {
-            liters: 20,
-            voltage: 3.0
-        },
-        {
-            liters: 40,
-            voltage: 6.0
-        },
-        {
-            liters: 60,
-            voltage: 8.0
-        },
-        {
-            liters: 80,
-            voltage: 10.0
-        },
+        {liters: 0, voltage: 0.0},
+        // {liters: 20, voltage: 3.0},
+        // {liters: 40, voltage: 6.0},
+        // {liters: 60, voltage: 8.0},
+        {liters: 80, voltage: 10.0}
     ];
+
+    system.get($scope.skey).then(function(data){
+        if((data.value.params) && (data.value.params.fuel)){
+            $scope.fuel = data.value.params.fuel;
+        }
+        // if($scope.system)
+    });
 
     $scope.valid = function(){
         var ok = "";
@@ -3185,6 +3444,13 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         $scope.fuel.splice(index, 1);
     }
 
+    $scope.onSave = function(){
+        console.log('save');
+        system.setParams($scope.skey, {
+            fuel: angular.copy($scope.fuel)     // Strip $$hashkey
+        });
+    }
+
     $scope.sortableOptions = {
         handle: ".msp",
         revert: true,
@@ -3194,206 +3460,8 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         axis: 'y'
     };
 
-}])
-
-.directive('chart', [function(){
-    var path = null;
-
-    var margin = {top: 20, right: 20, bottom: 30, left: 35},
-        width = 650 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom;
-
-    var x = d3.scale.linear()
-        .range([0, width]);
-
-    var y = d3.scale.linear()
-        .range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .tickSubdivide(3)
-        .tickSize(5, 3, 0)
-        .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        // .tickValues([1, 2, 3, 5, 8, 13, 21])
-        .tickSubdivide(1)
-        .tickSize(4, 2, 0)
-        .orient("left");
-
-    var line = d3.svg.line()
-        .interpolate("monotone")
-        .x(function(d) { return x(d.liters); })
-        .y(function(d) { return y(d.voltage); });
-
-    var svg;
-
-    var draw = function(element, data){
-
-        x.domain(d3.extent(data, function(d) { return d.liters; }));
-        y.domain([d3.min(data, function(d) { return 0.0; }), d3.max(data, function(d) { return 10.0; })]);
-
-        svg = d3.select(element[0]).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        // Ось X: 0..емкость_бака
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis)
-                .append("text")
-                    .attr("x", width)
-                    .attr("y", -6)
-                    .style("text-anchor", "end")
-                    .text("Объем топлива (л)");
-
-        // var range = d3.range([0, 4]);
-        // console.log('range', range);
-        svg.selectAll('.yline').data([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).enter().append("line")
-            .attr("class", "tick minor yline")
-            .attr("x1", 0)
-            .attr("y1", function(d){return d * height / 10;})
-            .attr("x2", width)
-            .attr("y2", function(d){return d * height / 10;})
-            .attr("stroke", "#eee");
-
-        // Ось Y: 0..10V
-        svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-                .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
-                    .attr("dy", ".71em")
-                    .style("text-anchor", "end")
-                    .text("Напряжение (В)");
-
-        svg.append("path")
-            .datum(data)
-            .attr("class", "line")
-            .attr("d", line);
-
-    }
-
-    var redraw = function(element, data){
-
-        x.domain(d3.extent(data, function(d) { return d.liters; }));
-        svg.select("g.x.axis").transition()
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        var line = d3.svg.line()
-            .interpolate("monotone")
-            .x(function(d) { return x(d.liters); })
-            .y(function(d) { return y(d.voltage); });
-
-        svg.select("path.line")
-            .datum(data).transition()
-            .attr("d", line);
-
-        var dots = svg.selectAll(".dot")
-            .data(data);
-
-        dots.enter().append("circle")
-                .attr("class", "dot")
-                .attr("r", 5)
-                .append("title")
-                    .text(function(d) { return d.liters; })
-                    .attr("y1", 0)
-                    .attr("y2", 0);
-
-        dots
-            .transition()
-            .attr("cx", function(d) { return x(d.liters); })
-            .attr("cy", function(d) { return y(d.voltage); })
-            .select('title')
-                .text(function(d) { return d.liters + " л -> " + d.voltage + " B"; })
-
-        dots.exit().remove();
-
-        return;
-
-        var chart = d3.select(element[0]).select('svg');
-        var points = chart.selectAll(".point").data(data);
-
-        var line = d3.svg.line()
-            .x(function(d) { return d.liters * 5 + 10; })
-            .y(function(d) { return 240 - d.voltage * 20; });
-
-        if(!path){
-            path = chart.append("path")
-                .datum(data)
-                .attr("class", "line")
-                .attr("d", line);
-        } else {
-            path.transition()
-                .attr("d", line);
-        }
-
-        var g = points.enter()
-            .append("g")
-            .attr("class", "point");
-
-        // chart.selectAll(".point").transition()
-        points.transition()
-            .attr("transform", function(d) { return "translate(" + (d.liters * 5 + 10) + "," + (240 - d.voltage * 20)+ ")";});
-
-        g.append("text")
-            .attr("x", 0)
-            .attr("y", -15)
-            .attr("dx", 0)
-            .attr("text-anchor", "middle");
-
-        points.select("text").text(function(d) { return d.liters; });
-
-        g.append("circle")
-            .attr("x", 0)
-            .attr("y", 0)
-            .style("fill", "none")
-            .style("stroke", "#00f")
-            .style("stroke-opacity", 1)
-            .style("stroke-width", 3)
-            .attr("r", 5)
-
-        points.exit().remove();
-
-    }
-
-    var link = function(scope, element, attrs) {
-        //svg = element[0].querySelector('svg');
-        console.log('chart:link', element);
-        draw(element, scope.data);
-        scope.$watch('data', function(data){
-            redraw(element, scope.data);
-        }, true);
-
-        scope.sortableOptions = {
-            handle: ".msp",
-            revert: true,
-            scrollSpeed: 5,
-            cursor: 'crosshair',
-            placeholder: 'ui-sortable-placeholder2',
-            axis: 'y'
-        };
-    }
-
-    return {
-        restrict: 'E',
-        scope: {
-            data: "="
-        },
-        // template: '<svg width="500px" height="250px" class="chart"></svg>',
-        template: '<div class="chart"></div>',
-        replace: true,
-        link: link
-        // controller: ['$scope', '$element', function($scope, $element){}]
-    };
-
 }]);
+
 
 
 angular.module('config.system.params.master', ['resources.account', 'resources.params', 'app.filters'])
