@@ -1659,7 +1659,7 @@ var fdigits = function(value, digits) {
 var fsource = {
     0: {title: "-", icons: ["icon-question"]},
     1: {title: "SUDDENSTOP", icons: ["icon-pause", "icon-warning"]},
-    2: {title: "STOPACC", icons: ["icon-pause"]},
+    2: {title: "STOPACC", icons: ["icon-eject"]},
     3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-stop"]},
     4: {title: "SLOW", icons: ["icon-pause"]},
     5: {title: "TIMEMOVE", icons: ["icon-time", "icon-play" ]},
