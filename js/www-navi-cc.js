@@ -853,7 +853,12 @@ angular.module('directives.lists', [])
 .directive('navtool', [function(){
     return {
         restrict: 'E',
-        template: '<div class="btn-group"><a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a><a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a></div>',
+        template: '<div class="btn-group">' +
+                    '<a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a>' +
+                    '<a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/config" title="Настройки"><i class="icon-gears" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a>' +
+                  '</div>',
         controller: ["$scope", "$window", function($scope, $window){
             $scope.back = function(){
                 $window.history.back();
@@ -1653,13 +1658,13 @@ var fdigits = function(value, digits) {
 
 var fsource = {
     0: {title: "-", icons: ["icon-question"]},
-    1: {title: "SUDDENSTOP", icons: ["icon-stop", "icon-warning"]},
-    2: {title: "STOPACC", icons: ["icon-stop", "icon-pause"]},
-    3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-pause"]},
-    4: {title: "SLOW", icons: ["icon-stop"]},
+    1: {title: "SUDDENSTOP", icons: ["icon-pause", "icon-warning"]},
+    2: {title: "STOPACC", icons: ["icon-pause"]},
+    3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-stop"]},
+    4: {title: "SLOW", icons: ["icon-pause"]},
     5: {title: "TIMEMOVE", icons: ["icon-time", "icon-play" ]},
     6: {title: "START", icons: ["icon-play"]},
-    7: {title: "TIMESTOP", icons: ["icon-time", "icon-stop"]},
+    7: {title: "TIMESTOP", icons: ["icon-time", "icon-pause"]},
     8: {title: "ANGLE", icons: ["icon-share-alt"]},
     9: {title: "DELTALAT", icons: ["icon-resize-full"]},
     10: {title: "DELTALONG", icons: ["icon-resize-full"]},
@@ -3395,9 +3400,6 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
     // $scope.fuel = [];
     $scope.fuel = [
         {liters: 0, voltage: 0.0},
-        // {liters: 20, voltage: 3.0},
-        // {liters: 40, voltage: 6.0},
-        // {liters: 60, voltage: 8.0},
         {liters: 80, voltage: 10.0}
     ];
 
@@ -3433,10 +3435,22 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             if(l.voltage > voltage) voltage = l.voltage;
         });
 
+        var dliters = 5,
+            dvoltage = 0.5,
+            len = $scope.fuel.length;
+
+        if(len >= 2){
+            dliters = $scope.fuel[len-1].liters - $scope.fuel[len-2].liters;
+            dvoltage = $scope.fuel[len-1].voltage - $scope.fuel[len-2].voltage;
+        }
+
         $scope.fuel.push({
-            liters: liters + 5,
-            voltage: voltage
+            liters: liters + dliters,
+            voltage: voltage + dvoltage
         });
+
+        if($scope.fuel[len].voltage > 10.0)
+            $scope.fuel[len].voltage = 10.0;
     }
 
     $scope.onRemove = function(index){
