@@ -8,14 +8,18 @@
                 {{ item.desc }}
                 <!-- {{ skey }} -->
         </span>
-        <ul class="popup" ng-class="{active: popup}">
+        <ul class="popup active">
+            <li><a title="Нажмите чтобы настроить трекер" href="#/config/{{item.skey}}/params"><i class="icon-cogs"></i></a></li>
+            <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.skey}}"><i class="icon-table"></i></a></li>
+        </ul>
+<!--         <ul class="popup" ng-class="{active: popup}">
             <li><a title="Нажмите чтобы вызвать дополнительные функции" ng-click="popup=!popup;$event.stopPropagation()"><i class="icon-wrench"></i></a></li>
             <li><a title="Нажмите чтобы настроить трекер" href="#/config/{{item.skey}}/params"><i class="icon-cogs"></i></a></li>
             <li><a title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{item.skey}}"><i class="icon-eye-open"></i></a></li>
             <li><a title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{item.skey}}/{{$routeParams.day}}"><i class="icon-film"></i></a></li>
             <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.skey}}"><i class="icon-table"></i></a></li>
         </ul>
-    </div>
+ -->    </div>
 
     <div ng-show="zoomlist > 0">
         <span class="status">

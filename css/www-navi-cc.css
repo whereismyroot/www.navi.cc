@@ -996,7 +996,7 @@ ul.mapsyslist > li {
 ul.mapsyslist > li span.desc {
   font-weight: bold;
   display: block;
-  width: 190px;
+  width: 175px;
   color: #666;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -1005,9 +1005,8 @@ ul.mapsyslist li ul.popup {
   position: absolute;
   display: table;
   list-style-type: none;
-  right: -125px;
   top: -2px;
-  height: 30px;
+  height: 28px;
   margin: 0;
   padding: 0;
   -webkit-transition: all 0.5s ease-in-out;
@@ -1021,12 +1020,9 @@ ul.mapsyslist li ul.popup {
 }
 ul.mapsyslist li ul.popup.active {
   right: 0px;
-  box-shadow: 1px 1px 16px #000000;
-  background-color: rgba(255, 255, 255, 0.9);
 }
 ul.mapsyslist li ul.popup:hover {
   right: 0px;
-  box-shadow: 1px 1px 16px #000000;
   background-color: rgba(255, 255, 255, 0.9);
 }
 ul.mapsyslist li ul.popup li {
@@ -1038,7 +1034,7 @@ ul.mapsyslist li ul.popup li {
   border: none;
 }
 ul.mapsyslist li ul.popup li a {
-  padding: 8px;
+  padding: 4px;
   margin: 0;
   text-decoration: none;
 }

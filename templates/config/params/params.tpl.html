@@ -43,6 +43,8 @@
             <dt>Выход 2</dt><dd>?</dd>
             <dt>Уровень топлива</dt><dd>? л <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a> </dd>
         </dl>
+            <a class="btn btn-primary" title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{skey}}"><i class="icon-eye-open"></i> События</a>
+            <a class="btn btn-primary" title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{skey}}"><i class="icon-film"></i> Экспорт GPS</a>
 
         <!--button class="btn btn-small" ng-click="update()">Обновить</button-->
     </div>
@@ -59,10 +61,10 @@
             <dt>№ страхового полиса</dt><dd>-</dd>
         </dl>
 
-        <a class="btn btn-small" href="#drivers">Водители</a>
-        <a class="btn btn-small" href="#fuel">Расход топлива</a>
-        <a class="btn btn-small" href="#tags">Ярлыки</a>
-        <a class="btn btn-small" href="#zones">Привязка к зонам</a>
+        <a class="btn btn-primary" href="#drivers">Водители</a>
+        <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel">Расход топлива</a>
+        <a class="btn btn-primary" href="#tags">Ярлыки</a>
+        <a class="btn btn-primary" href="#zones">Привязка к зонам</a>
     </div>
 
 </div>
