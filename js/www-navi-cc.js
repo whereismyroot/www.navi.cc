@@ -3502,8 +3502,8 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
                 $scope.valid = {index: i, title: "Значения объема топлива должны быть в возрастающей последовательности!"};
                 return;
             }
-            if($scope.fuel[i].voltage <= $scope.fuel[i-1].voltage) {
-                $scope.valid = {index: i, title: "Значение напряжения должны быть в возрастающей последовательности!"};
+            if($scope.fuel[i].voltage < $scope.fuel[i-1].voltage) {
+                $scope.valid = {index: i, title: "Значение напряжения должны быть в неубывающей последовательности!"};
                 return;
             }
         }
