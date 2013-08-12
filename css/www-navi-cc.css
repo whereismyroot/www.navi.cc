@@ -1264,8 +1264,6 @@ div.geos_vis {
 */
 .chart svg .dot {
   fill: steelblue;
-  stroke: #000;
-  stroke-width: 1px;
 }
 .chart svg .dot:hover {
   fill: lightblue;
@@ -1287,7 +1285,7 @@ div.config-fuel span {
 ul.config-fuel {
   list-style-type: none;
   margin: 0;
-  padding: 4px 0 40px 0;
+  padding: 4px 0 20px 0;
   width: 100%;
 }
 ul.config-fuel li {

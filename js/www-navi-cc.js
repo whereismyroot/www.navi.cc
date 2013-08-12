@@ -3401,7 +3401,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
     });
 }])
 
-.controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', function ($scope, $route, $routeParams, account, params, system) {
+.controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', '$timeout', function ($scope, $route, $routeParams, account, params, system, $timeout) {
     // console.log('ConfigParamsFuelCtrl', $scope, $route, $routeParams, account, params);
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
@@ -3479,14 +3479,23 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
             dliters = $scope.fuel[len-1].liters - $scope.fuel[len-2].liters;
             dvoltage = $scope.fuel[len-1].voltage - $scope.fuel[len-2].voltage;
         }
+        liters = Math.round(liters + dliters);    // Округлим до 1
+        voltage = Math.round((voltage + dvoltage) * 100) / 100; // Округлим до 0.01
+
+        if(voltage > 10.0)
+            voltage = 10.0;
 
         $scope.fuel.push({
-            liters: liters + dliters,
-            voltage: voltage + dvoltage
+            liters: liters,
+            voltage: voltage
         });
 
-        if($scope.fuel[len].voltage > 10.0)
-            $scope.fuel[len].voltage = 10.0;
+        $timeout(function () {
+            //element[0].focus();
+            var element = $('ul.config-fuel li:last-child input');
+            element[0].focus();
+            // console.log('$element=', element[0]);
+        }, 250);
     }
 
     $scope.onRemove = function(index){
@@ -3503,7 +3512,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 
     $scope.sortableOptions = {
         handle: ".msp",
-        revert: true,
+        // revert: true,    // Имеет баг с прокруткой. Если в будущем исправят, то стоит вернуть.
         scrollSpeed: 5,
         cursor: 'crosshair',
         placeholder: 'config-fuel-ui-sortable-placeholder',
