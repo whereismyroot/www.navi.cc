@@ -1297,10 +1297,26 @@ ul.config-fuel li {
 ul.config-fuel li:first-child {
   border-top: 1px solid #eee;
 }
+ul.config-fuel li.error {
+  background-color: #f77;
+  -webkit-animation: pulsate 1s ease-out;
+  -webkit-animation-iteration-count: infinite;
+}
 ul.config-fuel li input {
   width: 60px;
   margin-left: 20px;
   margin-right: 10px;
+}
+@-webkit-keyframes pulsate {
+  0% {
+    background-color: #fff;
+  }
+  50% {
+    background-color: #ff6666;
+  }
+  100% {
+    background-color: #ffffff;
+  }
 }
 .config-fuel-ui-sortable-placeholder {
   background-color: rgba(0, 255, 0, 0.05) !important;

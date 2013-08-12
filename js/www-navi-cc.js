@@ -331,7 +331,7 @@ angular.module('directives.chart', ['i18n'])
         .orient("left");
 
     var line = d3.svg.line()
-        // .interpolate("monotone")
+        // .interpolate("basis")
         .x(function(d) { return x(d.liters); })
         .y(function(d) { return y(d.voltage); });
 
@@ -3423,22 +3423,44 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         // if($scope.system)
     });
 
-    $scope.valid = function(){
-        var ok = "";
+    $scope.valid = null;
+    $scope.$watch('fuel', function(){
+        console.log('watch');
+
         if($scope.fuel.length === 0) {
-            return "Нет даннных";
+            $scope.valid = {index: 0, title: "Нет даннных"};
+            return;
         }
 
         for(var i = 1; i < $scope.fuel.length; i++){
             if($scope.fuel[i].liters <= $scope.fuel[i-1].liters) {
-                return "Значения объема топлива должны быть в возрастающей последовательности!";
+                $scope.valid = {index: i, title: "Значения объема топлива должны быть в возрастающей последовательности!"};
+                return;
             }
             if($scope.fuel[i].voltage <= $scope.fuel[i-1].voltage) {
-                return "Значение напряжения должны быть в возрастающей последовательности!";
+                $scope.valid = {index: i, title: "Значение напряжения должны быть в возрастающей последовательности!"};
+                return;
             }
         }
-        return "Ok";
-    }
+    }, true);
+
+    // $scope.valid = function(){
+    //     console.log('valid');
+    //     var ok = "";
+    //     if($scope.fuel.length === 0) {
+    //         return {index: 0, title: "Нет даннных"};
+    //     }
+
+    //     for(var i = 1; i < $scope.fuel.length; i++){
+    //         if($scope.fuel[i].liters <= $scope.fuel[i-1].liters) {
+    //             return {index: i, title: "Значения объема топлива должны быть в возрастающей последовательности!"};
+    //         }
+    //         if($scope.fuel[i].voltage <= $scope.fuel[i-1].voltage) {
+    //             return {index: i, title: "Значение напряжения должны быть в возрастающей последовательности!"};
+    //         }
+    //     }
+    //     return null;
+    // }
 
     $scope.onAdd = function(){
         var liters = 0;
