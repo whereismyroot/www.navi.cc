@@ -41,7 +41,7 @@
             <dt>Вход 3</dt><dd>?</dd>
             <dt>Выход 1</dt><dd>?</dd>
             <dt>Выход 2</dt><dd>?</dd>
-            <dt>Уровень топлива</dt><dd>{{ account.account.systems[skey].params.fuelarray[account.account.systems[skey].dynamic.fuel] }} л <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a> </dd>
+            <dt>Уровень топлива</dt><dd>{{ account.account.systems[skey].params.fuelarray[account.account.systems[skey].dynamic.fuel] | number:2 }} л <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a> </dd>
         </dl>
             <a class="btn btn-primary" title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{skey}}"><i class="icon-eye-open"></i> События</a>
             <a class="btn btn-primary" title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{skey}}"><i class="icon-film"></i> Экспорт GPS</a>
