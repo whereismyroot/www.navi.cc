@@ -2804,6 +2804,7 @@ angular.module('resources.system', [])
             vdd = 3.3,
             out = [],
             vmax = fuel[fuel.length-1].voltage,
+            lmax = fuel[fuel.length-1].liters,
             // Функция поиска индекса по напряжению.
             // Предполагается что напряжения в возрастающей последовательности.
             b = d3.bisector(function(d){return d.voltage}).right;
@@ -2813,13 +2814,13 @@ angular.module('resources.system', [])
         for(var i=0; i<1024; i++){
             var v = (i * vdd / 1024) * (r1+r2) / r2 ; // +- 1lsb?
             if(v >= vmax){
-                out.push(vmax);
+                out.push(lmax);
             } else {
                 var index = b(fuel, v);
                 if(index == 0){
                     out.push(0);
                 } else if(index >= fuel.length){
-                    out.push(vmax);
+                    out.push(lmax);
                 } else {
                     // console.log('index=', index, fuel, fuel[index]);
                     var v1 = fuel[index-1].voltage,
