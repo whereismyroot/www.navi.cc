@@ -3442,6 +3442,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
                 return;
             }
         }
+        $scope.valid = null;
     }, true);
 
     // $scope.valid = function(){
