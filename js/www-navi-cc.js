@@ -1750,7 +1750,7 @@ filter('fsource', function(){
 angular.module('resources.account', []);
 
 // angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
-angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', function (SERVER, $http, $q, $timeout, Connect, $rootScope) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', 'System', function (SERVER, $http, $q, $timeout, Connect, $rootScope, System) {
 
   var Account = {
     'name': 'noname-noface-nonumber',
@@ -1781,6 +1781,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
       if(data.account) {
         Account.account = data.account;
+        Account.systemsUpdate();
         Account.access_token = data.access_token;
         Account.isAuthenticated = true;
       }
@@ -1790,6 +1791,16 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   }
 
   //console.log('-- resources.account.Account access_token=', Account.access_token, i18nNotifications, $q);
+
+  Account.systemsUpdate = function(){
+    // TODO! Требуется унификация обработки массива систем
+    angular.forEach(Account.account.systems, function(s, key){
+      if(s.params && s.params.fuel){
+        // console.log('fuel=', s.params.fuel, System.fuelrecalc(s.params.fuel));
+        s.params.fuelarray = System.fuelrecalc(s.params.fuel);
+      }
+    });
+  }
 
   Account.logout = function(){
     console.log('Account.logout');
@@ -1827,6 +1838,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
       Account.access_token = data.access_token;
       Account.account = data.account;
+      Account.systemsUpdate();
+
       Account.isAuthenticated = true;
       if(data.result === "created") {
         // i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
@@ -1866,6 +1879,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
         if(item.result === "added") {
           Account.account.skeys.push(item.system.key);
           Account.account.systems[item.system.key] = angular.copy(item.system);
+          Account.systemsUpdate();
         }
       }
       //$scope.addform = false;
@@ -2784,42 +2798,45 @@ angular.module('resources.system', [])
     // В цепи измерения делитель: 22k/10k
     // В перспективе значение должно быть привязано к hwid
     // Результат преобразования является массив 0..1023 для 10тибитного АЦП
-    System.fuelrecalc = function() {
+    System.fuelrecalc = function(fuel) {
         var r1 = 22,
             r2 = 10,
             vdd = 3.3,
-            out = [];
-
-        if(data && data.value.params.fuel){
-            var fuel = data.value.params.fuel,
-                vmax = fuel[fuel.length-1].voltage;
-
+            out = [],
+            vmax = fuel[fuel.length-1].voltage,
             // Функция поиска индекса по напряжению.
             // Предполагается что напряжения в возрастающей последовательности.
-            var b = d3.bisector(function(d){return d.voltage}).right;
+            b = d3.bisector(function(d){return d.voltage}).right;
 
-            console.log('fuel = ', fuel, b);
+        // console.log('fuel = ', fuel);
 
-            for(var i=0; i<1024; i++){
-                var v = (i * vdd / 1024) * (r1+r2) / r2 ; // +- 1lsb?
-                if(v >= vmax){
+        for(var i=0; i<1024; i++){
+            var v = (i * vdd / 1024) * (r1+r2) / r2 ; // +- 1lsb?
+            if(v >= vmax){
+                out.push(vmax);
+            } else {
+                var index = b(fuel, v);
+                if(index == 0){
+                    out.push(0);
+                } else if(index >= fuel.length){
                     out.push(vmax);
                 } else {
-                    var index = b(fuel, v);
+                    // console.log('index=', index, fuel, fuel[index]);
                     var v1 = fuel[index-1].voltage,
                         v2 = fuel[index].voltage,
                         l1 = fuel[index-1].liters,
-                        l2 = fuel[index].liters
-                    var vdelta = v2 - v1;
-                    var ldelta = l2 - l1;
-                    var liters = l1 + (l2 - l1) * (v - v1) / (v2 - v1);
+                        l2 = fuel[index].liters,
+                        vdelta = v2 - v1,
+                        ldelta = l2 - l1,
+                        liters = l1 + (l2 - l1) * (v - v1) / (v2 - v1);
 
                     out.push(Math.round(liters * 100) / 100); // округление до 0.01
                 }
             }
-            // console.log('out=', out);
         }
-        data.fuelarray = out;
+        // console.log('out=', out);
+        // data.fuelarray = out;
+        return out;
     }
 
     // Запросить подробности для системы skey
@@ -2835,6 +2852,11 @@ angular.module('resources.system', [])
             console.log('System.get.success', data);
             // System.skey = data.skey;
 
+            if(data && data.value.params.fuel){
+                data.fuelarray = System.fuelrecalc(data.value.params.fuel);
+            } else {
+                data.fuelarray = [];
+            }
 
             defer.resolve(data);
         });
@@ -3698,6 +3720,12 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     /*for (var k in params.value) {
       $scope.cancelqueue(k);
     };*/
+  }
+
+  $scope.tofuel = function(){
+    // console.log('tofuel/System', system);
+    // account.account.systems[skey].dynamic.fuel
+
   }
 
   $scope.filtered = function(items) {
