@@ -2006,7 +2006,7 @@ angular.module('resources.geogps', [])
                 "vin": vin,
                 "fsource": fsource,
                 "flags": flags,
-                "reserve1": reserve1,
+                "fuel": Math.floor(reserve1 / 2),
                 "reserve2": reserve2,
                 "lcrc": lcrc
             };
@@ -2780,6 +2780,48 @@ angular.module('resources.system', [])
 .factory('System', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
     var System = {};
 
+    // Построим формулу преобразования значения АЦП в объем топлива
+    // В цепи измерения делитель: 22k/10k
+    // В перспективе значение должно быть привязано к hwid
+    // Результат преобразования является массив 0..1023 для 10тибитного АЦП
+    System.fuelrecalc = function() {
+        var r1 = 22,
+            r2 = 10,
+            vdd = 3.3,
+            out = [];
+
+        if(data && data.value.params.fuel){
+            var fuel = data.value.params.fuel,
+                vmax = fuel[fuel.length-1].voltage;
+
+            // Функция поиска индекса по напряжению.
+            // Предполагается что напряжения в возрастающей последовательности.
+            var b = d3.bisector(function(d){return d.voltage}).right;
+
+            console.log('fuel = ', fuel, b);
+
+            for(var i=0; i<1024; i++){
+                var v = (i * vdd / 1024) * (r1+r2) / r2 ; // +- 1lsb?
+                if(v >= vmax){
+                    out.push(vmax);
+                } else {
+                    var index = b(fuel, v);
+                    var v1 = fuel[index-1].voltage,
+                        v2 = fuel[index].voltage,
+                        l1 = fuel[index-1].liters,
+                        l2 = fuel[index].liters
+                    var vdelta = v2 - v1;
+                    var ldelta = l2 - l1;
+                    var liters = l1 + (l2 - l1) * (v - v1) / (v2 - v1);
+
+                    out.push(Math.round(liters * 100) / 100); // округление до 0.01
+                }
+            }
+            // console.log('out=', out);
+        }
+        data.fuelarray = out;
+    }
+
     // Запросить подробности для системы skey
     System.get = function(skey){
         var defer = $q.defer();
@@ -2792,6 +2834,7 @@ angular.module('resources.system', [])
         }).success(function(data){
             console.log('System.get.success', data);
             // System.skey = data.skey;
+
 
             defer.resolve(data);
         });
@@ -3425,7 +3468,6 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 
     $scope.valid = null;
     $scope.$watch('fuel', function(){
-        console.log('watch');
 
         if($scope.fuel.length === 0) {
             $scope.valid = {index: 0, title: "Нет даннных"};
@@ -3482,8 +3524,8 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
         liters = Math.round(liters + dliters);    // Округлим до 1
         voltage = Math.round((voltage + dvoltage) * 100) / 100; // Округлим до 0.01
 
-        if(voltage > 10.0)
-            voltage = 10.0;
+        if(voltage > 10.5)
+            voltage = 10.5;
 
         $scope.fuel.push({
             liters: liters,
