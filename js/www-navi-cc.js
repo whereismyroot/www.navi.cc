@@ -331,7 +331,7 @@ angular.module('directives.chart', ['i18n'])
         .orient("left");
 
     var line = d3.svg.line()
-        .interpolate("monotone")
+        // .interpolate("monotone")
         .x(function(d) { return x(d.liters); })
         .y(function(d) { return y(d.voltage); });
 
@@ -395,7 +395,7 @@ angular.module('directives.chart', ['i18n'])
             .call(xAxis);
 
         var line = d3.svg.line()
-            .interpolate("monotone")
+            // .interpolate("monotone")
             .x(function(d) { return x(d.liters); })
             .y(function(d) { return y(d.voltage); });
 
