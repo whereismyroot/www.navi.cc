@@ -25,7 +25,7 @@
     <!--tr ng-repeat="p in params | isFiltered:filtered"-->
     <tr ng-repeat="l in logs.logs | filter:isFiltered">
         <td><datetime datetime="{{l.dt}}"></datetime></td>
-        <td>{{l.text}}<!--i class="icon-filter cmd" title="Показать только события данного типа" ng-click="filtered=!filtered"></i--></td>
+        <td ng-bind-html-unsafe="l.text"><!-- {{l.text}} --><!--i class="icon-filter cmd" title="Показать только события данного типа" ng-click="filtered=!filtered"></i--></td>
         <td>{{l.comments}}</td>
     </tr>
     <tr ng-show="!logs.logs.length">
