@@ -2,7 +2,7 @@
 angular.module('resources.account', []);
 
 // angular.module('resources.account').factory('Account', ['SERVER', '$http', 'i18nNotifications', '$q', '$timeout', function (SERVER, $http, i18nNotifications, $q, $timeout) {
-angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', function (SERVER, $http, $q, $timeout, Connect, $rootScope) {
+angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q', '$timeout', 'Connect', '$rootScope', 'System', function (SERVER, $http, $q, $timeout, Connect, $rootScope, System) {
 
   var Account = {
     'name': 'noname-noface-nonumber',
@@ -33,6 +33,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
       if(data.account) {
         Account.account = data.account;
+        Account.systemsUpdate();
         Account.access_token = data.access_token;
         Account.isAuthenticated = true;
       }
@@ -42,6 +43,16 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   }
 
   //console.log('-- resources.account.Account access_token=', Account.access_token, i18nNotifications, $q);
+
+  Account.systemsUpdate = function(){
+    // TODO! Требуется унификация обработки массива систем
+    angular.forEach(Account.account.systems, function(s, key){
+      if(s.params && s.params.fuel){
+        // console.log('fuel=', s.params.fuel, System.fuelrecalc(s.params.fuel));
+        s.params.fuelarray = System.fuelrecalc(s.params.fuel);
+      }
+    });
+  }
 
   Account.logout = function(){
     console.log('Account.logout');
@@ -79,6 +90,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
       Account.access_token = data.access_token;
       Account.account = data.account;
+      Account.systemsUpdate();
+
       Account.isAuthenticated = true;
       if(data.result === "created") {
         // i18nNotifications.pushSticky('login.newUser', 'warning', {name: data.account.username});
@@ -118,6 +131,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
         if(item.result === "added") {
           Account.account.skeys.push(item.system.key);
           Account.account.systems[item.system.key] = angular.copy(item.system);
+          Account.systemsUpdate();
         }
       }
       //$scope.addform = false;

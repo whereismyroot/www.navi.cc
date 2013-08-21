@@ -1,0 +1,97 @@
+
+.chart{
+    /*border: 1px solid blue;*/
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    width: 650px;
+    height: 350px;
+    border-radius: 10px;
+    padding: 0;
+    margin: 0;
+
+}
+
+.chart svg path.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 5px;
+}
+
+.chart svg .axis path,
+.chart svg .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+/*    .chart svg .x.axis path {
+    display: none;
+}
+*/
+
+.chart svg .dot {
+    fill: steelblue;
+    // stroke: #000;
+    // stroke-width: 1px;
+}
+
+.chart svg .dot:hover {
+    fill: lightblue;
+}
+
+tr.ui-sortable-placeholder2 {
+    /*background-color: green !important;*/
+    /*opacity: 0.5;*/
+    height: 41px;
+    width: 100px;
+}
+
+div.config-fuel {
+    span {
+        display: inline-block;
+        width: 130px;
+        // margin-right: 40px;
+        font-weight: bold;
+        padding-top: 20px;
+    }
+}
+
+ul.config-fuel {
+    // background-color: lime;
+    list-style-type: none;
+    margin: 0;
+    padding: 4px 0 20px 0;
+    width: 100%;
+
+    li {
+        padding: 2px;
+        border-bottom: 1px solid #eee;
+
+        &:first-child {
+            border-top: 1px solid #eee;
+        }
+
+        &.error {
+            background-color: #f77;
+            -webkit-animation: pulsate 1s ease-out;
+            -webkit-animation-iteration-count: infinite;
+        }
+
+        input {
+            width: 60px;
+            margin-left: 20px;
+            margin-right: 10px;
+        }
+    }
+}
+
+@-webkit-keyframes pulsate {
+    0% {background-color: #fff;}
+    50% {background-color: #f66}
+    100% {background-color: #fff}
+}
+
+.config-fuel-ui-sortable-placeholder {
+    background-color: rgba(0, 255, 0, 0.05) !important;
+    box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
+    height: 34px;
+}

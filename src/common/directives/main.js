@@ -274,7 +274,12 @@ angular.module('directives.lists', [])
 .directive('navtool', [function(){
     return {
         restrict: 'E',
-        template: '<div class="btn-group"><a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a><a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a><a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a></div>',
+        template: '<div class="btn-group">' +
+                    '<a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a>' +
+                    '<a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/config" title="Настройки"><i class="icon-gears" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a>' +
+                  '</div>',
         controller: ["$scope", "$window", function($scope, $window){
             $scope.back = function(){
                 $window.history.back();
@@ -282,6 +287,21 @@ angular.module('directives.lists', [])
 
         }]
     };
+}])
+
+.directive('focusMe', ['$timeout', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            attrs.$observe('focusMe', function(value) {
+                if ( value==="true" ) {
+                    $timeout(function(){
+                        element[0].focus();
+                    }, 100);
+                }
+            });
+        }
+    }
 }]);
 
 

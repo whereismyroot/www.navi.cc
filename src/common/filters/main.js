@@ -4,13 +4,13 @@ var fdigits = function(value, digits) {
 
 var fsource = {
     0: {title: "-", icons: ["icon-question"]},
-    1: {title: "SUDDENSTOP", icons: ["icon-stop", "icon-warning"]},
-    2: {title: "STOPACC", icons: ["icon-stop", "icon-pause"]},
-    3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-pause"]},
-    4: {title: "SLOW", icons: ["icon-stop"]},
+    1: {title: "SUDDENSTOP", icons: ["icon-warning", "icon-pause"]},
+    2: {title: "STOPACC", icons: ["icon-eject", "icon-pause"]},
+    3: {title: "TIMESTOPACC", icons: ["icon-time", "icon-stop"]},
+    4: {title: "SLOW", icons: ["icon-pause"]},
     5: {title: "TIMEMOVE", icons: ["icon-time", "icon-play" ]},
     6: {title: "START", icons: ["icon-play"]},
-    7: {title: "TIMESTOP", icons: ["icon-time", "icon-stop"]},
+    7: {title: "TIMESTOP", icons: ["icon-time", "icon-pause"]},
     8: {title: "ANGLE", icons: ["icon-share-alt"]},
     9: {title: "DELTALAT", icons: ["icon-resize-full"]},
     10: {title: "DELTALONG", icons: ["icon-resize-full"]},
@@ -66,6 +66,19 @@ filter('fromnow', function(){
     };
 })
 */
+
+// Преобразование значения напряжения на резервном аккумуляторе в остаточную емкость в %
+filter('vin', function(){
+    return function (vin) {
+        if(vin){
+            var v = Math.max(0, Math.min(4.2, vin));
+            // Пока делаем линейно 3.5...4.2  -> 0% .. 100%
+            var per = Math.round((v - 3.5) * 100 / (4.2 - 3.5));
+            return per + "%";
+        }
+        return '?';
+    };
+}).
 
 filter('yesno', function(){
     return function (state, length, end) {

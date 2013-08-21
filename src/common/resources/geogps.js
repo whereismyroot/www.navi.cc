@@ -70,7 +70,7 @@ angular.module('resources.geogps', [])
                 "vin": vin,
                 "fsource": fsource,
                 "flags": flags,
-                "reserve1": reserve1,
+                "fuel": Math.floor(reserve1 / 2),
                 "reserve2": reserve2,
                 "lcrc": lcrc
             };

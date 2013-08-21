@@ -1,4 +1,4 @@
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master'])
+angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){
@@ -70,6 +70,12 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     /*for (var k in params.value) {
       $scope.cancelqueue(k);
     };*/
+  }
+
+  $scope.tofuel = function(){
+    // console.log('tofuel/System', system);
+    // account.account.systems[skey].dynamic.fuel
+
   }
 
   $scope.filtered = function(items) {

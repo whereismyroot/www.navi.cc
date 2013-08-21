@@ -9,6 +9,7 @@ angular.module('app', [
   'gps',
   'reports',
   'config',
+  'admin',
   'help',
   'i18n',
   '$strap',

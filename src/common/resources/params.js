@@ -149,6 +149,7 @@ var params_descs = {
     "gps.TF.MOVE": {
         "desc": "Период принудительной регистрации координат при движении объекта, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60"
     },
     "gps.TF.STOP.0": {
@@ -223,11 +224,13 @@ var params_descs = {
     "gps.flush.move": {
         "desc": "Период отправки данных на сервер при движении, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60 180"
     },
     "gps.flush.stop": {
         "desc": "Период отправки данных на сервер при стоянке, сек",
         "primary": true,
+        "min": 30,
         "comment": " INT 60 60"
     },
     "gps.maxsendfails": {
@@ -278,16 +281,35 @@ var params_descs = {
     "in.foo.1": {
         "desc": "Конфигурация входа 1: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"}
+        ],
         "comment": " INT 0 0"
     },
     "in.foo.2": {
         "desc": "Конфигурация входа 2: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"}
+        ],
         "comment": " INT 0 0"
     },
     "in.foo.3": {
-        "desc": "Конфигурация входа 3: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
+        "desc": "Конфигурация входа 3: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание / 4-Датчик топлива",
         "primary": true,
+        "select": [
+            {"value": 0, "title": "выключен"},
+            {"value": 1, "title": "тревожная кнопка"},
+            {"value": 2, "title": "шлейф"},
+            {"value": 3, "title": "зажигание"},
+            {"value": 4, "title": "датчик топлива"}
+        ],
         "comment": " INT 0 0"
     },
     "out.1": {
