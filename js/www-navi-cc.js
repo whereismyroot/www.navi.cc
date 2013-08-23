@@ -866,6 +866,21 @@ angular.module('directives.lists', [])
 
         }]
     };
+}])
+
+.directive('focusMe', ['$timeout', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            attrs.$observe('focusMe', function(value) {
+                if ( value==="true" ) {
+                    $timeout(function(){
+                        element[0].focus();
+                    }, 100);
+                }
+            });
+        }
+    }
 }]);
 
 
@@ -1980,9 +1995,11 @@ angular.module('resources.geogps', [])
 
     var parse_onebin = function(packet){
         // 0xFF,                   # D0: Заголовок (должен быть == 0xFF)
+        if(packet[0] !== 0xFF) return null;
+
         // 0xF4,                   # D1: Идентификатор пакета (должен быть == 0xF4)
         // 32,                     # D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
-        if((packet[0] == 0xFF) && (packet[1] == 0xF4) && (packet[2] == 32)){
+        if((packet[1] == 0xF4) && (packet[2] == 32)){
             // dt,                     # D3: Дата+время
             var dt = packet[3] + packet[4]*256 + packet[5]*256*256 + packet[6]*256*256*256;
             // latitude,               # D4: Широта 1/10000 минут
@@ -2009,6 +2026,9 @@ angular.module('resources.geogps', [])
             var reserve2 = packet[30];
             // 0                       # D15: Локальная CRC (пока не используется)
             var lcrc = packet[31];
+
+            if((Math.abs(lat) >= 90) || (Math.abs(lon) >= 180)) return null;
+
             return {
                 "dt": dt,
                 "lat": lat,
@@ -2022,6 +2042,59 @@ angular.module('resources.geogps', [])
                 "flags": flags,
                 "fuel": Math.floor(reserve1 / 2),
                 "reserve2": reserve2,
+                "lcrc": lcrc
+            };
+        } else if(packet[1] == 0xF5){
+            // fsource,                # B: Тип точки   Причина фиксации точки
+            var fsource = packet[2];
+            // sats,                   # B: Кол-во спутников 3..12
+            var sats = packet[3];
+            // dt,                     # I: Дата+время
+            var dt = packet[4] + packet[5]*256 + packet[6]*256*256 + packet[7]*256*256*256;
+            // latitude,               # I: Широта 1/10000 минут
+            var lat = (packet[8] + packet[9]*256 + packet[10]*256*256 + packet[11]*256*256*256) / 600000.0;
+            // longitude,              # I: Долгота 1/10000 минут
+            var lon = (packet[12] + packet[13]*256 + packet[14]*256*256 + packet[15]*256*256*256) / 600000.0;
+            // speed,                  # H: Скорость 1/100 узла
+            var speed = ((packet[16] + packet[17]*256) * 1.852) / 100;
+            // altitude,               # H: Высота над уровнем моря (м)
+            var altitude = packet[18] + packet[19]*256;
+            if(packet[19] > 127) altitude = altitude - 65536;
+            // int(round(course/2)),   # B: Направление/2 = 0..179
+            var course = packet[20] * 2;
+            // vout,                   # B: Напряжение внешнего питания 1/100 B
+            var vout = packet[21] * 4;
+            // vin,                    # B: Напряжение внутреннего аккумулятора 1/100 B
+            var vin = packet[22] * 4;
+            // adc1,                   # B: АЦП1 - температура
+            var adc1 = packet[24] * 4;
+            // adc2,                   # B: АЦП2 - уровень топлива
+            var adc2 = packet[25] * 4;
+            // 0,                      # B: Младшие биты полей: vout, vin, adc1, adc2
+            var lsbs = packet[26];
+            vout += lsbs & 3;
+            vin += (lsbs >> 2) & 3;
+            adc1 += (lsbs >> 4) & 3;
+            adc2 += (lsbs >> 6) & 3;
+            // 5 байт резерв           # B: Флаги
+            packet[27]; packet[28]; packet[29]; packet[30];
+            // 0                       # D15: Локальная CRC (пока не используется)
+            var lcrc = packet[31];
+
+            if((Math.abs(lat) >= 90) || (Math.abs(lon) >= 180)) return null;
+
+            return {
+                "dt": dt,
+                "lat": lat,
+                "lon": lon,
+                "speed": speed,
+                "course": course,
+                "sats": sats,
+                "vout": vout,
+                "vin": vin,
+                "fsource": fsource,
+                //"flags": flags,
+                "fuel": adc2,
                 "lcrc": lcrc
             };
         } else {
@@ -3159,6 +3232,51 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
+angular.module('admin', [])
+
+.factory('AdminUsers', [
+    'SERVER', '$http', '$q',
+    function(SERVER, $http, $q) {
+
+        var _get = function(){
+            var defer = $q.defer();
+
+            $http({
+                method: 'GET',
+                url: SERVER.api + "/admin/users"
+            }).success(function(data){
+                console.log('admin/users:get.success', data);
+                defer.resolve(data);
+            });
+
+            return defer.promise;
+        }
+
+        var Users = {
+            get: _get
+        };
+        return Users;
+    }
+])
+
+.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider.when('/admin', {
+        templateUrl:'templates/admin/admin.tpl.html',
+        controller:'AdminViewCtrl',
+        resolve:{
+            users: ['AdminUsers', function(AdminUsers){
+                console.log('AdminUsers', AdminUsers);
+                return AdminUsers;
+            }]
+        }
+    });
+}])
+
+.controller('AdminViewCtrl', ['$scope', '$location', 'users', function ($scope, $location, users) {
+    var all = users.get();
+    console.log("AdminViewCtrl:", users, all);
+}]);
+
 angular.module('app', [
   'resources.account',
   'app.filters',
@@ -3170,6 +3288,7 @@ angular.module('app', [
   'gps',
   'reports',
   'config',
+  'admin',
   'help',
   'i18n',
   '$strap',

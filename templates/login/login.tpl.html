@@ -7,7 +7,7 @@
     <div translate class="wide">enter_comment<br></div>
     <form name="form" ng-submit="onLogin(user.name, user.password)" style="width: auto">
       <div class="input-prepend input-group"><span class="add-on input-group-addon"><i class="icon-user"></i></span>
-        <input type="text" placeholder="{{'user_name' | translate}}" ng-model="user.name" required autofocus class="form-control">
+        <input type="text" placeholder="{{'user_name' | translate}}" ng-model="user.name" required autofocus focus-me="true" class="form-control">
       </div><br>
       <div class="input-prepend input-group"><span class="add-on input-group-addon"><i class="icon-key"></i></span>
         <input type="password" placeholder="{{'user_password' | translate}}" ng-model="user.password" required class="form-control">
