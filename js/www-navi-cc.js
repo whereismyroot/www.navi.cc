@@ -3334,6 +3334,28 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
   }
   $httpProvider.defaults.headers.patch["Content-Type"] = 'application/json; charset=utf-8';
 
+  // Перехват 401 Ошибка авторизации
+  var interceptor = ['$rootScope', '$q', function (scope, $q) {
+    function success(response) {
+      return response;
+    }
+    function error(response) {
+        var status = response.status;
+
+        if (status == 401) {
+            window.location = "/#/login"; // Если пользователь неавторизован, то перенаправить на страницу /#/login
+            return;
+        }
+        // otherwise
+        return $q.reject(response);
+
+    }
+    return function (promise) {
+        return promise.then(success, error);
+    }
+  }];
+  $httpProvider.responseInterceptors.push(interceptor);
+
   //$locationProvider.html5Mode(true);
   //$routeProvider.otherwise({redirectTo:'/login'});
   //$routeProvider.otherwise({redirectTo:'/error'});
