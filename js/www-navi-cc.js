@@ -1132,7 +1132,8 @@ angular.module('directives.main', [])
         scope: {
             // zoom: "@",
             account: '=',
-            skey: '='
+            skey: '=',
+            select: '='
             // select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"
         },
         templateUrl: 'templates/map/mapsyslist.tpl.html',
@@ -1157,10 +1158,15 @@ angular.module('directives.main', [])
                 if($scope.zoomlist >= 3) $scope.zoomlist = 0;
             };
 
-
             $scope.popup = function(skey){
                 console.log('mapsyslist:popup', skey);
             };
+
+            $scope.onSysSelect = function(skey){
+                console.log('mapsyslist:onSysSelect', skey);
+                $scope.select(skey);
+            }
+
         }]
         // link: function(scope, element, attr, ngModel) {
         //     console.log("====> mapsyslist", [scope, element, attr, ngModel]);
@@ -1194,14 +1200,14 @@ angular.module('directives.main', [])
             $scope.$routeParams = $routeParams;
 
             $scope.onClick = function(skey){
-                // console.log('mapsyslist:onClick', skey);
+                console.log('mapsyslist:onClick', skey);
                 // $location.path('/map/' + skey);
                 // $location.search('key', skey);
                 // $location.search({skey: skey});
                 var params = angular.copy($routeParams);
                 angular.extend(params, {skey: skey});
                 $location.search(params);
-
+                $scope.select(skey);
             };
 
             $scope.showPopup = function(){
@@ -4545,6 +4551,16 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         load_date();
         gettrack();
     });
+
+    $scope.onSelect = function(skey){
+        if(angular.isUndefined(skey)) return;
+
+        var s = account.account.systems[skey];
+        console.log('onSelect', skey, s);
+        if(s.dynamic && s.dynamic.latitude && s.dynamic.longitude){
+            $scope.center = {lat: s.dynamic.latitude, lon: s.dynamic.longitude};
+        }
+    }
 
     // $scope.onSysSelect = function(skey){
     //     // loadTrack(skey);
