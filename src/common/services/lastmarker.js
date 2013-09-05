@@ -73,7 +73,8 @@ LastMarker.prototype.draw = function() {
         console.log(d3.select(this), d);
     });
 
-    div.append("i").attr("class", "icon-shopping-cart icon-large");
+    // div.append("i").attr("class", "icon-shopping-cart icon-large");
+    div.append("i").attr("class", function(d){ return d.icon + " icon-large"});
     div.append("span").attr("class", "title").text(function(d) {
         return d.title;
     });

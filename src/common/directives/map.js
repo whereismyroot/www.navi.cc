@@ -215,6 +215,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                     lastpos.push({
                         key: key,
                         title: sys.desc,
+                        icon: sys.icon,
                         dynamic: sys.dynamic
                     })
                 }

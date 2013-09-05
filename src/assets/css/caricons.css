@@ -1,0 +1,119 @@
+@font-face {
+  font-family: 'caricons';
+  src: url('../font/caricons.eot?82948991');
+  src: url('../font/caricons.eot?82948991#iefix') format('embedded-opentype'),
+       url('../font/caricons.woff?82948991') format('woff'),
+       url('../font/caricons.ttf?82948991') format('truetype'),
+       url('../font/caricons.svg?82948991#caricons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'caricons';
+    src: url('../font/caricons.svg?82948991#caricons') format('svg');
+  }
+}
+*/
+ 
+ [class^="caricon-"]:before, [class*=" caricon-"]:before {
+  font-family: "caricons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+     
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.caricon-android-1:before { content: '\e838'; } /* '' */
+.caricon-reddit:before { content: '\e839'; } /* '' */
+.caricon-plancast:before { content: '\e800'; } /* '' */
+.caricon-angellist:before { content: '\e83a'; } /* '' */
+.caricon-home:before { content: '\e808'; } /* '' */
+.caricon-cloud:before { content: '\e80c'; } /* '' */
+.caricon-umbrella:before { content: '\e810'; } /* '' */
+.caricon-star:before { content: '\e807'; } /* '' */
+.caricon-star-empty:before { content: '\e806'; } /* '' */
+.caricon-attention:before { content: '\e809'; } /* '' */
+.caricon-flight:before { content: '\e80e'; } /* '' */
+.caricon-flight-1:before { content: '\e81f'; } /* '' */
+.caricon-accessibility:before { content: '\e83c'; } /* '' */
+.caricon-paper-plane-1:before { content: '\e842'; } /* '' */
+.caricon-money:before { content: '\e841'; } /* '' */
+.caricon-beaker:before { content: '\e840'; } /* '' */
+.caricon-truck-1:before { content: '\e83f'; } /* '' */
+.caricon-attach:before { content: '\e83b'; } /* '' */
+.caricon-guidedog:before { content: '\e83d'; } /* '' */
+.caricon-lightbulb:before { content: '\e826'; } /* '' */
+.caricon-blind:before { content: '\e83e'; } /* '' */
+.caricon-basket:before { content: '\e80a'; } /* '' */
+.caricon-paper-plane:before { content: '\e820'; } /* '' */
+.caricon-traffic-cone:before { content: '\e821'; } /* '' */
+.caricon-cc:before { content: '\e822'; } /* '' */
+.caricon-emo-happy:before { content: '\e801'; } /* '' */
+.caricon-aboveground-rail:before { content: '\e828'; } /* '' */
+.caricon-airfield:before { content: '\e829'; } /* '' */
+.caricon-airport:before { content: '\e82a'; } /* '' */
+.caricon-emo-devil:before { content: '\e802'; } /* '' */
+.caricon-belowground-rail:before { content: '\e82b'; } /* '' */
+.caricon-bicycle:before { content: '\e82d'; } /* '' */
+.caricon-bus:before { content: '\e82c'; } /* '' */
+.caricon-ferry:before { content: '\e831'; } /* '' */
+.caricon-garden:before { content: '\e832'; } /* '' */
+.caricon-giraffe:before { content: '\e833'; } /* '' */
+.caricon-grocery-store:before { content: '\e834'; } /* '' */
+.caricon-heliport:before { content: '\e835'; } /* '' */
+.caricon-pitch:before { content: '\e82f'; } /* '' */
+.caricon-police:before { content: '\e830'; } /* '' */
+.caricon-rail:before { content: '\e836'; } /* '' */
+.caricon-skiing:before { content: '\e82e'; } /* '' */
+.caricon-swimming:before { content: '\e837'; } /* '' */
+.caricon-crown:before { content: '\e803'; } /* '' */
+.caricon-twitter:before { content: '\e81e'; } /* '' */
+.caricon-user-md:before { content: '\e814'; } /* '' */
+.caricon-ambulance:before { content: '\e815'; } /* '' */
+.caricon-fighter-jet:before { content: '\e80f'; } /* '' */
+.caricon-h-sigh:before { content: '\e816'; } /* '' */
+.caricon-github:before { content: '\e81c'; } /* '' */
+.caricon-shield:before { content: '\e818'; } /* '' */
+.caricon-extinguisher:before { content: '\e817'; } /* '' */
+.caricon-rocket:before { content: '\e812'; } /* '' */
+.caricon-anchor:before { content: '\e81b'; } /* '' */
+.caricon-apple:before { content: '\e81a'; } /* '' */
+.caricon-android:before { content: '\e819'; } /* '' */
+.caricon-linux:before { content: '\e81d'; } /* '' */
+.caricon-female:before { content: '\e804'; } /* '' */
+.caricon-male:before { content: '\e805'; } /* '' */
+.caricon-bug:before { content: '\e813'; } /* '' */
+.caricon-twitter-1:before { content: '\e824'; } /* '' */
+.caricon-evernote:before { content: '\e825'; } /* '' */
+.caricon-globe:before { content: '\e80b'; } /* '' */
+.caricon-globe-alt:before { content: '\e827'; } /* '' */
+.caricon-award:before { content: '\e80d'; } /* '' */
+.caricon-rocket-1:before { content: '\e823'; } /* '' */
+.caricon-truck:before { content: '\e811'; } /* '' */

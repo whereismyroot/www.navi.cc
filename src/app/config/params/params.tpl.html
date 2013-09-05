@@ -53,6 +53,7 @@
         <h4>Информация о транспортном средстве</h4>
 
         <dl class="dl-horizontal">
+            <dt>Значек</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ account.account.systems[skey].icon || 'caricon-truck'}} icon-large"></i></a></dd>
             <dt>Наименование ТС</dt><dd contenteditable ng-model="account.account.systems[skey].desc" ng-change="onChange(skey)" title="Для изменения описания поместите курсор в поле"></dd>
             <dt>Гос номер</dt><dd>AA 0000 AA</dd>
             <dt>Год выпуска</dt><dd>-</dd>
@@ -65,6 +66,7 @@
         <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel">Расход топлива</a>
         <a class="btn btn-primary" href="#tags">Ярлыки</a>
         <a class="btn btn-primary" href="#zones">Привязка к зонам</a>
+
     </div>
 
 </div>
@@ -107,5 +109,23 @@
     </div>
 <!--/div-->
 <!--/div-->
+
+    <div class="modal fade" id="carIconsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Выберите значек для {{ account.account.systems[skey].desc }}</h4>
+                </div>
+                <div class="modal-body">
+                    <a ng-repeat="i in caricons" ng-click="setIcon(i)" title="{{ i.class }}"><i class="{{ i.class }} icon-2x"></i></a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
 </div>

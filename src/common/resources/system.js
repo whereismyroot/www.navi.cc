@@ -104,7 +104,7 @@ angular.module('resources.system', [])
             url: SERVER.api + "/system/" + encodeURIComponent(skey),
             data: JSON.stringify({desc: desc})
         }).success(function(data){
-          console.log('login data=', data);
+          // console.log('login data=', data);
         });
 
         /*
@@ -117,7 +117,19 @@ angular.module('resources.system', [])
           console.log('login data=', data);
         });
         */
+    };
 
+    // Изменения описания (наименования системы)
+    System.setIcon = function(skey, icon){
+        // console.log(['System.change_desc', skey, desc]);
+        $http({
+            method: 'PATCH',
+            withCredentials: SERVER.api_withCredentials,
+            url: SERVER.api + "/system/" + encodeURIComponent(skey),
+            data: JSON.stringify({icon: icon})
+        }).success(function(data){
+          // console.log('login data=', data);
+        });
     };
 
     return System;
