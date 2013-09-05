@@ -1146,6 +1146,49 @@ div.mapcalendar {
   font-weight: bold;
   line-height: 20px;
 }
+.lastmarker {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.lastmarker .marker {
+  position: absolute;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  margin-top: -12px;
+  padding-top: 2px;
+  background-color: #cccccc;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+.lastmarker .marker span.title {
+  display: block;
+  position: absolute;
+  white-space: nowrap;
+  left: 20px;
+  bottom: 20px;
+  border: 1px solid black;
+  font-size: 1.4em;
+  font-weight: bold;
+  background-color: #fff;
+  padding: 2px 5px 2px 5px;
+  border-top-left-radius: 10px 10px;
+  border-bottom-right-radius: 10px 10px;
+  border-top-right-radius: 10px 10px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
 span.freshmark {
   float: left;
   width: 20px;

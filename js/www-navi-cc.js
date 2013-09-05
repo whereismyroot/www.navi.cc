@@ -582,14 +582,8 @@ angular.module('directives.lists', [])
 .directive('mylist', function() {
     return {
         restrict: 'E',
-        //scope: {},
         transclude: false,
-        //template: '<div>List:<ul><li ng-repeat="l in list">{{l}}<i class="icon-arrow-right"></i><span>{{l}}</span></li></ul></div>',
-        template: '<div>List:<ul><li ng-repeat="l in list"><mylistitem></mylistitem></li></ul></div>',
-        link: function(scope, element, attrs) {
-            console.log('mylist directive: link', scope, element);
-        }
-        //, controller: ["account", function(account){console.log("account=", account)}]
+        template: '<div>List:<ul><li ng-repeat="l in list"><mylistitem></mylistitem></li></ul></div>'
     };
 })
 
@@ -598,10 +592,7 @@ angular.module('directives.lists', [])
         restrict: 'E',
         //scope: {l:"@"},
         transclude: true,
-        template: '<div>{{l}}</div>',
-        link: function(scope, element, attrs) {
-            console.log('mylistitem directive: link', scope, element);
-        }
+        template: '<div>{{l}}</div>'
     };
 })
 
@@ -617,7 +608,6 @@ angular.module('directives.lists', [])
             //scope.ul = ul;
             scope.list = scope.$parent.list;
             //var ul = angular.element(element);
-            console.log('mylist2 directive: link', scope, element, attrs, ul);
             scope.$watch('list', function(ov, nv){
                 //console.log(' == watch(list)', scope, ov, nv);
                 ul.innerHTML = '';
@@ -715,12 +705,9 @@ angular.module('directives.lists', [])
                     return;
                 }
                 var file = ev.target.files[0];
-                console.log('onChange', file);
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    console.log(['  onload ==== before', e]);
                     var list = e.target.result.replace(/[\r\t\n]/g, ' ').replace(/ {2}/g, ' ').split(' ').filter(function(el){return (el !== '') && (el !== ' ');});
-                    console.log(['  onload', e, list]);
                     scope.$apply(function(){
                         ngModel.$setViewValue(list);
                         element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
@@ -745,7 +732,6 @@ angular.module('directives.lists', [])
             element.querySelector('input').addEventListener('change', function(){
                 console.log('onChange');
             }, false);*/
-            console.log(['fileload', scope, element, attr, ngModel]);
         }
     };
 })
@@ -883,155 +869,16 @@ angular.module('directives.lists', [])
     }
 }]);
 
-
-console.log("*=*=*=*= I'am a spammer");
-
-
 // Enable the visual refresh
 google.maps.visualRefresh = true;
 
+angular.module('directives.gmap', ['services.connect', 'services.eventmarker', 'services.lastmarker'/*, 'ui'*/])
 
-/*
-    Маркер событий трека.
-    Доступны маркеры:
-    1. Стоянок.
-    2. Остановок.
-    3. Заправки.
-    4. Сливы топлива.
-    5. Тревожные события.
-*/
-
-function EventMarker(map)
-{
-    this.map = map;
-    this.div = null;
-    this.data = [];
-    this.setMap(map);
-}
-
-EventMarker.prototype = new google.maps.OverlayView();
-
-var SVG = {};
-SVG.ns = "http://www.w3.org/2000/svg";
-SVG.xlinkns = "http://www.w3.org/1999/xlink";
-
-EventMarker.prototype.onAdd = function() {
-    var div = this.div = document.createElement('div');
-
-    div.setAttribute("class", "eventmarker");
-
-    div.marker = this;
-    var panes = this.getPanes();
-    this.panes = panes;
-
-    // var marker = d3.select(svg);
-
-    if(0){
-    var svg = document.createElementNS(SVG.ns, "svg:svg");
-    svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", SVG.xlinkns);
-    svg.setAttribute("width", '32px');
-    svg.setAttribute("height", '32px');
-    var marker = d3.select(svg);
-
-    var title = this.title;
-
-    var g = marker.append("g");
-
-    g.append("path")
-        .attr("d", "M 17,31 C 16,22 3,22 3,12 3,2 12,1 17,1 22,1 30,2 30,12 30,22 18,22 17,31 z")
-        .attr("opacity", "0.5")
-        .attr("fill", "#4C4")
-        .attr("style", "stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1");
-    g.append("text")
-        .attr("x", "17")
-        .attr("y", "18")
-        .attr("text-anchor", "middle")
-        .attr("font-size", "14px")
-        .text(title);
-
-    // console.log("marker = ", title);
-
-    div.appendChild(svg);
-    }
-
-    console.log('market div', div);
-    panes.overlayImage.appendChild(div);
-}
-
-// EventMarker.prototype.setPosition = function(position) {
-//     this.position = position;
-//     // this.point = point;
-//     this.draw();
-// }
-EventMarker.prototype.setData = function(data) {
-    this.data = data;
-    this.draw();
-}
-
-EventMarker.prototype.onRemove = function() {
-    // this.div.removeChild(this.arrdiv);
-    this.div.parentNode.removeChild(this.div);
-    this.arrdiv = null;
-    this.div = null;
-}
-
-EventMarker.prototype.draw = function() {
-    var overlayProjection = this.getProjection();
-    if(!overlayProjection) return;
-
-    // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
-    var div = this.div;
-
-    // var x = divpx.x;
-    // var y = divpx.y;
-
-    var track = d3.select(this.div);
-    var points = track.selectAll(".track")
-        .data(this.data);
-
-    var div = points.enter().append("div")
-        .attr("class", "track")
-        // .attr("style", function(d){
-        //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
-        //     // console.log("d=", d, "px=", px);
-        //     return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-        // })
-        .on('click', function(d) {
-            console.log(d3.select(this), d);
-        });
-
-    div.append("span").text(function(d){
-        return d.title;
-    });
-
-    points
-        .attr("class", function(d){
-            return "track " + d.type;
-        })
-        .attr("style", function(d){
-            var px = overlayProjection.fromLatLngToDivPixel(d.pos);
-            // console.log("d=", d, "px=", px);
-            return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-        });
-
-    points.exit().remove();
-
-    // console.log('draw', this.data, points.select("div.stop"));
-
-    // div.style.left = divpx.x - 16 + 'px';
-    // div.style.top = divpx.y - 32 + 'px';
-}
-
-
-angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
-
-.directive('gmap', ["Connect", function(Connect) {
-    console.log('~~~~~~~~> gmap:directive');
+.directive('gmap', ["Connect", "EventMarker", function(Connect, EventMarker) {
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
 
     var link = function(scope, element, attrs) {
-        console.log('~~~~~~~~> gmap:directive:link', scope, element, attrs);
         var path = null;
         var gmarker = null;
         // console.log('map directive: link', scope, element, Connect);
@@ -1058,8 +905,7 @@ angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
             mapTypeId: prev_config.typeId,
             zoom: prev_config.zoom
         };
-        var map = new google.maps.Map(element[0],
-            myOptions);
+        var map = new google.maps.Map(element[0], myOptions);
 
         // config.map = map;
 
@@ -1133,20 +979,20 @@ angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
             //$timeout.cancel(timeoutId);
         });
 
-        var marker_begin = new google.maps.MarkerImage(
-            '/img/marker/marker-begin.png',
-            new google.maps.Size(30, 20),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(15, 19)
-        );
-        var marker_end = new google.maps.MarkerImage(
-            '/img/marker/marker-end.png',
-            new google.maps.Size(30, 20),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(15, 19)
-        );
-        var begin_marker = null,
-            end_marker = null;
+        // var marker_begin = new google.maps.MarkerImage(
+        //     '/img/marker/marker-begin.png',
+        //     new google.maps.Size(30, 20),
+        //     new google.maps.Point(0, 0),
+        //     new google.maps.Point(15, 19)
+        // );
+        // var marker_end = new google.maps.MarkerImage(
+        //     '/img/marker/marker-end.png',
+        //     new google.maps.Size(30, 20),
+        //     new google.maps.Point(0, 0),
+        //     new google.maps.Point(15, 19)
+        // );
+        // var begin_marker = null,
+        //     end_marker = null;
         var eventmarkers = {};
 
 //        if(scope.config.autobounds){
@@ -1229,6 +1075,25 @@ angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
             showTrack(data);
         });
 
+        var lastmarker = new LastMarker(map);
+        scope.$watch("account.account.systems", function(systems){
+            if(!systems) return;
+            var lastpos = [];
+            //for(var i in systems){}
+            angular.forEach(systems, function(sys, key){
+                if(sys.dynamic && sys.dynamic.latitude){
+                    // console.log('forEach ', sys, key);
+                    lastpos.push({
+                        key: key,
+                        title: sys.desc,
+                        dynamic: sys.dynamic
+                    })
+                }
+            });
+            lastmarker.setData(lastpos);
+            // console.log('$watch account.account.systems', systems, lastpos);
+        }, true);
+
         scope.$watch("center", function(center){
             if(center) {
                 var pos = new google.maps.LatLng(center.lat, center.lon);
@@ -1248,7 +1113,8 @@ angular.module('directives.gmap', ['services.connect'/*, 'ui'*/])
         scope: {
             track: "=",
             config: "=",
-            center: "="
+            center: "=",
+            account: "="
         },
         link: link/*,
         controller: ["$scope", "Connect", function($scope, Connect){
@@ -1272,8 +1138,6 @@ angular.module('directives.main', [])
         templateUrl: 'templates/map/mapsyslist.tpl.html',
         replace: true,
         controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
-            console.log("====> mapsyslist", [$element, $scope, $attrs]);
-
             $scope.filters = [
                 {
                     desc: "личные"
@@ -1499,13 +1363,11 @@ var timescale = 24 * 3600 / 2500.0;
 angular.module('directives.timeline', [])
 
 .directive('timeline', [function() {
-    console.log('timeline:directive');
 
     var zoom_factor = 0.67;
     var svg;
 
     var tz = (new Date()).getTimezoneOffset() / 60;
-    console.log('tz =', tz);
 
     var draw_data = function(data){
 
@@ -1514,7 +1376,7 @@ angular.module('directives.timeline', [])
         if(data && (data.length > 0)){
             offset = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600;
         }
-        console.log("timeline data=", data, offset);
+        // console.log("timeline data=", data, offset);
 
         var grid = d3.select(svg);
 
@@ -1618,7 +1480,6 @@ angular.module('directives.timeline', [])
     };
 
     var link = function(scope, element, attrs) {
-        console.log('timeline directive: link', scope, element);
 
         svg = element[0].querySelector('svg');
         draw_axes();
@@ -2254,7 +2115,7 @@ angular.module('resources.geogps', [])
 
     GeoGPS.getHours = function(hourfrom, hourto){
         var defer = $q.defer();
-        console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
+        // console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
         $http({
             method: 'GET',
             cache: false,
@@ -2295,7 +2156,7 @@ angular.module('resources.geogps', [])
 
     GeoGPS.getTrack = function(hourfrom, hourto){
         var defer = $q.defer();
-        console.log("getTrack", skey, hourfrom, hourto);
+        // console.log("getTrack", skey, hourfrom, hourto);
 
         // GeoGPS.hideTrack();
         $http({
@@ -2307,7 +2168,7 @@ angular.module('resources.geogps', [])
                 '/geo/get/' +
                 encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
         }).success(function(data){
-            console.log('GeoGPS.getTrack.success', data);
+            // console.log('GeoGPS.getTrack.success', data);
             if(!data) {
                 defer.resolve({
                     track: [],
@@ -3079,6 +2940,119 @@ angular.module('services.connect', [])
 }]);
 
 
+/*
+    Маркер событий трека.
+    Доступны маркеры:
+    1. Стоянок.
+    2. Остановок.
+    3. Заправки.
+    4. Сливы топлива.
+    5. Тревожные события.
+*/
+
+function EventMarker(map)
+{
+    this.map = map;
+    this.div = null;
+    this.data = [];
+    this.setMap(map);
+}
+
+EventMarker.prototype = new google.maps.OverlayView();
+
+var SVG = {};
+SVG.ns = "http://www.w3.org/2000/svg";
+SVG.xlinkns = "http://www.w3.org/1999/xlink";
+
+EventMarker.prototype.onAdd = function() {
+    var div = this.div = document.createElement('div');
+
+    div.setAttribute("class", "eventmarker");
+
+    div.marker = this;
+    var panes = this.getPanes();
+    this.panes = panes;
+
+    // var marker = d3.select(svg);
+
+    // console.log('market div', div);
+    panes.overlayImage.appendChild(div);
+}
+
+// EventMarker.prototype.setPosition = function(position) {
+//     this.position = position;
+//     // this.point = point;
+//     this.draw();
+// }
+EventMarker.prototype.setData = function(data) {
+    this.data = data;
+    this.draw();
+}
+
+EventMarker.prototype.onRemove = function() {
+    // this.div.removeChild(this.arrdiv);
+    this.div.parentNode.removeChild(this.div);
+    this.arrdiv = null;
+    this.div = null;
+}
+
+EventMarker.prototype.draw = function() {
+    var overlayProjection = this.getProjection();
+    if(!overlayProjection) return;
+
+    // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
+    var div = this.div;
+
+    // var x = divpx.x;
+    // var y = divpx.y;
+
+    var track = d3.select(this.div);
+    var points = track.selectAll(".track")
+        .data(this.data);
+
+    var div = points.enter().append("div")
+        .attr("class", "track")
+        // .attr("style", function(d){
+        //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
+        //     // console.log("d=", d, "px=", px);
+        //     return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+        // })
+        .on('click', function(d) {
+            console.log(d3.select(this), d);
+        });
+
+    div.append("span").text(function(d){
+        return d.title;
+    });
+
+    points
+        .attr("class", function(d){
+            return "track " + d.type;
+        })
+        .attr("style", function(d){
+            var px = overlayProjection.fromLatLngToDivPixel(d.pos);
+            // console.log("d=", d, "px=", px);
+            return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+        });
+
+    points.exit().remove();
+
+    // console.log('draw', this.data, points.select("div.stop"));
+
+    // div.style.left = divpx.x - 16 + 'px';
+    // div.style.top = divpx.y - 32 + 'px';
+}
+
+angular.module('services.eventmarker', [])
+
+.factory('EventMarker', [
+    "$rootScope",
+    function($rootScope) {
+        // console.log(":: EventMarker", $rootScope, EventMarker);
+        return EventMarker;
+    }
+]);
+
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
 
@@ -3150,6 +3124,110 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 
 //   return I18nNotifications;
 // }]);
+/*
+    Маркеры последних известных положений ТС.
+*/
+
+function LastMarker(map) {
+    this.map = map;
+    this.div = null;
+    this.data = [];
+    this.setMap(map);
+}
+
+LastMarker.prototype = new google.maps.OverlayView();
+
+var SVG = {};
+SVG.ns = "http://www.w3.org/2000/svg";
+SVG.xlinkns = "http://www.w3.org/1999/xlink";
+
+LastMarker.prototype.onAdd = function() {
+    var div = this.div = document.createElement('div');
+
+    div.setAttribute("class", "lastmarker");
+
+    div.marker = this;
+    var panes = this.getPanes();
+    this.panes = panes;
+
+    // var marker = d3.select(svg);
+
+    // console.log('market div', div);
+    panes.overlayImage.appendChild(div);
+}
+
+// LastMarker.prototype.setPosition = function(position) {
+//     this.position = position;
+//     // this.point = point;
+//     this.draw();
+// }
+LastMarker.prototype.setData = function(data) {
+    // console.log('LastMarker.prototype.setData', data);
+    this.data = data;
+    this.draw();
+}
+
+LastMarker.prototype.onRemove = function() {
+    // this.div.removeChild(this.arrdiv);
+    this.div.parentNode.removeChild(this.div);
+    this.arrdiv = null;
+    this.div = null;
+}
+
+LastMarker.prototype.draw = function() {
+    var overlayProjection = this.getProjection();
+    if (!overlayProjection) return;
+
+    // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
+    var div = this.div;
+
+    // var x = divpx.x;
+    // var y = divpx.y;
+
+    var track = d3.select(this.div);
+    var points = track.selectAll(".marker")
+        .data(this.data);
+
+    var div = points.enter().append("div")
+        .attr("class", "marker")
+    // .attr("style", function(d){
+    //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
+    //     // console.log("d=", d, "px=", px);
+    //     return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+    // })
+    .on('click', function(d) {
+        console.log(d3.select(this), d);
+    });
+
+    div.append("i").attr("class", "icon-shopping-cart icon-large");
+    div.append("span").attr("class", "title").text(function(d) {
+        return d.title;
+    });
+
+    points
+        .attr("style", function(d) {
+            var px = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(d.dynamic.latitude, d.dynamic.longitude));
+            // console.log("d=", d, "px=", px);
+            return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+        });
+
+    points.exit().remove();
+
+    // console.log('draw', this.data, points.select("div.stop"));
+
+    // div.style.left = divpx.x - 16 + 'px';
+    // div.style.top = divpx.y - 32 + 'px';
+}
+
+angular.module('services.lastmarker', [])
+
+.factory('LastMarker', [
+    "$rootScope",
+    function($rootScope) {
+        // console.log(":: LastMarker", $rootScope, LastMarker);
+        return LastMarker;
+    }
+]);
 // angular.module('services.localizedMessages', [])
 // .factory('localizedMessages', ['$interpolate', 'I18N.MESSAGES', function ($interpolate, i18nmessages) {
 
@@ -3326,7 +3404,7 @@ angular.module('app').constant('globals', {
 // });
 
 angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvider', 'SERVER', function ($routeProvider, $locationProvider, $httpProvider, SERVER) {
-  console.log(['! App CONFIG !', $httpProvider, SERVER]);
+  // console.log(['! App CONFIG !', $httpProvider, SERVER]);
   $httpProvider.defaults.withCredentials = SERVER.api_withCredentials;
 
   if(!$httpProvider.defaults.headers.patch) {
@@ -3365,7 +3443,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
 TIMETICK_UPDATE = 1000;  // Отправлять глобальное событие каждые 30 секунд.
 
 angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function($http, SERVER, $rootScope, $timeout){
-  console.log(['! App RUN ! ', $http.defaults, SERVER]);
+  // console.log(['! App RUN ! ', $http.defaults, SERVER]);
 
   $rootScope.now = function(){
     return Math.round((new Date()).valueOf() / 1000);
@@ -3386,7 +3464,7 @@ angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function
 }]);
 
 angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {
-  console.log('app:AppCtrl', $location /*, $location.parse()*/);
+  // console.log('app:AppCtrl', $location /*, $location.parse()*/);
   // $scope.i18n = i18n;
 
   // $scope.notifications = i18nNotifications;
@@ -3395,21 +3473,21 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   $scope.$route = $route;
   // $rootScope.skey = 'test';
 
-  $scope.$watch('account.skey', function(skey){
-    // if(!skey) return;
-    console.log('++=> account.skey = ', skey, $scope.account.skey);
-    // var params = $route.current.params;
-    // params.skey = skey;
-    // var search = $location.search(params).path($route.current.path);
-    // var search = $location.search('skey', skey);
-    // $location.path();
-    // var search = 0;
-    // console.log("++=> params = ", params, search);
-  //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
-  });
+  // $scope.$watch('account.skey', function(skey){
+  //   // if(!skey) return;
+  //   console.log('++=> account.skey = ', skey, $scope.account.skey);
+  //   // var params = $route.current.params;
+  //   // params.skey = skey;
+  //   // var search = $location.search(params).path($route.current.path);
+  //   // var search = $location.search('skey', skey);
+  //   // $location.path();
+  //   // var search = 0;
+  //   // console.log("++=> params = ", params, search);
+  // //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
+  // });
 
   $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
-    console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
+    // console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
     Account.skey = current.params.skey;
     // if(current.params.skey && !Account.skey){
       // Account.setSkey(current.params.skey);
@@ -3432,7 +3510,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   $scope.account = Account;
   $scope.skey = Account.skey;
 
-  console.log('update Header');
+  // console.log('update Header');
 
   $scope.home = function () {
     /*if ($scope.currentUser.isAuthenticated()) {
@@ -3956,7 +4034,6 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
 
 .controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, GeoGPS) {
   var day = $scope.day = $routeParams['day'] || 0;
-  console.log('gps select: ', $scope.skey, day);
 
   $scope.skey = $routeParams['skey'];
   $scope.account = account;
@@ -3978,11 +4055,10 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   date = new Date(hourfrom * 3600 * 1000);
   $scope.datetime = hourfrom * 3600;
 
-  console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
-  console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
+  // console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
+  // console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
 
   $scope.onSysSelect = function(){
-    console.log('skey=', $scope.skey, $location);
     if($scope.skey){
       $location.path('/gps/' + $scope.skey);
     } else {
@@ -4061,7 +4137,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
       var date = ev.date;
       // var hourfrom = date.valueOf() / 1000 / 3600 + tz;
       var newday = (date.valueOf() / 1000 / 3600 - tz) / 24;
-      console.log('datepick=', newday);
+      // console.log('datepick=', newday);
       $location.path('/gps/' + $scope.skey + '/' + newday);
       // dp.datepicker("hide");
 
@@ -4352,7 +4428,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
-    console.log('+-> map skey = ', $scope.skey);
+    //$scope.systems = account.account.systems;
 
     var dp = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
@@ -4370,7 +4446,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         // console.log(["datepicker: on changeDate", ev, date]);
         // $log.warn("datepicker:changeDate. Bad path point inn the $scope.path array ");
         // $log.error("datepicker:changeDate. Bad path point inn the $scope.path array ");
-        $log.info("datepicker:changeDate.", $scope);
+        // $log.info("datepicker:changeDate.", $scope);
         $scope.$apply(function(){   // Без этого не будет индикации процесса загрузки
             var params = angular.copy($routeParams);
             angular.extend(params, {day: day});
@@ -4430,13 +4506,13 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
                 date = new Date(hourfrom * 3600 * 1000);
                 $scope.datetime = hourfrom * 3600;
 
-                console.log("=> Selected day :", day);
-                console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
-                console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
+                // console.log("=> Selected day :", day);
+                // console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
+                // console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
 
                 // Имеет баг (я так думаю) UTC
                 dateline = dp.datepicker.DPGlobal.formatDate(new Date(date.valueOf() - tz * 3600 * 1000), "mm-dd-yyyy", "ru");
-                console.log('dateline=', dateline);
+                // console.log('dateline=', dateline);
                 dp.datepicker("update", dateline);
 
             });
@@ -4450,7 +4526,6 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
 
         GeoGPS.getTrack(hourfrom, hourfrom+23)  // +23? не 24?
             .then(function(data){
-                console.log(["getTrack: ", data]);
                 $scope.track = data;
                 $scope.points = data.track.length;
                 // fake_timeline();
@@ -4464,7 +4539,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     }
 
     $scope.$on("$routeUpdate", function(a, b, c){
-        console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
+        // console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
         $scope.skey = $routeParams['skey'];
         $scope.day = $routeParams['day'];
         load_date();
@@ -4521,7 +4596,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         link: function(scope, element, attrs) {
             var icon = element[0].querySelector('span');
             scope.toggleValue = function(){
-                console.log("toggle", scope.item, scope);
+                // console.log("toggle", scope.item, scope);
                 scope.item = !scope.item;
             };
             scope.$watch("item", function(item){
