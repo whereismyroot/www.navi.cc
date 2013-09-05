@@ -47,7 +47,7 @@ angular.module('app').constant('globals', {
 // });
 
 angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvider', 'SERVER', function ($routeProvider, $locationProvider, $httpProvider, SERVER) {
-  console.log(['! App CONFIG !', $httpProvider, SERVER]);
+  // console.log(['! App CONFIG !', $httpProvider, SERVER]);
   $httpProvider.defaults.withCredentials = SERVER.api_withCredentials;
 
   if(!$httpProvider.defaults.headers.patch) {
@@ -86,7 +86,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
 TIMETICK_UPDATE = 1000;  // Отправлять глобальное событие каждые 30 секунд.
 
 angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function($http, SERVER, $rootScope, $timeout){
-  console.log(['! App RUN ! ', $http.defaults, SERVER]);
+  // console.log(['! App RUN ! ', $http.defaults, SERVER]);
 
   $rootScope.now = function(){
     return Math.round((new Date()).valueOf() / 1000);
@@ -107,7 +107,7 @@ angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function
 }]);
 
 angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {
-  console.log('app:AppCtrl', $location /*, $location.parse()*/);
+  // console.log('app:AppCtrl', $location /*, $location.parse()*/);
   // $scope.i18n = i18n;
 
   // $scope.notifications = i18nNotifications;
@@ -116,21 +116,21 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   $scope.$route = $route;
   // $rootScope.skey = 'test';
 
-  $scope.$watch('account.skey', function(skey){
-    // if(!skey) return;
-    console.log('++=> account.skey = ', skey, $scope.account.skey);
-    // var params = $route.current.params;
-    // params.skey = skey;
-    // var search = $location.search(params).path($route.current.path);
-    // var search = $location.search('skey', skey);
-    // $location.path();
-    // var search = 0;
-    // console.log("++=> params = ", params, search);
-  //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
-  });
+  // $scope.$watch('account.skey', function(skey){
+  //   // if(!skey) return;
+  //   console.log('++=> account.skey = ', skey, $scope.account.skey);
+  //   // var params = $route.current.params;
+  //   // params.skey = skey;
+  //   // var search = $location.search(params).path($route.current.path);
+  //   // var search = $location.search('skey', skey);
+  //   // $location.path();
+  //   // var search = 0;
+  //   // console.log("++=> params = ", params, search);
+  // //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
+  // });
 
   $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
-    console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
+    // console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
     Account.skey = current.params.skey;
     // if(current.params.skey && !Account.skey){
       // Account.setSkey(current.params.skey);
@@ -153,7 +153,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   $scope.account = Account;
   $scope.skey = Account.skey;
 
-  console.log('update Header');
+  // console.log('update Header');
 
   $scope.home = function () {
     /*if ($scope.currentUser.isAuthenticated()) {

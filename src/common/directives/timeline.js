@@ -4,13 +4,11 @@ var timescale = 24 * 3600 / 2500.0;
 angular.module('directives.timeline', [])
 
 .directive('timeline', [function() {
-    console.log('timeline:directive');
 
     var zoom_factor = 0.67;
     var svg;
 
     var tz = (new Date()).getTimezoneOffset() / 60;
-    console.log('tz =', tz);
 
     var draw_data = function(data){
 
@@ -19,7 +17,7 @@ angular.module('directives.timeline', [])
         if(data && (data.length > 0)){
             offset = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600;
         }
-        console.log("timeline data=", data, offset);
+        // console.log("timeline data=", data, offset);
 
         var grid = d3.select(svg);
 
@@ -123,7 +121,6 @@ angular.module('directives.timeline', [])
     };
 
     var link = function(scope, element, attrs) {
-        console.log('timeline directive: link', scope, element);
 
         svg = element[0].querySelector('svg');
         draw_axes();

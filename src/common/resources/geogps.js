@@ -289,7 +289,7 @@ angular.module('resources.geogps', [])
 
     GeoGPS.getHours = function(hourfrom, hourto){
         var defer = $q.defer();
-        console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
+        // console.log(['GeoGPS.getHours', skey, hourfrom, hourto, defer]);
         $http({
             method: 'GET',
             cache: false,
@@ -330,7 +330,7 @@ angular.module('resources.geogps', [])
 
     GeoGPS.getTrack = function(hourfrom, hourto){
         var defer = $q.defer();
-        console.log("getTrack", skey, hourfrom, hourto);
+        // console.log("getTrack", skey, hourfrom, hourto);
 
         // GeoGPS.hideTrack();
         $http({
@@ -342,7 +342,7 @@ angular.module('resources.geogps', [])
                 '/geo/get/' +
                 encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
         }).success(function(data){
-            console.log('GeoGPS.getTrack.success', data);
+            // console.log('GeoGPS.getTrack.success', data);
             if(!data) {
                 defer.resolve({
                     track: [],

@@ -39,7 +39,6 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
 
 .controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, GeoGPS) {
   var day = $scope.day = $routeParams['day'] || 0;
-  console.log('gps select: ', $scope.skey, day);
 
   $scope.skey = $routeParams['skey'];
   $scope.account = account;
@@ -61,11 +60,10 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   date = new Date(hourfrom * 3600 * 1000);
   $scope.datetime = hourfrom * 3600;
 
-  console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
-  console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
+  // console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
+  // console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
 
   $scope.onSysSelect = function(){
-    console.log('skey=', $scope.skey, $location);
     if($scope.skey){
       $location.path('/gps/' + $scope.skey);
     } else {
@@ -144,7 +142,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
       var date = ev.date;
       // var hourfrom = date.valueOf() / 1000 / 3600 + tz;
       var newday = (date.valueOf() / 1000 / 3600 - tz) / 24;
-      console.log('datepick=', newday);
+      // console.log('datepick=', newday);
       $location.path('/gps/' + $scope.skey + '/' + newday);
       // dp.datepicker("hide");
 

@@ -3,14 +3,8 @@ angular.module('directives.lists', [])
 .directive('mylist', function() {
     return {
         restrict: 'E',
-        //scope: {},
         transclude: false,
-        //template: '<div>List:<ul><li ng-repeat="l in list">{{l}}<i class="icon-arrow-right"></i><span>{{l}}</span></li></ul></div>',
-        template: '<div>List:<ul><li ng-repeat="l in list"><mylistitem></mylistitem></li></ul></div>',
-        link: function(scope, element, attrs) {
-            console.log('mylist directive: link', scope, element);
-        }
-        //, controller: ["account", function(account){console.log("account=", account)}]
+        template: '<div>List:<ul><li ng-repeat="l in list"><mylistitem></mylistitem></li></ul></div>'
     };
 })
 
@@ -19,10 +13,7 @@ angular.module('directives.lists', [])
         restrict: 'E',
         //scope: {l:"@"},
         transclude: true,
-        template: '<div>{{l}}</div>',
-        link: function(scope, element, attrs) {
-            console.log('mylistitem directive: link', scope, element);
-        }
+        template: '<div>{{l}}</div>'
     };
 })
 
@@ -38,7 +29,6 @@ angular.module('directives.lists', [])
             //scope.ul = ul;
             scope.list = scope.$parent.list;
             //var ul = angular.element(element);
-            console.log('mylist2 directive: link', scope, element, attrs, ul);
             scope.$watch('list', function(ov, nv){
                 //console.log(' == watch(list)', scope, ov, nv);
                 ul.innerHTML = '';
@@ -136,12 +126,9 @@ angular.module('directives.lists', [])
                     return;
                 }
                 var file = ev.target.files[0];
-                console.log('onChange', file);
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    console.log(['  onload ==== before', e]);
                     var list = e.target.result.replace(/[\r\t\n]/g, ' ').replace(/ {2}/g, ' ').split(' ').filter(function(el){return (el !== '') && (el !== ' ');});
-                    console.log(['  onload', e, list]);
                     scope.$apply(function(){
                         ngModel.$setViewValue(list);
                         element.trigger('change');  // Вызовем стандартный метод onChange, можно повесить свой обработчик на ng-change="onChange()"
@@ -166,7 +153,6 @@ angular.module('directives.lists', [])
             element.querySelector('input').addEventListener('change', function(){
                 console.log('onChange');
             }, false);*/
-            console.log(['fileload', scope, element, attr, ngModel]);
         }
     };
 })
@@ -303,7 +289,3 @@ angular.module('directives.lists', [])
         }
     }
 }]);
-
-
-console.log("*=*=*=*= I'am a spammer");
-

@@ -30,7 +30,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
-    console.log('+-> map skey = ', $scope.skey);
+    //$scope.systems = account.account.systems;
 
     var dp = $('#datepicker').datepicker({
         beforeShowDay: function(date) {
@@ -48,7 +48,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         // console.log(["datepicker: on changeDate", ev, date]);
         // $log.warn("datepicker:changeDate. Bad path point inn the $scope.path array ");
         // $log.error("datepicker:changeDate. Bad path point inn the $scope.path array ");
-        $log.info("datepicker:changeDate.", $scope);
+        // $log.info("datepicker:changeDate.", $scope);
         $scope.$apply(function(){   // Без этого не будет индикации процесса загрузки
             var params = angular.copy($routeParams);
             angular.extend(params, {day: day});
@@ -108,13 +108,13 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
                 date = new Date(hourfrom * 3600 * 1000);
                 $scope.datetime = hourfrom * 3600;
 
-                console.log("=> Selected day :", day);
-                console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
-                console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
+                // console.log("=> Selected day :", day);
+                // console.log("=> Selected hour range:", hourfrom, hourfrom + 23);
+                // console.log("=> Selected date range:", date, new Date((hourfrom + 24) * 3600 * 1000 - 1000));
 
                 // Имеет баг (я так думаю) UTC
                 dateline = dp.datepicker.DPGlobal.formatDate(new Date(date.valueOf() - tz * 3600 * 1000), "mm-dd-yyyy", "ru");
-                console.log('dateline=', dateline);
+                // console.log('dateline=', dateline);
                 dp.datepicker("update", dateline);
 
             });
@@ -128,7 +128,6 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
 
         GeoGPS.getTrack(hourfrom, hourfrom+23)  // +23? не 24?
             .then(function(data){
-                console.log(["getTrack: ", data]);
                 $scope.track = data;
                 $scope.points = data.track.length;
                 // fake_timeline();
@@ -142,12 +141,22 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     }
 
     $scope.$on("$routeUpdate", function(a, b, c){
-        console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
+        // console.log("~~~~~~~~~~~~~~~~====> $routeUpdate:", a, b, c);
         $scope.skey = $routeParams['skey'];
         $scope.day = $routeParams['day'];
         load_date();
         gettrack();
     });
+
+    $scope.onSelect = function(skey){
+        if(angular.isUndefined(skey)) return;
+
+        var s = account.account.systems[skey];
+        console.log('onSelect', skey, s);
+        if(s.dynamic && s.dynamic.latitude && s.dynamic.longitude){
+            $scope.center = {lat: s.dynamic.latitude, lon: s.dynamic.longitude};
+        }
+    }
 
     // $scope.onSysSelect = function(skey){
     //     // loadTrack(skey);
@@ -199,7 +208,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
         link: function(scope, element, attrs) {
             var icon = element[0].querySelector('span');
             scope.toggleValue = function(){
-                console.log("toggle", scope.item, scope);
+                // console.log("toggle", scope.item, scope);
                 scope.item = !scope.item;
             };
             scope.$watch("item", function(item){
