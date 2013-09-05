@@ -1159,7 +1159,7 @@ div.mapcalendar {
   margin-left: -12px;
   margin-top: -12px;
   padding-top: 2px;
-  background-color: #cccccc;
+  background-color: #fff;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 12px;
   text-align: center;
@@ -1363,4 +1363,33 @@ ul.config-fuel li input {
   background-color: rgba(0, 255, 0, 0.05) !important;
   box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.3);
   height: 34px;
+}
+a.caricon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.2);
+  padding: 0px 4px 4px 0px;
+}
+a.caricon:hover {
+  background-color: #ccf;
+}
+#carIconsModal a {
+  display: inline-block;
+  padding-top: 6px;
+  width: 42px;
+  height: 42px;
+  margin: 2px;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+#carIconsModal a:hover {
+  background-color: #ccf;
 }
