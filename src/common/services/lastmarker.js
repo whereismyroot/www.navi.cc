@@ -78,13 +78,26 @@ LastMarker.prototype.draw = function() {
     div.append("span").attr("class", "title").text(function(d) {
         return d.title;
     });
+    div.append("svg")
+        .attr("style", 'position:absolute; left: -5px; top: -5px')
+        .attr("width", 32)
+        .attr("height", 32)
+        .append("g")
+            .attr("transform", "translate(16, 16)")
+            .append('path')
+                .attr("d", "M -9,-10 0,-15 9,-10 0,-13 -9,-10")
+                .attr("style", "fill:none; stroke:black; stroke-width: 2px; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1");
+                // .attr("transform", "rotate(" + 90 + ")");
+
 
     points
         .attr("style", function(d) {
             var px = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(d.dynamic.latitude, d.dynamic.longitude));
             // console.log("d=", d, "px=", px);
             return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-        });
+        })
+        .select('svg g path')
+            .attr("transform", function(d){return "rotate(" + d.dynamic.course + ")"});
 
     points.exit().remove();
 

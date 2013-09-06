@@ -184,7 +184,8 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     $scope.mapconfig = {
         autobounds: true,   // Автоматическая центровка трека при загрузке
         animation: false,   // Анимация направления трека
-        numbers: true       // Нумерация стоянок/остановок
+        numbers: true,      // Нумерация стоянок/остановок
+        centermarker: false // Не показывать маркер центра карты
     };
 
     $scope.showconfig = false;

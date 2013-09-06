@@ -94,7 +94,8 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   $scope.mapconfig = {
       autobounds: true,   // Автоматическая центровка трека при загрузке
       animation: false,   // Анимация направления трека
-      numbers: true       // Нумерация стоянок/остановок
+      numbers: true,      // Нумерация стоянок/остановок
+      centermarker: true
   };
 
   if($scope.skey && ($scope.skey != '') && ($scope.skey != '+')){
