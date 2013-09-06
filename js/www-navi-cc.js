@@ -874,7 +874,7 @@ google.maps.visualRefresh = true;
 
 angular.module('directives.gmap', ['services.connect', 'services.eventmarker', 'services.lastmarker'/*, 'ui'*/])
 
-.directive('gmap', ["Connect", "EventMarker", function(Connect, EventMarker) {
+.directive('gmap', ["Connect", "EventMarker", "LastMarker", function(Connect, EventMarker, LastMarker) {
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
 
@@ -925,46 +925,57 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             //PathRebuild();
         });
 
-        var lastpos = new google.maps.Marker({
-          map: map,
-          position: latlng,
-          title: 'Rabbit',
-          //icon: goldStar,
-          icon: {
-            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-            fillColor: "yellow",
-            fillOpacity: 0.8,
-            strokeColor: "green",
-            strokeWeight: 4,
-            scale: 5
-          },
-          animation: null // google.maps.Animation.BOUNCE
-        });
+        // var lastpos = new google.maps.Marker({
+        //   map: map,
+        //   position: latlng,
+        //   title: 'Rabbit',
+        //   //icon: goldStar,
+        //   icon: {
+        //     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+        //     fillColor: "yellow",
+        //     fillOpacity: 0.8,
+        //     strokeColor: "green",
+        //     strokeWeight: 4,
+        //     scale: 5
+        //   },
+        //   animation: null // google.maps.Animation.BOUNCE
+        // });
 
-        var center = new google.maps.MarkerImage(
-            '/img/marker/marker-center.png?v=1',
-            new google.maps.Size(32, 32),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(15, 15)
-        );
+        if(scope.config.centermarker){
+            var center = new google.maps.MarkerImage(
+                '/img/marker/marker-center.png?v=1',
+                new google.maps.Size(32, 32),
+                new google.maps.Point(0, 0),
+                new google.maps.Point(15, 15)
+            );
 
-        gmarker = new google.maps.Marker({
-            //position: new google.maps.LatLng(data.stops[i].p[0], data.stops[i].p[1]),
-            map: map,
-            title: 'Положение',
-            icon: center,
-            draggable: false
+            gmarker = new google.maps.Marker({
+                //position: new google.maps.LatLng(data.stops[i].p[0], data.stops[i].p[1]),
+                map: map,
+                title: 'Положение',
+                icon: center,
+                draggable: false
+            });
+        }
+        scope.$watch("center", function(center){
+            if(center) {
+                var pos = new google.maps.LatLng(center.lat, center.lon);
+                map.panTo(pos);
+                if(scope.config.centermarker){
+                    gmarker.setPosition(pos);
+                }
+            }
         });
 
         var eventmarker = new EventMarker(map);
 
         //config.updater.add('last_update', function(msg) {
-        var updater = Connect.updater.on('last_update', function(msg) {
-            //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
-            console.log('MAP last_update = ', msg);
-            var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
-            lastpos.setPosition(newpos);
-        });
+        // var updater = Connect.updater.on('last_update', function(msg) {
+        //     //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
+        //     console.log('MAP last_update = ', msg);
+        //     var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
+        //     lastpos.setPosition(newpos);
+        // });
 
         /*console.log('config = ', config);
         scope.$on('channel_data', function(event, more){
@@ -973,11 +984,11 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         });*/
         // listen on DOM destroy (removal) event, and cancel the next UI update
         // to prevent updating time ofter the DOM element was removed.
-        element.bind('$destroy', function() {
-            console.log('MAP:destroy element');
-            Connect.updater.remove('last_update', updater);
-            //$timeout.cancel(timeoutId);
-        });
+        // element.bind('$destroy', function() {
+        //     console.log('MAP:destroy element', Connect, updater);
+        //     Connect.updater.remove('last_update', updater);
+        //     //$timeout.cancel(timeoutId);
+        // });
 
         // var marker_begin = new google.maps.MarkerImage(
         //     '/img/marker/marker-begin.png',
@@ -1095,13 +1106,6 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             // console.log('$watch account.account.systems', systems, lastpos);
         }, true);
 
-        scope.$watch("center", function(center){
-            if(center) {
-                var pos = new google.maps.LatLng(center.lat, center.lon);
-                map.panTo(pos);
-                gmarker.setPosition(pos);
-            }
-        });
 
     };
 
@@ -3223,13 +3227,26 @@ LastMarker.prototype.draw = function() {
     div.append("span").attr("class", "title").text(function(d) {
         return d.title;
     });
+    div.append("svg")
+        .attr("style", 'position:absolute; left: -5px; top: -5px')
+        .attr("width", 32)
+        .attr("height", 32)
+        .append("g")
+            .attr("transform", "translate(16, 16)")
+            .append('path')
+                .attr("d", "M -9,-10 0,-15 9,-10 0,-13 -9,-10")
+                .attr("style", "fill:none; stroke:black; stroke-width: 2px; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1");
+                // .attr("transform", "rotate(" + 90 + ")");
+
 
     points
         .attr("style", function(d) {
             var px = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(d.dynamic.latitude, d.dynamic.longitude));
             // console.log("d=", d, "px=", px);
             return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-        });
+        })
+        .select('svg g path')
+            .attr("transform", function(d){return "rotate(" + d.dynamic.course + ")"});
 
     points.exit().remove();
 
@@ -4148,7 +4165,8 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   $scope.mapconfig = {
       autobounds: true,   // Автоматическая центровка трека при загрузке
       animation: false,   // Анимация направления трека
-      numbers: true       // Нумерация стоянок/остановок
+      numbers: true,      // Нумерация стоянок/остановок
+      centermarker: true
   };
 
   if($scope.skey && ($scope.skey != '') && ($scope.skey != '+')){
@@ -4641,7 +4659,8 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
     $scope.mapconfig = {
         autobounds: true,   // Автоматическая центровка трека при загрузке
         animation: false,   // Анимация направления трека
-        numbers: true       // Нумерация стоянок/остановок
+        numbers: true,      // Нумерация стоянок/остановок
+        centermarker: false // Не показывать маркер центра карты
     };
 
     $scope.showconfig = false;
