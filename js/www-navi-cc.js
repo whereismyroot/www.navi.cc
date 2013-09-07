@@ -925,23 +925,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             //PathRebuild();
         });
 
-        // var lastpos = new google.maps.Marker({
-        //   map: map,
-        //   position: latlng,
-        //   title: 'Rabbit',
-        //   //icon: goldStar,
-        //   icon: {
-        //     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        //     fillColor: "yellow",
-        //     fillOpacity: 0.8,
-        //     strokeColor: "green",
-        //     strokeWeight: 4,
-        //     scale: 5
-        //   },
-        //   animation: null // google.maps.Animation.BOUNCE
-        // });
-
-        if(scope.config.centermarker){
+          if(scope.config.centermarker){
             var center = new google.maps.MarkerImage(
                 '/img/marker/marker-center.png?v=1',
                 new google.maps.Size(32, 32),
@@ -969,41 +953,6 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
 
         var eventmarker = new EventMarker(map);
 
-        //config.updater.add('last_update', function(msg) {
-        // var updater = Connect.updater.on('last_update', function(msg) {
-        //     //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
-        //     console.log('MAP last_update = ', msg);
-        //     var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
-        //     lastpos.setPosition(newpos);
-        // });
-
-        /*console.log('config = ', config);
-        scope.$on('channel_data', function(event, more){
-            //var message = Connect.message;
-            console.log(['Map on change_last', more]);
-        });*/
-        // listen on DOM destroy (removal) event, and cancel the next UI update
-        // to prevent updating time ofter the DOM element was removed.
-        // element.bind('$destroy', function() {
-        //     console.log('MAP:destroy element', Connect, updater);
-        //     Connect.updater.remove('last_update', updater);
-        //     //$timeout.cancel(timeoutId);
-        // });
-
-        // var marker_begin = new google.maps.MarkerImage(
-        //     '/img/marker/marker-begin.png',
-        //     new google.maps.Size(30, 20),
-        //     new google.maps.Point(0, 0),
-        //     new google.maps.Point(15, 19)
-        // );
-        // var marker_end = new google.maps.MarkerImage(
-        //     '/img/marker/marker-end.png',
-        //     new google.maps.Size(30, 20),
-        //     new google.maps.Point(0, 0),
-        //     new google.maps.Point(15, 19)
-        // );
-        // var begin_marker = null,
-        //     end_marker = null;
         var eventmarkers = {};
 
 //        if(scope.config.autobounds){
@@ -1128,7 +1077,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
     };
 }]);
 
-angular.module('directives.main', [])
+angular.module('directives.main', ['newgps.services'])
 
 .directive('mapsyslist', ["$location", "$routeParams", function($location, $routeParams) {
     return {
@@ -1180,7 +1129,7 @@ angular.module('directives.main', [])
     }
 }])
 
-.directive('mapsysitem', ["$location", "$routeParams", function($location, $routeParams) {
+.directive('mapsysitem', ["$location", "$routeParams", "$freshmark", function($location, $routeParams, $freshmark) {
     return {
         restrict: 'E',
         require: '^mapsyslist',
@@ -1203,6 +1152,7 @@ angular.module('directives.main', [])
 
             $scope.popup = false;
             $scope.$routeParams = $routeParams;
+            $scope.$freshmark = $freshmark;
 
             $scope.onClick = function(skey){
                 console.log('mapsyslist:onClick', skey);
@@ -1248,6 +1198,7 @@ angular.module('directives.main', [])
         // },
 
         controller: ['$element', '$scope', '$attrs', '$timeout', '$rootScope', function($element, $scope, $attrs, $timeout, $rootScope) {
+            if(0){
             $scope.value = "";
             $scope.now = $rootScope.now;
 
@@ -1288,6 +1239,7 @@ angular.module('directives.main', [])
                 // console.log('timetick');
                 update();
             });
+            }
         }]
     };
 }]);
@@ -1974,6 +1926,12 @@ angular.module('resources.geogps', [])
         }
     };
 
+    // Возвращает true если точка относится к стоянке
+    var isStop = function(fsource){
+        return $.inArray(fsource, [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0;
+    }
+    GeoGPS.isStop = isStop;
+
     var bingpsparse = function(array){
         // console.log('parse');
         var track = [];
@@ -2015,7 +1973,8 @@ angular.module('resources.geogps', [])
                     });
                     range_start = point;
 
-                    if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                    // if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                    if(isStop(point['fsource'])){
                         stop_start = 0;
                         events.push({
                             point: point,
@@ -2028,7 +1987,8 @@ angular.module('resources.geogps', [])
                     }
                 }
                 // if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
-                if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                // if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                if(isStop(point['fsource'])){
                     if(stop_start === null){
                         stop_start = index;
                         events.push({
@@ -3076,6 +3036,69 @@ angular.module('services.eventmarker', [])
     }
 ]);
 
+angular.module('newgps.services', ['resources.geogps'])
+
+/**
+ * @ngdoc object
+ * @name newgps.services.$freshmark
+ * @requires $log
+ *
+ * @description
+ * Этот сервис используется для определения степень "свежести" данных о ТС
+ *
+ */
+.factory('$freshmark', ['$log', 'GeoGPS', function ($log, GeoGPS) {
+    console.log('$freshmark:run', GeoGPS);
+    var $freshmark = {
+
+        /**
+         * @ngdoc function
+         * @name newgps.services.$freshmark#get
+         * @methodOf newgps.services.$freshmark
+         *
+         * @description
+         * Возвращает объект, описывающий степень свежести данных
+         *
+         * @param {object} dynamic
+         * @return {object} freshmark
+         */
+        get: function (dynamic) {
+            // console.log('$freshmark:get', dynamic);
+            // 1) Зелёный - объект движется. (move)
+            // 2) Красный - объект стоит. (stop)
+            // 3) Синий - трекер не выходил на связь более 10 минут. (old)
+            // 4) Серый - трекер выключен. (off)
+            var now = Math.round((new Date()).valueOf() / 1000),
+                delta = now - dynamic.lastping,
+                state = {
+                    class: 'freshmark-broken',
+                    title: "Состояние неизвестно"
+                };
+
+            // console.log('freshmark element', delta);
+            // $scope.value = Math.floor(delta / 60);
+            if(delta > 24 * 60 * 60){  // Не выходил на связь более 24х часов
+                state.class = "freshmark-broken";
+                state.title = "Не выходит на связь";
+            } else if(delta > 10 * 60){  // Не выходил на связь более 10ти минут
+                state.class = "freshmark-offline";
+                state.title = "Не выходит на связь более 10ти минут";
+            } else if(dynamic.fsource){
+                if(GeoGPS.isStop(dynamic.fsource)){
+                    state.class = "freshmark-stop";
+                    state.title = "Стоит";
+                } else {
+                    state.class = "freshmark-move";
+                    state.title = "Движется";
+                }
+            }
+            return state;
+        }
+    };
+
+    return $freshmark;
+}]);
+
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
 
@@ -3151,117 +3174,128 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
     Маркеры последних известных положений ТС.
 */
 
-function LastMarker(map) {
-    this.map = map;
-    this.div = null;
-    this.data = [];
-    this.setMap(map);
-}
 
-LastMarker.prototype = new google.maps.OverlayView();
-
-var SVG = {};
-SVG.ns = "http://www.w3.org/2000/svg";
-SVG.xlinkns = "http://www.w3.org/1999/xlink";
-
-LastMarker.prototype.onAdd = function() {
-    var div = this.div = document.createElement('div');
-
-    div.setAttribute("class", "lastmarker");
-
-    div.marker = this;
-    var panes = this.getPanes();
-    this.panes = panes;
-
-    // var marker = d3.select(svg);
-
-    // console.log('market div', div);
-    panes.overlayImage.appendChild(div);
-}
-
-// LastMarker.prototype.setPosition = function(position) {
-//     this.position = position;
-//     // this.point = point;
-//     this.draw();
-// }
-LastMarker.prototype.setData = function(data) {
-    // console.log('LastMarker.prototype.setData', data);
-    this.data = data;
-    this.draw();
-}
-
-LastMarker.prototype.onRemove = function() {
-    // this.div.removeChild(this.arrdiv);
-    this.div.parentNode.removeChild(this.div);
-    this.arrdiv = null;
-    this.div = null;
-}
-
-LastMarker.prototype.draw = function() {
-    var overlayProjection = this.getProjection();
-    if (!overlayProjection) return;
-
-    // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
-    var div = this.div;
-
-    // var x = divpx.x;
-    // var y = divpx.y;
-
-    var track = d3.select(this.div);
-    var points = track.selectAll(".marker")
-        .data(this.data);
-
-    var div = points.enter().append("div")
-        .attr("class", "marker")
-    // .attr("style", function(d){
-    //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
-    //     // console.log("d=", d, "px=", px);
-    //     return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-    // })
-    .on('click', function(d) {
-        console.log(d3.select(this), d);
-    });
-
-    // div.append("i").attr("class", "icon-shopping-cart icon-large");
-    div.append("i").attr("class", function(d){ return d.icon + " icon-large"});
-    div.append("span").attr("class", "title").text(function(d) {
-        return d.title;
-    });
-    div.append("svg")
-        .attr("style", 'position:absolute; left: -5px; top: -5px')
-        .attr("width", 32)
-        .attr("height", 32)
-        .append("g")
-            .attr("transform", "translate(16, 16)")
-            .append('path')
-                .attr("d", "M -9,-10 0,-15 9,-10 0,-13 -9,-10")
-                .attr("style", "fill:none; stroke:black; stroke-width: 2px; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1");
-                // .attr("transform", "rotate(" + 90 + ")");
-
-
-    points
-        .attr("style", function(d) {
-            var px = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(d.dynamic.latitude, d.dynamic.longitude));
-            // console.log("d=", d, "px=", px);
-            return "left: " + (px.x) + "px; top: " + (px.y) + "px";
-        })
-        .select('svg g path')
-            .attr("transform", function(d){return "rotate(" + d.dynamic.course + ")"});
-
-    points.exit().remove();
-
-    // console.log('draw', this.data, points.select("div.stop"));
-
-    // div.style.left = divpx.x - 16 + 'px';
-    // div.style.top = divpx.y - 32 + 'px';
-}
-
-angular.module('services.lastmarker', [])
+angular.module('services.lastmarker', ['newgps.services'])
 
 .factory('LastMarker', [
-    "$rootScope",
-    function($rootScope) {
-        // console.log(":: LastMarker", $rootScope, LastMarker);
+    "$freshmark",
+    function($freshmark) {
+        console.log(":: LastMarker:run", $freshmark);
+
+        function LastMarker(map) {
+            this.map = map;
+            this.div = null;
+            this.data = [];
+            this.setMap(map);
+        }
+
+        LastMarker.prototype = new google.maps.OverlayView();
+
+        var SVG = {};
+        SVG.ns = "http://www.w3.org/2000/svg";
+        SVG.xlinkns = "http://www.w3.org/1999/xlink";
+
+        LastMarker.prototype.onAdd = function() {
+            var div = this.div = document.createElement('div');
+
+            div.setAttribute("class", "lastmarker");
+
+            div.marker = this;
+            var panes = this.getPanes();
+            this.panes = panes;
+
+            // var marker = d3.select(svg);
+
+            // console.log('market div', div);
+            panes.overlayImage.appendChild(div);
+        }
+
+        // LastMarker.prototype.setPosition = function(position) {
+        //     this.position = position;
+        //     // this.point = point;
+        //     this.draw();
+        // }
+        LastMarker.prototype.setData = function(data) {
+            // console.log('LastMarker.prototype.setData', data);
+            this.data = data;
+            this.draw();
+        }
+
+        LastMarker.prototype.onRemove = function() {
+            // this.div.removeChild(this.arrdiv);
+            this.div.parentNode.removeChild(this.div);
+            this.arrdiv = null;
+            this.div = null;
+        }
+
+        LastMarker.prototype.draw = function() {
+            var overlayProjection = this.getProjection();
+            if (!overlayProjection) return;
+
+            // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
+            var div = this.div;
+
+            // var x = divpx.x;
+            // var y = divpx.y;
+
+            var track = d3.select(this.div);
+            var points = track.selectAll(".marker")
+                .data(this.data);
+
+            var div = points.enter().append("div")
+                .attr("class", "marker")
+            // .attr("style", function(d){
+            //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
+            //     // console.log("d=", d, "px=", px);
+            //     return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+            // })
+            .on('click', function(d) {
+                console.log(d3.select(this), d);
+            });
+
+            // div.append("i").attr("class", "icon-shopping-cart icon-large");
+            div.append("i"); //.attr("class", function(d){ return d.icon + " icon-large"});
+            div.append("span").attr("class", "title").text(function(d) {
+                return d.title;
+            });
+            div.append("svg")
+                .attr("style", 'position:absolute; left: -5px; top: -5px')
+                .attr("width", 32)
+                .attr("height", 32)
+                .append("g")
+                    .attr("transform", "translate(16, 16)")
+                    .append('path')
+                        .attr("d", "M -9,-10 0,-15 9,-10 0,-13 -9,-10")
+                        .attr("style", "fill:none; stroke:black; stroke-width: 2px; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1");
+                        // .attr("transform", "rotate(" + 90 + ")");
+
+
+            points
+                .attr("style", function(d) {
+                    var px = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(d.dynamic.latitude, d.dynamic.longitude));
+                    // console.log("d=", d, "px=", px);
+                    return "left: " + (px.x) + "px; top: " + (px.y) + "px";
+                })
+                .select('svg g path')
+                    .attr("transform", function(d){return "rotate(" + d.dynamic.course + ")"});
+
+            points.select('i')
+                .attr('class', function(d){
+                    return d.icon + " icon-large " + $freshmark.get(d.dynamic).class;
+                });
+
+            points.exit().remove();
+
+            // console.log('draw', this.data, points.select("div.stop"));
+
+            // div.style.left = divpx.x - 16 + 'px';
+            // div.style.top = divpx.y - 32 + 'px';
+        }
+
+
+
+
+
         return LastMarker;
     }
 ]);
