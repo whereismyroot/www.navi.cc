@@ -1,4 +1,4 @@
-angular.module('directives.main', [])
+angular.module('directives.main', ['newgps.services'])
 
 .directive('mapsyslist', ["$location", "$routeParams", function($location, $routeParams) {
     return {
@@ -50,7 +50,7 @@ angular.module('directives.main', [])
     }
 }])
 
-.directive('mapsysitem', ["$location", "$routeParams", function($location, $routeParams) {
+.directive('mapsysitem', ["$location", "$routeParams", "$freshmark", function($location, $routeParams, $freshmark) {
     return {
         restrict: 'E',
         require: '^mapsyslist',
@@ -73,6 +73,7 @@ angular.module('directives.main', [])
 
             $scope.popup = false;
             $scope.$routeParams = $routeParams;
+            $scope.$freshmark = $freshmark;
 
             $scope.onClick = function(skey){
                 console.log('mapsyslist:onClick', skey);
@@ -118,6 +119,7 @@ angular.module('directives.main', [])
         // },
 
         controller: ['$element', '$scope', '$attrs', '$timeout', '$rootScope', function($element, $scope, $attrs, $timeout, $rootScope) {
+            if(0){
             $scope.value = "";
             $scope.now = $rootScope.now;
 
@@ -158,6 +160,7 @@ angular.module('directives.main', [])
                 // console.log('timetick');
                 update();
             });
+            }
         }]
     };
 }]);

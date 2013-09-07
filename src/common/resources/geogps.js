@@ -137,6 +137,12 @@ angular.module('resources.geogps', [])
         }
     };
 
+    // Возвращает true если точка относится к стоянке
+    var isStop = function(fsource){
+        return $.inArray(fsource, [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0;
+    }
+    GeoGPS.isStop = isStop;
+
     var bingpsparse = function(array){
         // console.log('parse');
         var track = [];
@@ -178,7 +184,8 @@ angular.module('resources.geogps', [])
                     });
                     range_start = point;
 
-                    if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
+                    // if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                    if(isStop(point['fsource'])){
                         stop_start = 0;
                         events.push({
                             point: point,
@@ -191,7 +198,8 @@ angular.module('resources.geogps', [])
                     }
                 }
                 // if(point['fsource'] in [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]){
-                if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                // if($.inArray(point['fsource'], [FSOURCE_STOPACC, FSOURCE_TIMESTOPACC, FSOURCE_TIMESTOP, FSOURCE_SLOW]) >= 0){
+                if(isStop(point['fsource'])){
                     if(stop_start === null){
                         stop_start = index;
                         events.push({

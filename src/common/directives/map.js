@@ -54,23 +54,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             //PathRebuild();
         });
 
-        // var lastpos = new google.maps.Marker({
-        //   map: map,
-        //   position: latlng,
-        //   title: 'Rabbit',
-        //   //icon: goldStar,
-        //   icon: {
-        //     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        //     fillColor: "yellow",
-        //     fillOpacity: 0.8,
-        //     strokeColor: "green",
-        //     strokeWeight: 4,
-        //     scale: 5
-        //   },
-        //   animation: null // google.maps.Animation.BOUNCE
-        // });
-
-        if(scope.config.centermarker){
+          if(scope.config.centermarker){
             var center = new google.maps.MarkerImage(
                 '/img/marker/marker-center.png?v=1',
                 new google.maps.Size(32, 32),
@@ -98,41 +82,6 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
 
         var eventmarker = new EventMarker(map);
 
-        //config.updater.add('last_update', function(msg) {
-        // var updater = Connect.updater.on('last_update', function(msg) {
-        //     //if(msg.data.skey == skey) table.insertBefore(log_line(msg.data), table.firstChild);
-        //     console.log('MAP last_update = ', msg);
-        //     var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
-        //     lastpos.setPosition(newpos);
-        // });
-
-        /*console.log('config = ', config);
-        scope.$on('channel_data', function(event, more){
-            //var message = Connect.message;
-            console.log(['Map on change_last', more]);
-        });*/
-        // listen on DOM destroy (removal) event, and cancel the next UI update
-        // to prevent updating time ofter the DOM element was removed.
-        // element.bind('$destroy', function() {
-        //     console.log('MAP:destroy element', Connect, updater);
-        //     Connect.updater.remove('last_update', updater);
-        //     //$timeout.cancel(timeoutId);
-        // });
-
-        // var marker_begin = new google.maps.MarkerImage(
-        //     '/img/marker/marker-begin.png',
-        //     new google.maps.Size(30, 20),
-        //     new google.maps.Point(0, 0),
-        //     new google.maps.Point(15, 19)
-        // );
-        // var marker_end = new google.maps.MarkerImage(
-        //     '/img/marker/marker-end.png',
-        //     new google.maps.Size(30, 20),
-        //     new google.maps.Point(0, 0),
-        //     new google.maps.Point(15, 19)
-        // );
-        // var begin_marker = null,
-        //     end_marker = null;
         var eventmarkers = {};
 
 //        if(scope.config.autobounds){
