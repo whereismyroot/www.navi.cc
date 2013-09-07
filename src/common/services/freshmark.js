@@ -10,7 +10,7 @@ angular.module('newgps.services', ['resources.geogps'])
  *
  */
 .factory('$freshmark', ['$log', 'GeoGPS', function ($log, GeoGPS) {
-    console.log('$freshmark:run', GeoGPS);
+    // console.log('$freshmark:run', GeoGPS);
     var $freshmark = {
 
         /**

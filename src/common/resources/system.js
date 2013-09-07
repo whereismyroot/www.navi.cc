@@ -53,13 +53,13 @@ angular.module('resources.system', [])
     System.get = function(skey){
         var defer = $q.defer();
 
-        console.log('-- System.get');
+        // console.log('-- System.get');
 
         $http({
             method: 'GET',
             url: SERVER.api + "/system/" + encodeURIComponent(skey)
         }).success(function(data){
-            console.log('System.get.success', data);
+            // console.log('System.get.success', data);
             // System.skey = data.skey;
 
             if(data && data.value.params.fuel){

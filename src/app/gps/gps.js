@@ -1,4 +1,4 @@
-angular.module('gps', ['resources.account', 'resources.params', 'resources.geogps', 'app.filters', 'config.system.params.master'])
+angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'resources.geogps', 'app.filters', 'config.system.params.master'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/gps', {

@@ -1,4 +1,4 @@
-angular.module('error', [])
+angular.module('error', ['ngRoute'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/error', {

@@ -3,3 +3,5 @@ dist
 temp
 .idea
 .test
+*.sublime-project
+*.sublime-workspace

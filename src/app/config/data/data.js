@@ -1,4 +1,4 @@
-angular.module('config.system.data', ['resources.account'])
+angular.module('config.system.data', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config/:skey/data', {

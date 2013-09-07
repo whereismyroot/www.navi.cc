@@ -1,11 +1,11 @@
 /**
  * AngularStrap - Twitter Bootstrap directives for AngularJS
- * @version v0.7.3 - 2013-05-07
+ * @version v0.7.5 - 2013-07-21
  * @link http://mgcrea.github.com/angular-strap
  * @author Olivier Louvignes <olivier@mg-crea.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-angular.module('$strap.config', []).constant('$strapConfig', {});
+angular.module('$strap.config', []).value('$strapConfig', {});
 angular.module('$strap.filters', ['$strap.config']);
 angular.module('$strap.directives', ['$strap.config']);
 angular.module('$strap', [
@@ -23,10 +23,17 @@ angular.module('$strap.directives').directive('bsAlert', [
       restrict: 'A',
       link: function postLink(scope, element, attrs) {
         var getter = $parse(attrs.bsAlert), setter = getter.assign, value = getter(scope);
+        var closeAlert = function closeAlertFn(delay) {
+          $timeout(function () {
+            element.alert('close');
+          }, delay * 1);
+        };
         if (!attrs.bsAlert) {
           if (angular.isUndefined(attrs.closeButton) || attrs.closeButton !== '0' && attrs.closeButton !== 'false') {
             element.prepend('<button type="button" class="close" data-dismiss="alert">&times;</button>');
           }
+          if (attrs.closeAfter)
+            closeAlert(attrs.closeAfter);
         } else {
           scope.$watch(attrs.bsAlert, function (newValue, oldValue) {
             value = newValue;
@@ -39,6 +46,10 @@ angular.module('$strap.directives').directive('bsAlert', [
               oldValue.type && element.removeClass('alert-' + oldValue.type);
               newValue.type && element.addClass('alert-' + newValue.type);
             }
+            if (angular.isDefined(newValue.closeAfter))
+              closeAlert(newValue.closeAfter);
+            else if (attrs.closeAfter)
+              closeAlert(attrs.closeAfter);
             if (angular.isUndefined(attrs.closeButton) || attrs.closeButton !== '0' && attrs.closeButton !== 'false') {
               element.prepend('<button type="button" class="close" data-dismiss="alert">&times;</button>');
             }
@@ -236,7 +247,7 @@ angular.module('$strap.directives').directive('bsDatepicker', [
   '$timeout',
   '$strapConfig',
   function ($timeout, $strapConfig) {
-    var isAppleTouch = /(iPad|iPho(ne|d))/g.test(navigator.userAgent);
+    var isAppleTouch = /(iP(a|o)d|iPhone)/g.test(navigator.userAgent);
     var regexpMap = function regexpMap(language) {
       language = language || 'en';
       return {
@@ -294,10 +305,10 @@ angular.module('$strap.directives').directive('bsDatepicker', [
           if (angular.isDefined(attrs[key]))
             options[key] = attrs[key];
         });
-        var language = options.language || 'en', format = isAppleTouch ? 'yyyy-mm-dd' : attrs.dateFormat || options.format || $.fn.datepicker.dates[language] && $.fn.datepicker.dates[language].format || 'yyyy-mm-dd', dateFormatRegexp = regexpForDateFormat(format, language);
+        var language = options.language || 'en', readFormat = attrs.dateFormat || options.format || $.fn.datepicker.dates[language] && $.fn.datepicker.dates[language].format || 'mm/dd/yyyy', format = isAppleTouch ? 'yyyy-mm-dd' : readFormat, dateFormatRegexp = regexpForDateFormat(format, language);
         if (controller) {
           controller.$formatters.unshift(function (modelValue) {
-            return type === 'date' && angular.isString(modelValue) ? new Date(modelValue) : modelValue;
+            return type === 'date' && angular.isString(modelValue) && modelValue ? $.fn.datepicker.DPGlobal.parseDate(modelValue, $.fn.datepicker.DPGlobal.parseFormat(readFormat), language) : modelValue;
           });
           controller.$parsers.unshift(function (viewValue) {
             if (!viewValue) {
@@ -318,11 +329,13 @@ angular.module('$strap.directives').directive('bsDatepicker', [
           });
           controller.$render = function ngModelRender() {
             if (isAppleTouch) {
-              var date = $.fn.datepicker.DPGlobal.formatDate(controller.$viewValue, $.fn.datepicker.DPGlobal.parseFormat(format), language);
+              var date = controller.$viewValue ? $.fn.datepicker.DPGlobal.formatDate(controller.$viewValue, $.fn.datepicker.DPGlobal.parseFormat(format), language) : '';
               element.val(date);
               return date;
             }
-            return controller.$viewValue && element.datepicker('update', controller.$viewValue);
+            if (!controller.$viewValue)
+              element.val('');
+            return element.datepicker('update', controller.$viewValue);
           };
         }
         if (isAppleTouch) {
@@ -335,7 +348,6 @@ angular.module('$strap.directives').directive('bsDatepicker', [
               });
             });
           }
-          element.attr('data-toggle', 'datepicker');
           element.datepicker(angular.extend(options, {
             format: format,
             language: language
@@ -347,11 +359,19 @@ angular.module('$strap.directives').directive('bsDatepicker', [
               element.data('datepicker', null);
             }
           });
+          attrs.$observe('startDate', function (value) {
+            element.datepicker('setStartDate', value);
+          });
+          attrs.$observe('endDate', function (value) {
+            element.datepicker('setEndDate', value);
+          });
         }
         var component = element.siblings('[data-toggle="datepicker"]');
         if (component.length) {
           component.on('click', function () {
-            element.trigger('focus');
+            if (!element.prop('disabled')) {
+              element.trigger('focus');
+            }
           });
         }
       }
@@ -373,7 +393,7 @@ angular.module('$strap.directives').directive('bsDropdown', [
       angular.forEach(items, function (item, index) {
         if (item.divider)
           return ul.splice(index + 1, 0, '<li class="divider"></li>');
-        var li = '<li' + (item.submenu && item.submenu.length ? ' class="dropdown-submenu"' : '') + '>' + '<a tabindex="-1" ng-href="' + (item.href || '') + '"' + (item.click ? '" ng-click="' + item.click + '"' : '') + (item.target ? '" target="' + item.target + '"' : '') + '>' + (item.text || '') + '</a>';
+        var li = '<li' + (item.submenu && item.submenu.length ? ' class="dropdown-submenu"' : '') + '>' + '<a tabindex="-1" ng-href="' + (item.href || '') + '"' + (item.click ? '" ng-click="' + item.click + '"' : '') + (item.target ? '" target="' + item.target + '"' : '') + (item.method ? '" data-method="' + item.method + '"' : '') + '>' + (item.text || '') + '</a>';
         if (item.submenu && item.submenu.length)
           li += buildTemplate(item.submenu).join('\n');
         li += '</li>';
@@ -406,12 +426,11 @@ angular.module('$strap.directives').factory('$modal', [
   '$timeout',
   '$q',
   '$templateCache',
-  function ($rootScope, $compile, $http, $timeout, $q, $templateCache) {
-    var ModalFactory = function ModalFactory(options) {
-      function Modal(options) {
-        if (!options)
-          options = {};
-        var scope = options.scope ? options.scope : $rootScope.$new(), templateUrl = options.template;
+  '$strapConfig',
+  function ($rootScope, $compile, $http, $timeout, $q, $templateCache, $strapConfig) {
+    var ModalFactory = function ModalFactory(config) {
+      function Modal(config) {
+        var options = angular.extend({ show: true }, $strapConfig.modal, config), scope = options.scope ? options.scope : $rootScope.$new(), templateUrl = options.template;
         return $q.when($templateCache.get(templateUrl) || $http.get(templateUrl, { cache: true }).then(function (res) {
           return res.data;
         })).then(function onSuccess(template) {
@@ -446,7 +465,7 @@ angular.module('$strap.directives').factory('$modal', [
             });
           });
           $modal.on('shown', function (ev) {
-            $('input[autofocus]', $modal).first().trigger('focus');
+            $('input[autofocus], textarea[autofocus]', $modal).first().trigger('focus');
           });
           $modal.on('hidden', function (ev) {
             if (!options.persist)
@@ -455,13 +474,11 @@ angular.module('$strap.directives').factory('$modal', [
           scope.$on('$destroy', function () {
             $modal.remove();
           });
-          if (options.show) {
-            $modal.modal('show');
-          }
+          $modal.modal(options);
           return $modal;
         });
       }
-      return new Modal(options);
+      return new Modal(config);
     };
     return ModalFactory;
   }
@@ -476,11 +493,17 @@ angular.module('$strap.directives').factory('$modal', [
         var options = {
             template: scope.$eval(iAttrs.bsModal),
             persist: true,
-            scope: scope,
-            modalClass: iAttrs.modalClass || '',
-            backdrop: iAttrs.backdrop * 1 || true,
-            keyboard: iAttrs.keyboard * 1 || true
+            show: false,
+            scope: scope
           };
+        angular.forEach([
+          'modalClass',
+          'backdrop',
+          'keyboard'
+        ], function (key) {
+          if (angular.isDefined(iAttrs[key]))
+            options[key] = iAttrs[key];
+        });
         $q.when($modal(options)).then(function onSuccess(modal) {
           iElement.attr('data-target', '#' + modal.attr('id')).attr('data-toggle', 'modal');
         });
@@ -501,7 +524,7 @@ angular.module('$strap.directives').directive('bsNavbar', [
           $('li[data-match-route]', element).each(function (k, li) {
             var $li = angular.element(li), pattern = $li.attr('data-match-route'), regexp = new RegExp('^' + pattern + '$', ['i']);
             if (regexp.test(newValue)) {
-              $li.addClass('active');
+              $li.addClass('active').find('.collapse.in').collapse('hide');
             } else {
               $li.removeClass('active');
             }
@@ -555,6 +578,17 @@ angular.module('$strap.directives').directive('bsPopover', [
                 popover.hide();
               } else if (newValue !== oldValue) {
                 popover.show();
+              }
+            });
+          }
+          if (!!attr.show) {
+            scope.$watch(attr.show, function (newValue, oldValue) {
+              if (!!newValue) {
+                $timeout(function () {
+                  popover.show();
+                });
+              } else if (newValue !== oldValue) {
+                popover.hide();
               }
             });
           }
@@ -616,7 +650,7 @@ angular.module('$strap.directives').directive('bsSelect', [
         });
         if (controller) {
           scope.$watch(attrs.ngModel, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
+            if (!angular.equals(newValue, oldValue)) {
               element.selectpicker('refresh');
             }
           });
@@ -695,7 +729,8 @@ angular.module('$strap.directives').directive('bsTabs', [
 'use strict';
 angular.module('$strap.directives').directive('bsTimepicker', [
   '$timeout',
-  function ($timeout) {
+  '$strapConfig',
+  function ($timeout, $strapConfig) {
     var TIME_REGEXP = '((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)';
     return {
       restrict: 'A',
@@ -707,20 +742,20 @@ angular.module('$strap.directives').directive('bsTimepicker', [
               controller.$setViewValue(element.val());
             });
           });
+          var timeRegExp = new RegExp('^' + TIME_REGEXP + '$', ['i']);
+          controller.$parsers.unshift(function (viewValue) {
+            if (!viewValue || timeRegExp.test(viewValue)) {
+              controller.$setValidity('time', true);
+              return viewValue;
+            } else {
+              controller.$setValidity('time', false);
+              return;
+            }
+          });
         }
-        var timeRegExp = new RegExp('^' + TIME_REGEXP + '$', ['i']);
-        controller.$parsers.unshift(function (viewValue) {
-          if (!viewValue || timeRegExp.test(viewValue)) {
-            controller.$setValidity('time', true);
-            return viewValue;
-          } else {
-            controller.$setValidity('time', false);
-            return;
-          }
-        });
         element.attr('data-toggle', 'timepicker');
         element.parent().addClass('bootstrap-timepicker');
-        element.timepicker();
+        element.timepicker($strapConfig.timepicker || {});
         var timepicker = element.data('timepicker');
         var component = element.siblings('[data-toggle="timepicker"]');
         if (component.length) {
@@ -822,6 +857,11 @@ angular.module('$strap.directives').directive('bsTypeahead', [
           items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source;
           return items ? this.process(items) : this;
         };
+        if (!!attrs.matchAll) {
+          typeahead.matcher = function (item) {
+            return true;
+          };
+        }
         if (attrs.minLength === '0') {
           setTimeout(function () {
             element.on('focus', function () {

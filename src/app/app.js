@@ -1,4 +1,5 @@
 angular.module('app', [
+  'ngRoute',
   'resources.account',
   'app.filters',
   'app.filters.i18n',
@@ -12,7 +13,7 @@ angular.module('app', [
   'admin',
   'help',
   'i18n',
-  '$strap',
+  // '$strap',
   // 'services.i18n',
   // 'services.i18nNotifications',
   'services.httpRequestTracker'

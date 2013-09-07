@@ -1,4 +1,4 @@
-angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
+angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/map', {

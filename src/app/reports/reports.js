@@ -1,4 +1,4 @@
-angular.module('reports', ['resources.account'])
+angular.module('reports', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/reports', {

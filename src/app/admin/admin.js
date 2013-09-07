@@ -1,4 +1,4 @@
-angular.module('admin', [])
+angular.module('admin', ['ngRoute'])
 
 .factory('AdminUsers', [
     'SERVER', '$http', '$q',

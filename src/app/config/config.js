@@ -1,4 +1,4 @@
-angular.module('config', ['resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
+angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
@@ -17,7 +17,7 @@ angular.module('config', ['resources.account', 'resources.system', 'ui.sortable'
 }])
 
 .controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', function ($scope, $location, account, system) {
-  console.log(["ConfigViewCtrl:", system]);
+  // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
 

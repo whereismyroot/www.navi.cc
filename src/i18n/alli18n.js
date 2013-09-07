@@ -1,4 +1,4 @@
-angular.module('i18n', ['i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
+angular.module('i18n', ['pascalprecht.translate', 'i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // console.log(["$translateProvider", $translateProvider, $translateProvider.translations()]);

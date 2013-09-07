@@ -8,7 +8,7 @@ angular.module('services.lastmarker', ['newgps.services'])
 .factory('LastMarker', [
     "$freshmark",
     function($freshmark) {
-        console.log(":: LastMarker:run", $freshmark);
+        // console.log(":: LastMarker:run", $freshmark);
 
         function LastMarker(map) {
             this.map = map;

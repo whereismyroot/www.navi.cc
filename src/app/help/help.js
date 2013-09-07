@@ -1,4 +1,4 @@
-angular.module('help', ['resources.account'])
+angular.module('help', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/help', {

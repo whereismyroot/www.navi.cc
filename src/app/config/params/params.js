@@ -1,10 +1,10 @@
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
+angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
 
 .config(['$routeProvider',
   function($routeProvider) {
     var skey = ['$route',
       function($route) {
-        console.log(['=== route', route]);
+        // console.log(['=== route', route]);
         return $route.current.params.skey;
       }
     ];
@@ -40,11 +40,16 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
 
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system',
   function($scope, $route, $routeParams, account, params, system) {
-    console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
+    // console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
+
+    $scope.tooltip = {
+      "title": "<hr>Показать все параметры<hr>Внимание! Изменение некоторых параметров может привести к выходу трекера из строя.",
+      "checked": false
+    }
 
     $scope.params.get($route.current.params.skey).then(function(data) {
       console.log('params success', data);
@@ -122,19 +127,19 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     }
 
     $scope.setIcon = function(icon) {
-      console.log("setIcon", icon, system);
+      // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
       system.setIcon($scope.skey, icon.class);
       account.account.systems[$scope.skey].icon = icon.class;
     }
 
-    $("[rel=tooltip]").tooltip();
+    // $("[rel=tooltip]").tooltip();
   }
 ])
 
 .filter('isFiltered', function() {
   return function(value, status) {
-    console.log('isFiltered:', value, status);
+    // console.log('isFiltered:', value, status);
     if (!status) {
       return value;
     }

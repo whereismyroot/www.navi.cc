@@ -337,7 +337,7 @@ var params_descs = {
 angular.module('resources.params', ['services.connect', 'ngResource'])
 
 .factory('Params', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
-    console.log('-- params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+    // console.log('-- params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
     var Params = {
         skey: null,
@@ -345,7 +345,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     };
 
     var updater = Connect.updater.on('cfg_upd', function(msg) {
-        console.log('Need update configure:', msg);
+        // console.log('Need update configure:', msg);
         if(msg.skey === Params.skey) {
             Params.get(Params.skey);
         }
@@ -357,13 +357,13 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     Params.get = function(skey){
         var defer = $q.defer();
 
-        console.log('-- params.Params.get');
+        // console.log('-- params.Params.get');
 
         $http({
             method: 'GET',
             url: SERVER.api + "/params/" + encodeURIComponent(skey)
         }).success(function(data){
-            console.log('params.Params.get.success', data);
+            // console.log('params.Params.get.success', data);
             Params.skey = data.skey;
             Params.value = data.value;
 
@@ -395,7 +395,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey),
             data: {key: k, value: p.queue}
         }).success(function(data){
-            console.log('params.Params.set.success', data);
+            // console.log('params.Params.set.success', data);
             /*if(p.value != p.newvalue){
               p.queue = p.newvalue;
             } else {
@@ -418,7 +418,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             method: 'DELETE',
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
         }).success(function(data){
-            console.log('params.Params.del.success', data);
+            // console.log('params.Params.del.success', data);
 
             // p.newvalue = p.value;
             p.queue = null;
@@ -437,7 +437,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             method: 'DELETE',
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey)
         }).success(function(data){
-            console.log('params.Params.delall.success', data);
+            // console.log('params.Params.delall.success', data);
 
             for (var k in Params.value) {
                 var p = Params.value[k];
@@ -458,7 +458,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
 .factory('ParamsOld', ['SERVER', '$resource', 'Connect', function (SERVER, $resource, Connect) {
 
-    console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+    // console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
     var Params = $resource(SERVER.api.replace(/:\d/, '\\$&') + "/params/:skey/:controller",
     {

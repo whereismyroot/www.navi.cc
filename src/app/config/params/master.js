@@ -1,4 +1,4 @@
-angular.module('config.system.params.master', ['resources.account', 'resources.params', 'app.filters'])
+angular.module('config.system.params.master', ['ngRoute', 'resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){

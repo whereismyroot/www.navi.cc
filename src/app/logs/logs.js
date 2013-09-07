@@ -1,4 +1,4 @@
-angular.module('logs', ['resources.account', 'resources.logs'])
+angular.module('logs', ['ngRoute', 'resources.account', 'resources.logs'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/logs', {
@@ -31,16 +31,11 @@ angular.module('logs', ['resources.account', 'resources.logs'])
 
 .controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'logs', function ($scope, $location, $routeParams, account, logs) {
   $scope.account = account;
-  // $scope.skey = "";
   var startskey = $routeParams['skey'];
-  // if(account.skey != startskey){
-  //   account.setSkey(startskey);
-  // }
   $scope.skey = account.skey;
 
   $scope.logs = logs;
   $scope.comment = "Данные еще не получены";
-  //$scope.skey = account.account.skeys[0];
   $scope.onSelect = function(){
     console.log('selected');
   };
@@ -73,26 +68,6 @@ angular.module('logs', ['resources.account', 'resources.logs'])
     } else {
       $location.path('/logs');
     }
-    // account.setSkey($scope.skey);
-    // $location.path('/logs/' + $scope.account.skey);
-    // reload();
   }
   reload();
-
-  // $scope.$watch('skey', function(skey){
-  //   console.log('skey=', skey);
-  //   // reload();
-
-  //   if($scope.skey !== startskey) {
-  //     if(angular.isUndefined(skey) || (skey == null)){
-  //       $location.path('/logs');
-  //     } else {
-  //       $location.path('/logs/' + $scope.skey);
-  //       // $scope.$apply();
-  //     }
-  //   }
-  //   reload();
-  // });
-
-  $("[rel=tooltip]").tooltip();
 }]);
