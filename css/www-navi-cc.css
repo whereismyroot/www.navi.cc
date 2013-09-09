@@ -998,7 +998,7 @@ ul.mapsyslist > li span.desc {
   display: block;
   width: 175px;
   color: #666;
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 ul.mapsyslist li ul.popup {

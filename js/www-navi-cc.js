@@ -1,4 +1,4 @@
-angular.module('i18n', ['i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
+angular.module('i18n', ['pascalprecht.translate', 'i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // console.log(["$translateProvider", $translateProvider, $translateProvider.translations()]);
@@ -38,27 +38,27 @@ angular.module('i18n', ['i18n.ru', 'i18n.en', 'i18n.pl', 'i18n.ua'])
 }]);
 
 
-(function(window, I18n){
-'use strict';
+// (function(window, I18n){
+// 'use strict';
 
-I18n.translations = I18n.translations || {};
+// I18n.translations = I18n.translations || {};
 
-I18n.translations.en = {
-    enter: 'Enter',
-    enter_help: 'Enter the user name and password of your account.',
-    enter_comment: 'To use the service to log into the system.',
-    enter_comment2: 'To create a new account, make up a name and password, your account is automatically created.',
-    user_name: 'User name',
-    user_password: 'Password',
-    enter_cmd: 'Confirm'
-  };
+// I18n.translations.en = {
+//     enter: 'Enter',
+//     enter_help: 'Enter the user name and password of your account.',
+//     enter_comment: 'To use the service to log into the system.',
+//     enter_comment2: 'To create a new account, make up a name and password, your account is automatically created.',
+//     user_name: 'User name',
+//     user_password: 'Password',
+//     enter_cmd: 'Confirm'
+//   };
 
-// window.console.log('i18n.en init', I18n);
+// // window.console.log('i18n.en init', I18n);
 
-})(this, I18n);
+// })(this, I18n);
 
 
-angular.module('i18n.en', ['ngTranslate'])
+angular.module('i18n.en', ['pascalprecht.translate'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // Simply register translation table as object hash
@@ -105,25 +105,25 @@ angular.module('i18n.en', ['ngTranslate'])
 });
 }]);
 
-(function(window, I18n){
-'use strict';
+// (function(window, I18n){
+// 'use strict';
 
-I18n.translations = I18n.translations || {};
+// I18n.translations = I18n.translations || {};
 
-I18n.translations.pl = {
-    enter: 'Entrance',
-    enter_help: 'Wpisz nazwę użytkownika i hasło do swojego konta.',
-    enter_comment: 'Aby skorzystać z usługi, aby zalogować się do systemu.',
-    enter_comment2: 'Aby utworzyć nowe konto, uzupełnić nazwę i hasło, konto zostanie utworzone automatycznie.',
-    user_name: 'Nazwa użytkownika',
-    user_password: 'Hasło',
-    enter_cmd: 'Wpisać'
-  };
+// I18n.translations.pl = {
+//     enter: 'Entrance',
+//     enter_help: 'Wpisz nazwę użytkownika i hasło do swojego konta.',
+//     enter_comment: 'Aby skorzystać z usługi, aby zalogować się do systemu.',
+//     enter_comment2: 'Aby utworzyć nowe konto, uzupełnić nazwę i hasło, konto zostanie utworzone automatycznie.',
+//     user_name: 'Nazwa użytkownika',
+//     user_password: 'Hasło',
+//     enter_cmd: 'Wpisać'
+//   };
 
-// window.console.log('i18n.pl init', I18n);
-})(this, I18n);
+// // window.console.log('i18n.pl init', I18n);
+// })(this, I18n);
 
-angular.module('i18n.pl', ['ngTranslate'])
+angular.module('i18n.pl', ['pascalprecht.translate'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // Simply register translation table as object hash
@@ -170,26 +170,26 @@ angular.module('i18n.pl', ['ngTranslate'])
     });
 }]);
 
-(function(window, I18n){
-'use strict';
+// (function(window, I18n){
+// 'use strict';
 
-I18n.translations = I18n.translations || {};
+// I18n.translations = I18n.translations || {};
 
-I18n.translations.ru = {
-    enter: 'Вход',
-    enter_help: 'Введите имя пользователя и пароль своей учетной записи.',
-    enter_comment: 'Чтобы пользоваться сервисом необходимо авторизоваться в системе.',
-    enter_comment2: 'Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.',
-    user_name: 'Имя пользователя',
-    user_password: 'Пароль',
-    enter_cmd: 'Войти'
-  };
+// I18n.translations.ru = {
+//     enter: 'Вход=',
+//     enter_help: 'Введите имя пользователя и пароль своей учетной записи.',
+//     enter_comment: 'Чтобы пользоваться сервисом необходимо авторизоваться в системе.',
+//     enter_comment2: 'Для создания новой учетной записи придумайте имя пользователя и пароль, учетная запись будет создана автоматически.',
+//     user_name: 'Имя пользователя',
+//     user_password: 'Пароль',
+//     enter_cmd: 'Войти'
+//   };
 
-// window.console.log('i18n.ru init', I18n);
-})(this, I18n);
+// // window.console.log('i18n.ru init', I18n);
+// })(this, I18n);
 
 
-angular.module('i18n.ru', ['ngTranslate'])
+angular.module('i18n.ru', ['pascalprecht.translate'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // Simply register translation table as object hash
@@ -237,25 +237,25 @@ angular.module('i18n.ru', ['ngTranslate'])
     });
 }]);
 
-(function(window, I18n){
-'use strict';
+// (function(window, I18n){
+// 'use strict';
 
-I18n.translations = I18n.translations || {};
+// I18n.translations = I18n.translations || {};
 
-I18n.translations.ua = {
-    enter: 'Вхiд',
-    enter_help: 'Введіть ім\'я користувача і пароль свого облікового запису.',
-    enter_comment: 'Щоб користуватися сервісом необхідно авторизуватися в системі.',
-    enter_comment2: 'Для створення нового облікового запису придумайте ім\'я користувача та пароль, обліковий запис буде створена автоматично.',
-    user_name: 'Ім\'я користувача.',
-    user_password: 'Пароль',
-    enter_cmd: 'Увійти'
-  };
+// I18n.translations.ua = {
+//     enter: 'Вхiд',
+//     enter_help: 'Введіть ім\'я користувача і пароль свого облікового запису.',
+//     enter_comment: 'Щоб користуватися сервісом необхідно авторизуватися в системі.',
+//     enter_comment2: 'Для створення нового облікового запису придумайте ім\'я користувача та пароль, обліковий запис буде створена автоматично.',
+//     user_name: 'Ім\'я користувача.',
+//     user_password: 'Пароль',
+//     enter_cmd: 'Увійти'
+//   };
 
-//window.console.log('i18n.ua init', I18n);
-})(this, I18n);
+// //window.console.log('i18n.ua init', I18n);
+// })(this, I18n);
 
-angular.module('i18n.ua', ['ngTranslate'])
+angular.module('i18n.ua', ['pascalprecht.translate'])
 .config(['$translateProvider', function ($translateProvider) {
 
     // Simply register translation table as object hash
@@ -2552,7 +2552,7 @@ var params_descs = {
 angular.module('resources.params', ['services.connect', 'ngResource'])
 
 .factory('Params', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
-    console.log('-- params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+    // console.log('-- params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
     var Params = {
         skey: null,
@@ -2560,7 +2560,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     };
 
     var updater = Connect.updater.on('cfg_upd', function(msg) {
-        console.log('Need update configure:', msg);
+        // console.log('Need update configure:', msg);
         if(msg.skey === Params.skey) {
             Params.get(Params.skey);
         }
@@ -2572,13 +2572,13 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     Params.get = function(skey){
         var defer = $q.defer();
 
-        console.log('-- params.Params.get');
+        // console.log('-- params.Params.get');
 
         $http({
             method: 'GET',
             url: SERVER.api + "/params/" + encodeURIComponent(skey)
         }).success(function(data){
-            console.log('params.Params.get.success', data);
+            // console.log('params.Params.get.success', data);
             Params.skey = data.skey;
             Params.value = data.value;
 
@@ -2610,7 +2610,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey),
             data: {key: k, value: p.queue}
         }).success(function(data){
-            console.log('params.Params.set.success', data);
+            // console.log('params.Params.set.success', data);
             /*if(p.value != p.newvalue){
               p.queue = p.newvalue;
             } else {
@@ -2633,7 +2633,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             method: 'DELETE',
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
         }).success(function(data){
-            console.log('params.Params.del.success', data);
+            // console.log('params.Params.del.success', data);
 
             // p.newvalue = p.value;
             p.queue = null;
@@ -2652,7 +2652,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             method: 'DELETE',
             url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey)
         }).success(function(data){
-            console.log('params.Params.delall.success', data);
+            // console.log('params.Params.delall.success', data);
 
             for (var k in Params.value) {
                 var p = Params.value[k];
@@ -2673,7 +2673,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
 .factory('ParamsOld', ['SERVER', '$resource', 'Connect', function (SERVER, $resource, Connect) {
 
-    console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
+    // console.log('-- resources.params.Params', SERVER, Connect, SERVER.api.replace(/:\d/, '\\$&'));
 
     var Params = $resource(SERVER.api.replace(/:\d/, '\\$&') + "/params/:skey/:controller",
     {
@@ -2749,13 +2749,13 @@ angular.module('resources.system', [])
     System.get = function(skey){
         var defer = $q.defer();
 
-        console.log('-- System.get');
+        // console.log('-- System.get');
 
         $http({
             method: 'GET',
             url: SERVER.api + "/system/" + encodeURIComponent(skey)
         }).success(function(data){
-            console.log('System.get.success', data);
+            // console.log('System.get.success', data);
             // System.skey = data.skey;
 
             if(data && data.value.params.fuel){
@@ -3048,7 +3048,7 @@ angular.module('newgps.services', ['resources.geogps'])
  *
  */
 .factory('$freshmark', ['$log', 'GeoGPS', function ($log, GeoGPS) {
-    console.log('$freshmark:run', GeoGPS);
+    // console.log('$freshmark:run', GeoGPS);
     var $freshmark = {
 
         /**
@@ -3180,7 +3180,7 @@ angular.module('services.lastmarker', ['newgps.services'])
 .factory('LastMarker', [
     "$freshmark",
     function($freshmark) {
-        console.log(":: LastMarker:run", $freshmark);
+        // console.log(":: LastMarker:run", $freshmark);
 
         function LastMarker(map) {
             this.map = map;
@@ -3381,7 +3381,7 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
-angular.module('admin', [])
+angular.module('admin', ['ngRoute'])
 
 .factory('AdminUsers', [
     'SERVER', '$http', '$q',
@@ -3427,6 +3427,7 @@ angular.module('admin', [])
 }]);
 
 angular.module('app', [
+  'ngRoute',
   'resources.account',
   'app.filters',
   'app.filters.i18n',
@@ -3440,7 +3441,7 @@ angular.module('app', [
   'admin',
   'help',
   'i18n',
-  '$strap',
+  // '$strap',
   // 'services.i18n',
   // 'services.i18nNotifications',
   'services.httpRequestTracker'
@@ -3611,7 +3612,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 
 }]);
 
-angular.module('config', ['resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
+angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
@@ -3630,7 +3631,7 @@ angular.module('config', ['resources.account', 'resources.system', 'ui.sortable'
 }])
 
 .controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', function ($scope, $location, account, system) {
-  console.log(["ConfigViewCtrl:", system]);
+  // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
 
@@ -3708,7 +3709,7 @@ angular.module('config', ['resources.account', 'resources.system', 'ui.sortable'
   //$("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('config.system.data', ['resources.account'])
+angular.module('config.system.data', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config/:skey/data', {
@@ -3727,7 +3728,7 @@ angular.module('config.system.data', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('config.system.params.fuel', ['resources.account', 'resources.params', 'app.filters', 'directives.chart'])
+angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'resources.params', 'app.filters', 'directives.chart'])
 
 .config(['$routeProvider', function ($routeProvider) {
     var skey = ['$route', function($route){
@@ -3878,7 +3879,7 @@ angular.module('config.system.params.fuel', ['resources.account', 'resources.par
 
 
 
-angular.module('config.system.params.master', ['resources.account', 'resources.params', 'app.filters'])
+angular.module('config.system.params.master', ['ngRoute', 'resources.account', 'resources.params', 'app.filters'])
 
 .config(['$routeProvider', function ($routeProvider) {
   var skey = ['$route', function($route){
@@ -3939,13 +3940,13 @@ angular.module('config.system.params.master', ['resources.account', 'resources.p
 }]);
 
 
-angular.module('config.system.params', ['resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
+angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
 
 .config(['$routeProvider',
   function($routeProvider) {
     var skey = ['$route',
       function($route) {
-        console.log(['=== route', route]);
+        // console.log(['=== route', route]);
         return $route.current.params.skey;
       }
     ];
@@ -3981,11 +3982,16 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
 
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system',
   function($scope, $route, $routeParams, account, params, system) {
-    console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
+    // console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
+
+    $scope.tooltip = {
+      "title": "<hr>Показать все параметры<hr>Внимание! Изменение некоторых параметров может привести к выходу трекера из строя.",
+      "checked": false
+    }
 
     $scope.params.get($route.current.params.skey).then(function(data) {
       console.log('params success', data);
@@ -4063,19 +4069,19 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     }
 
     $scope.setIcon = function(icon) {
-      console.log("setIcon", icon, system);
+      // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
       system.setIcon($scope.skey, icon.class);
       account.account.systems[$scope.skey].icon = icon.class;
     }
 
-    $("[rel=tooltip]").tooltip();
+    // $("[rel=tooltip]").tooltip();
   }
 ])
 
 .filter('isFiltered', function() {
   return function(value, status) {
-    console.log('isFiltered:', value, status);
+    // console.log('isFiltered:', value, status);
     if (!status) {
       return value;
     }
@@ -4088,7 +4094,7 @@ angular.module('config.system.params', ['resources.account', 'resources.params',
     return out;
   };
 });
-angular.module('error', [])
+angular.module('error', ['ngRoute'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/error', {
@@ -4103,7 +4109,7 @@ angular.module('error', [])
   //$route.current.$route.template = "<div>Loaded</div>";
 }]);
 
-angular.module('gps', ['resources.account', 'resources.params', 'resources.geogps', 'app.filters', 'config.system.params.master'])
+angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'resources.geogps', 'app.filters', 'config.system.params.master'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/gps', {
@@ -4284,7 +4290,7 @@ angular.module('gps', ['resources.account', 'resources.params', 'resources.geogp
   }*/
 }]);
 
-angular.module('help', ['resources.account'])
+angular.module('help', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/help', {
@@ -4303,7 +4309,7 @@ angular.module('help', ['resources.account'])
   $scope.account = account;
 }]);
 
-angular.module('login', ['resources.account', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
+angular.module('login', ['ngRoute', 'resources.account', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
 
@@ -4408,7 +4414,7 @@ angular.module('login', ['resources.account', 'app.filters', 'directives.modal',
 
 
 
-angular.module('logs', ['resources.account', 'resources.logs'])
+angular.module('logs', ['ngRoute', 'resources.account', 'resources.logs'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/logs', {
@@ -4441,16 +4447,11 @@ angular.module('logs', ['resources.account', 'resources.logs'])
 
 .controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'logs', function ($scope, $location, $routeParams, account, logs) {
   $scope.account = account;
-  // $scope.skey = "";
   var startskey = $routeParams['skey'];
-  // if(account.skey != startskey){
-  //   account.setSkey(startskey);
-  // }
   $scope.skey = account.skey;
 
   $scope.logs = logs;
   $scope.comment = "Данные еще не получены";
-  //$scope.skey = account.account.skeys[0];
   $scope.onSelect = function(){
     console.log('selected');
   };
@@ -4483,31 +4484,11 @@ angular.module('logs', ['resources.account', 'resources.logs'])
     } else {
       $location.path('/logs');
     }
-    // account.setSkey($scope.skey);
-    // $location.path('/logs/' + $scope.account.skey);
-    // reload();
   }
   reload();
-
-  // $scope.$watch('skey', function(skey){
-  //   console.log('skey=', skey);
-  //   // reload();
-
-  //   if($scope.skey !== startskey) {
-  //     if(angular.isUndefined(skey) || (skey == null)){
-  //       $location.path('/logs');
-  //     } else {
-  //       $location.path('/logs/' + $scope.skey);
-  //       // $scope.$apply();
-  //     }
-  //   }
-  //   reload();
-  // });
-
-  $("[rel=tooltip]").tooltip();
 }]);
 
-angular.module('map', ['resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
+angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/map', {
@@ -4737,7 +4718,7 @@ angular.module('map', ['resources.account', 'directives.gmap', 'directives.main'
 });
 
 
-angular.module('reports', ['resources.account'])
+angular.module('reports', ['ngRoute', 'resources.account'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/reports', {
