@@ -41,6 +41,7 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         "Administrator": "Administrator",
         "Observed systems": "Observed systems",
         "for_recovery": "To recover your password",
+        "error_auth": "Authorization error, double-check the data.",
 
         "Login": 'Login',
         'Map': 'Map',

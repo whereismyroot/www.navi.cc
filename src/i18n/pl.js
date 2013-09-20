@@ -39,6 +39,7 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         "Administrator": "Administrator",
         "Observed systems": "Obserwacji systemów",
         "for_recovery": "Aby odzyskać hasło",
+        "error_auth": "Błąd autoryzacji, sprawdź dane.",
 
         "Login": "Zaloguj się",
         "Map": "Map",

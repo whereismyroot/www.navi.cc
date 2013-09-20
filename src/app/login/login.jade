@@ -1,89 +1,75 @@
 div.container
-    div(ng-class="{hidden: account.isAuthenticated}")
-        h4(translate) enter
-        //- span(language)
-        chooselang
-        div(translate) enter_help
-            br
-        div.wide(translate) enter_comment
-            br
-        form(name="form", ng-submit="onLogin(user.name, user.password)", style="width: auto")
-            div.input-prepend.input-group
-                span.add-on.input-group-addon
-                    i.icon-user
-                input.form-control(type="text", placeholder="{{'user_name' | translate}}", ng-model="user.name", required, autofocus, focus-me="true")
-            br
-            div.input-prepend.input-group
-                span.add-on.input-group-addon
-                    i.icon-key
-                input.form-control(type="password", placeholder="{{'user_password' | translate}}", ng-model="user.password", required)
-            br
-            button.btn.btn-primary.login(ng-click="onLogin(user.name, user.password)", ng-disabled='form.$invalid', translate)
-                | enter_cmd
-            button.btn.login(ng-click="onRegister(user.name, user.password)", ng-disabled='form.$invalid', translate)
-                | register_cmd
+    h4 {{'enter_as' | translate:{value: account.account.title} }}
+    | {{ account }}
+    dl.dl-horizontal
+        dt Язык<br> (Language, Мова, Język)
+        dd
+            chooselang
+        br
+            //- select(style="max-width:100px;", ng-model="blah", ng-options="item.id as item.title for item in langs")
+        dt(translate) Display name
+        dd(contenteditable="true", ng-model="account.account.title", ng-change="onChange(account.account.title)")
+        dt(translate) Register date
+        dd {{ account.account.date | fromnow }}
+        //- dt(translate) Administrator
+        //- dd {{ account.account.admin | yesno }}
+        dt Состоит в группах
+        dd
+            span.label.label-primary(ng-repeat="g in account.account.groups")
+                i.icon-group
+                | &nbsp;{{ g }}
+            | &nbsp;
+            a(title="Настроить", href="#/login/groups")
+                i.icon-wrench
+        dt(translate) Observed systems
+        dd {{ account.account.skeys.length }}
+        dt(title="{{ 'for_recovery' | translate}}") email
+        dd
+            span(ng-click="hideemail = !hideemail")
+                span(ng-show="hideemail") {{ account.account.email }}
+                span(ng-hide="hideemail")
+                    i.icon-question-sign
 
-        div.wide(translate) enter_comment2
+    //- div(style="text-align: center;")
+        //- | Основные операции
+        //- div.row
 
-    div(ng-class="{hidden: !account.isAuthenticated}")
-        h4 {{'enter_as' | translate:{value: account.account.title} }}
-
-        dl.dl-horizontal.wide
-            dt Язык<br> (Language, Мова, Język)
-            dd
-                chooselang
-            br
-                //- select(style="max-width:100px;", ng-model="blah", ng-options="item.id as item.title for item in langs")
-            dt(translate) Display name
-            dd(contenteditable="true", ng-model="account.account.name", ng-change="onChange(account.account.name)")
-            dt(translate) Register date
-            dd {{ account.account.date | fromnow }}
-            dt(translate) Administrator
-            dd {{ account.account.admin | yesno }}
-            dt(translate) Observed systems
-            dd {{ account.account.skeys.length }}
-            dt(title="{{ 'for_recovery' | translate}}") email
-            dd {{ account.account.email }}
-
-        //- div(style="text-align: center;")
-            //- | Основные операции
-            //- div.row
-
-        div(ng-show="account.account.skeys.length === 0")
-            p.text-center.text-warning
-                strong
-                    | Добро пожаловать на сервис поддержки трекеров.
-                    br
-                    | Для того, чтобы начать пользоваться сервисом, необходимо добавить трекер введя его IMEI.
+    div.well(ng-show="account.account.skeys.length === 0")
+        p.text-center.text-warning
+            strong
+                | Добро пожаловать на сервис поддержки трекеров.
+                br
+                | Для того, чтобы начать пользоваться сервисом, необходимо добавить трекер введя его IMEI.
+                div.row.text-center
                     addtracker(account="account")
 
-        div.container(ng-hide="account.account.skeys.length === 0")
-            h4 Основные действия:
-            a.btn.btn-primary(href="#/map")
-                i.icon-map-marker
-                span(translate) Map
-            | &nbsp;
-            a.btn.btn-primary(href="#/logs")
-                i.icon-eye-open
-                span(translate) Logs
-            | &nbsp;
-            a.btn.btn-primary(href="#/reports")
-                i.icon-table
-                span(translate) Reports
-            | &nbsp;
-            a.btn.btn-primary(href="#/gps")
-                i.icon-film
-                span(translate) Export GPS
-            | &nbsp;
-            a.btn.btn-primary(href="#/config")
-                i.icon-cogs
-                span(translate) Config
-            | &nbsp;
-            a.btn.btn-primary(href="#/help")
-                i.icon-medkit
-                span(translate) Help
+    div.container(ng-hide="account.account.skeys.length === 0")
+        h4 Основные действия:
+        a.btn.btn-primary(href="#/map")
+            i.icon-map-marker
+            span(translate) Map
+        | &nbsp;
+        a.btn.btn-primary(href="#/logs")
+            i.icon-eye-open
+            span(translate) Logs
+        | &nbsp;
+        a.btn.btn-primary(href="#/reports")
+            i.icon-table
+            span(translate) Reports
+        | &nbsp;
+        a.btn.btn-primary(href="#/gps")
+            i.icon-film
+            span(translate) Export GPS
+        | &nbsp;
+        a.btn.btn-primary(href="#/config")
+            i.icon-cogs
+            span(translate) Config
+        | &nbsp;
+        a.btn.btn-primary(href="#/help")
+            i.icon-medkit
+            span(translate) Help
 
-        h4 Дополнительные действия
-        button.btn.btn-warning(ng-click="onLogout();")
-            i.icon-off
-            | Выйти из учетной записи
+    h4 Дополнительные действия
+    button.btn.btn-warning(ng-click="onLogout();")
+        i.icon-off
+        | Выйти из учетной записи

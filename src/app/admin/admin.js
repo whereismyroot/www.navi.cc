@@ -40,5 +40,21 @@ angular.module('admin', ['ngRoute'])
 
 .controller('AdminViewCtrl', ['$scope', '$location', 'users', function ($scope, $location, users) {
     var all = users.get();
+
+    $scope.formAddUser = false;
+    $scope.users = [{
+        username: "baden",
+        title: "Да, это я",
+        groups: []
+    }];
+
     console.log("AdminViewCtrl:", users, all);
+
+    $scope.user = {};
+
+    $scope.addUser = function(){
+        $scope.users.push($scope.user);
+        $scope.user = {};
+        $scope.formAddUser = false;
+    }
 }]);

@@ -1,10 +1,12 @@
 angular.module('app', [
+  'http-auth-interceptor',
   'ngRoute',
   'resources.account',
   'app.filters',
   'app.filters.i18n',
   'error',
   'login',
+  'register',
   'map',
   'logs',
   'gps',
@@ -13,6 +15,7 @@ angular.module('app', [
   'admin',
   'help',
   'i18n',
+  'directives.loginform',
   // '$strap',
   // 'services.i18n',
   // 'services.i18nNotifications',
@@ -25,8 +28,10 @@ var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bi
 var API_VERSION = "1.0";
 
 angular.module('app').constant('SERVER', {
-  api: (DEVELOP ? 'http://api.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
+  // api: (DEVELOP ? 'http://api.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
+  api: (DEVELOP ? 'http://erlapi.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
   api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
+  // api_withCredentials: false,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
   //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
   channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
@@ -56,6 +61,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
   }
   $httpProvider.defaults.headers.patch["Content-Type"] = 'application/json; charset=utf-8';
 
+  if(0){
   // Перехват 401 Ошибка авторизации
   var interceptor = ['$rootScope', '$q', function (scope, $q) {
     function success(response) {
@@ -77,6 +83,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', '$httpProvi
     }
   }];
   $httpProvider.responseInterceptors.push(interceptor);
+  }
 
   //$locationProvider.html5Mode(true);
   //$routeProvider.otherwise({redirectTo:'/login'});
@@ -107,12 +114,12 @@ angular.module('app').run(['$http', 'SERVER', '$rootScope', '$timeout', function
 
 }]);
 
-angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', 'Account', function($scope, $location, $route, $rootScope, $window, Account) {
+angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$rootScope', '$window', function($scope, $location, $route, $rootScope, $window) {
   // console.log('app:AppCtrl', $location /*, $location.parse()*/);
   // $scope.i18n = i18n;
 
   // $scope.notifications = i18nNotifications;
-  $scope.account = Account;
+  // $scope.account = Account;
   $scope.location = $location;
   $scope.$route = $route;
   // $rootScope.skey = 'test';
@@ -130,14 +137,14 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   // //   // console.log('++=> ', $route.current.params /*, $location.parse()*/);
   // });
 
-  $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
-    // console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
-    Account.skey = current.params.skey;
-    // if(current.params.skey && !Account.skey){
-      // Account.setSkey(current.params.skey);
-    // }
-        // console.log('Changing route from ' + angular.toJson(current) + ' to ' + angular.toJson(next));
-  });
+  // $scope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
+  //   // console.log('$routeChangeSuccess ', [angularEvent, current, previous]);
+  //   Account.skey = current.params.skey;
+  //   // if(current.params.skey && !Account.skey){
+  //     // Account.setSkey(current.params.skey);
+  //   // }
+  //       // console.log('Changing route from ' + angular.toJson(current) + ' to ' + angular.toJson(next));
+  // });
 
   // $scope.removeNotification = function (notification) {
   //   i18nNotifications.remove(notification);
@@ -148,6 +155,7 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   // });
 }]);
 
+if(0){
 //angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'notifications', 'httpRequestTracker', function ($scope, $location, $route, notifications, httpRequestTracker) {
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'Account', 'httpRequestTracker', function ($scope, $location, $route, Account, httpRequestTracker) {
   $scope.location = $location;
@@ -183,3 +191,4 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   /*$(".collapse").collapse({toggle: false});*/
 
 }]);
+}

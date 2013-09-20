@@ -14,7 +14,7 @@
     <meta name="viewport" content="target-densitydpi=device-dpi, initial-scale=1.0, user-scalable=no" />
 
     <!-- <link rel='stylesheet' href='css/jquery-ui-1.10.3.css' /> -->
-    <link rel='stylesheet' href='css/bootstrap-3.0.0-rc1.min.css' />
+    <link rel='stylesheet' href='css/bootstrap-3.0.0.css' />
 
     <!--link rel='stylesheet' href='css/datepicker.min.css' /-->
     <link rel='stylesheet' href='css/font-awesome-3.2.1.min.css' />
@@ -55,6 +55,8 @@
     <div ng-view class="content" ng-class="{contentfixed: location.path().match('^/map')}"></div>
     <div ng-include="'templates/notifications.tpl.html'" class="container-fluid notification" ng-show="notifications.getCurrent().length"></div>
 
+    <loginform></loginform>
+
     <div id="loader">
         <i class="icon-refresh icon-4x icon-spin"></i>
     </div>
@@ -68,14 +70,16 @@
     <script type="text/javascript" src="js/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.10.3.custom.js"></script> <!-- Sortable only -->
 
-    <script type="text/javascript" src="js/bootstrap-3.0.0-rc1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-3.0.0.js"></script>
     <script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="js/locales/bootstrap-datepicker.ru.js"></script>
     <!-- <script type="text/javascript" src="js/angular-1.1.5.min.js"></script> -->
     <script type="text/javascript" src="js/angular-1.2.0-rc2.js"></script>
     <script type="text/javascript" src="js/angular-route-1.2.0-rc2.js"></script>
     <script type="text/javascript" src="js/angular-resource-1.2.0-rc2.js"></script>
+    <script type="text/javascript" src="js/angular-animate-1.2.0-rc2.js"></script>
     <script type="text/javascript" src="js/angular-ui-sortable.js"></script>
+    <script type="text/javascript" src="js/angular-ui-buttons.js"></script>
     <!--script type="text/javascript" src="js/angular-ui-0.4.0.min.js"></script-->
     <script type="text/javascript" src="js/angular-strap-0.7.5.js"></script>
     <script type="text/javascript" src="js/angular-translate-1.1.0.js"></script>

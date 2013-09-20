@@ -49,6 +49,19 @@ angular.module('resources.system', [])
         return out;
     }
 
+    // Запросить все сисетмы авторизованного аккаунта
+    System.getall = function(){
+        var defer = $q.defer();
+        $http({
+            method: 'GET',
+            url: SERVER.api + "/account/systems"
+        }).success(function(data){
+            System.systems = data;
+            defer.resolve(System);
+        });
+        return defer.promise;
+    }
+
     // Запросить подробности для системы skey
     System.get = function(skey){
         var defer = $q.defer();

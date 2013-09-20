@@ -7,7 +7,7 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
         resolve:{
             account:['Account', function (Account) {
                 //TODO: need to know the current user here
-                return Account;
+                return Account.get();
             }]
         },
         reloadOnSearch: false

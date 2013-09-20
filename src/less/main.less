@@ -427,3 +427,40 @@ input.clone:focus {
 .freshmark-broken {
   color: lightgray;
 }
+
+
+
+/* When hiding an element */
+.error-alert.ng-hide-add {
+  -webkit-transition:0.5s linear all;
+  -moz-transition:0.5s linear all;
+  -o-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  opacity:1;
+}
+
+.error-alert.ng-hide-add.ng-hide-add-active {
+  opacity:0;
+}
+
+/* When showing an element */
+.error-alert.ng-hide-remove {
+  -webkit-transition:0.5s linear all;
+  -moz-transition:0.5s linear all;
+  -o-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  /* this needs to be here to make it visible during the animation
+     since the .ng-hide class is already on the element rendering
+     it as hidden. */
+  display:block!important;
+  opacity:0;
+}
+
+.error-alert,
+.error-alert.ng-hide-remove.ng-hide-remove-active {
+  opacity:1;
+}
+
+

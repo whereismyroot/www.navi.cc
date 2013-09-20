@@ -1,4 +1,4 @@
-angular.module('login', ['ngRoute', 'resources.account', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
+angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
 
@@ -9,7 +9,11 @@ angular.module('login', ['ngRoute', 'resources.account', 'app.filters', 'directi
     resolve:{
       account:['Account', function (Account) {
         //TODO: sure for fetch only one for the current user
-        return Account;
+        return Account.get();
+      }],
+      system:['System', function (System) {
+        //TODO: sure for fetch only one for the current user
+        return System.getall();
       }]
     }
   });
@@ -40,37 +44,44 @@ angular.module('login', ['ngRoute', 'resources.account', 'app.filters', 'directi
   $scope.showLoginForm = true;
   $scope.user = {};
 
-  console.log('$templateCache=', $templateCache.get('templates/ru/login.tpl.html'));
+  console.log('LoginViewCtrl', account);
 
-  $scope.showLogin = function(msg) {
-    $scope.authError = msg;
-    $scope.showLoginForm = true;
-  };
+  // console.log('$templateCache=', $templateCache.get('templates/ru/login.tpl.html'));
 
-  $scope.cancelLogin = function() {
-    //AuthenticationService.cancelLogin();
-    $scope.showLoginForm = false;
-  };
+  // $scope.showLogin = function(msg) {
+  //   $scope.authError = msg;
+  //   $scope.showLoginForm = true;
+  // };
 
-  $scope.hideLogin = function() {
-    $scope.showLoginForm = false;
-  };
+  // $scope.cancelLogin = function() {
+  //   //AuthenticationService.cancelLogin();
+  //   $scope.showLoginForm = false;
+  // };
+
+  // $scope.hideLogin = function() {
+  //   $scope.showLoginForm = false;
+  // };
 
   $scope.onLogout = function(){
-      account.logout();
+      account.logout().then(function(){
+        console.log('$location=', $location);
+        // $location.path();
+        location.reload();
+      });
       $scope.user = {};
   };
-  $scope.onLogin = function(user, pass){
-    $scope.loginform = false;
-    console.log('Login:', $scope, user, pass);
 
-    if((user === "")||(!user)) {
-      return;
-    }
-    account.login(user, pass);
+  // $scope.onLogin = function(user, pass){
+  //   $scope.loginform = false;
+  //   console.log('Login:', $scope, user, pass);
 
-    return false;
-  };
+  //   if((user === "")||(!user)) {
+  //     return;
+  //   }
+  //   account.login(user, pass);
+
+  //   return false;
+  // };
 
   $scope.onChange = function(model) {
     console.log('onChange', model);
@@ -93,7 +104,7 @@ angular.module('login', ['ngRoute', 'resources.account', 'app.filters', 'directi
   */
   $scope.$watch('account.account.name', function(newValue, oldValue){
     console.log(['bind fire', newValue, oldValue]);
-    if(newValue && oldValue) {
+    if(newValue && oldValue && (newValue !== oldValue)) {
       $scope.account.update({"$set": {name: newValue}});
     }
   });

@@ -40,6 +40,7 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         "Administrator": "Администратор",
         "Observed systems": "Наблюдаемых систем",
         "for_recovery": "Для восстановления пароля",
+        "error_auth": "Ошибка авторизации, перепроверьте данные.",
 
         "Login": 'Вход',
         "Map": 'Карта',

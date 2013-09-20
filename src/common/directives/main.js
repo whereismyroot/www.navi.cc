@@ -170,23 +170,32 @@ angular.module('directives.lists', [])
                     '        <label style="display:inline">IMEI</label>' +
                     '       <input class="form-control" type="text" ng-model="newimei" required autofocus></input>' +
                     '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\'>Добавить</button>' +
+                    '        <a class="btn btn-primary" ng-click="onGroupSyss()" title="Добавить все трекеры компании"><i class="icon-group" style="margin:0"></i></a>' +
                     '       <fileload ng-model="files" ng-change="onFromFiles()"></fileload>' +
                     '    </form>' +
                     '</span></div>',
         replace: true,
         link: function(scope, element, attr, ngModel) {
         },
-        controller: ["$scope", function($scope){
+        controller: ["$scope", "Account", function($scope, Account){
             $scope.addform = false;
             $scope.onAdd = function(imei){
                 console.log('onAdd', imei, $scope.account, document.getElementById('config_add_file'));
 
-                $scope.account.systemadd([imei]);
+                // $scope.account.systemadd([imei]);
+                Account.systemadd([imei]);
                 $scope.addform = false;
             };
+
+            $scope.onGroupSyss = function(){
+                console.log("TODO: Добавить все трекеры компании.");
+                $scope.addform = false;
+            };
+
             $scope.onFromFiles = function(){
-                console.log('multiple add', $scope.files);
-                $scope.account.systemadd($scope.files);
+                console.log('TODO! multiple add', $scope.files);
+                Account.systemadd($scope.files);
+                // $scope.account.systemadd($scope.files);
                 $scope.addform = false;
             };
         }]
