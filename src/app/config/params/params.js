@@ -16,7 +16,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
         account: ['Account',
           function(Account) {
             //TODO: sure for fetch only one for the current user
-            return Account;
+            return Account.get();
           }
         ],
         // params:['Params', '$route', function (Params, $route) {
@@ -82,7 +82,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
     }
 
     $scope.stopqueue = function() {
-      params.cancelall(); // Отправим на сервер команду отменить все изменения
+      params.cancelall($scope.skey); // Отправим на сервер команду отменить все изменения
       /*for (var k in params.value) {
       $scope.cancelqueue(k);
     };*/

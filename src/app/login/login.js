@@ -102,10 +102,10 @@ angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'ap
     }
   );
   */
-  $scope.$watch('account.account.name', function(newValue, oldValue){
+  $scope.$watch('account.account.title', function(newValue, oldValue){
     console.log(['bind fire', newValue, oldValue]);
     if(newValue && oldValue && (newValue !== oldValue)) {
-      $scope.account.update({"$set": {name: newValue}});
+      $scope.account.update({title: newValue});
     }
   });
 

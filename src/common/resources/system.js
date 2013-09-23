@@ -1,7 +1,9 @@
 angular.module('resources.system', [])
 
 .factory('System', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
-    var System = {};
+    var System = {
+        systems: {}
+    };
 
     // Построим формулу преобразования значения АЦП в объем топлива
     // В цепи измерения делитель: 22k/10k
@@ -56,7 +58,14 @@ angular.module('resources.system', [])
             method: 'GET',
             url: SERVER.api + "/account/systems"
         }).success(function(data){
-            System.systems = data;
+            System.systems = {};
+            for(var i=0; i<data.length; i++){
+                var s = data[i];
+                if(!s.error){
+                    System.systems[s["id"]] = s;
+                }
+            }
+            console.log("System.getall:", data, System.systems);
             defer.resolve(System);
         });
         return defer.promise;
@@ -109,15 +118,15 @@ angular.module('resources.system', [])
     }
 
     // Изменения описания (наименования системы)
-    System.change_desc = function(skey, desc){
-        console.log(['System.change_desc', skey, desc]);
+    System.update = function(skey, param){
+        console.log('System.update', skey, param);
         $http({
             method: 'PATCH',
             withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/system/" + encodeURIComponent(skey),
-            data: JSON.stringify({desc: desc})
+            url: SERVER.api + "/systems/" + encodeURIComponent(skey),
+            data: JSON.stringify(param)
         }).success(function(data){
-          // console.log('login data=', data);
+          console.log('System.update.result', data);
         });
 
         /*

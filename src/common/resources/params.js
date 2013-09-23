@@ -361,7 +361,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
         $http({
             method: 'GET',
-            url: SERVER.api + "/params/" + encodeURIComponent(skey)
+            url: SERVER.api + "/systems/" + encodeURIComponent(skey) + "/params"
         }).success(function(data){
             // console.log('params.Params.get.success', data);
             Params.skey = data.skey;
@@ -374,7 +374,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
                 p.newqueue = p.queue;
             };
 
-            defer.resolve();
+            defer.resolve(Params);
         });
 
         return defer.promise;
@@ -416,7 +416,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
         $http({
             method: 'DELETE',
-            url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey) + "/" + encodeURIComponent(k)
+            url: SERVER.api + "/systems/" + encodeURIComponent(Params.skey) + "/params/queue/" + encodeURIComponent(k)
         }).success(function(data){
             // console.log('params.Params.del.success', data);
 
@@ -430,12 +430,12 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
     }
 
     // Отменить все изменения
-    Params.cancelall = function(){
+    Params.cancelall = function(skey){
         var defer = $q.defer();
 
         $http({
             method: 'DELETE',
-            url: SERVER.api + "/params/queue/" + encodeURIComponent(Params.skey)
+            url: SERVER.api + "/systems/" + encodeURIComponent(skey) + "/params/queue"
         }).success(function(data){
             // console.log('params.Params.delall.success', data);
 

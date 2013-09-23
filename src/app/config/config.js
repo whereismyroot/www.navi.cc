@@ -7,10 +7,10 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     resolve:{
       account:['Account', function (Account) {
         //TODO: sure for fetch only one for the current user
-        return Account;
+        return Account.get();
       }],
       system: ['System', function (System) {
-        return  System;
+        return  System.getall();
       }]
     }
   });
@@ -20,6 +20,7 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
+  $scope.system = system;
 
   $scope.deleteenable = false;
   //$scope.addform = false;
@@ -37,12 +38,12 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   };
 
   $scope.onChange = function(el){
-    console.log('onChange', el, $scope.account.account.systems[el].desc);
-    system.change_desc(el, $scope.account.account.systems[el].desc);
+    console.log('onChange', el, $scope.system.systems[el].title);
+    system.update(el, {title: $scope.system.systems[el].title});
   };
 
   $scope.onoff = function(el){
-    $scope.account.account.systems[el].off = !$scope.account.account.systems[el].off;
+    $scope.account.account.systems[el].off = !$scope.system.systems[el].off;
     console.log('onoff', el);
   };
 
