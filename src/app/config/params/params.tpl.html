@@ -89,7 +89,9 @@
         <tbody>
         <!--tr ng-repeat="p in params | isFiltered:filtered"-->
         <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
-        <tr ng-repeat="(k, p) in filtered(params.value)">
+
+        <tr ng-repeat="(k, p) in filtered(params.data)">
+        <!-- <tr ng-repeat="(k, p) in params.data"> -->
             <td>{{k}}</td>
             <td>{{p.desc}}</td>
             <!-- <td>{{p.type}}</td> -->

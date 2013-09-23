@@ -22,10 +22,11 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
         // params:['Params', '$route', function (Params, $route) {
         //   //return Params.get({skey:$route.current.params.skey});
         // }],
-        params: ['Params',
-          function(Params) {
+        params: ['Params', '$route',
+          function(Params, $route) {
             //return Params.get({skey:$route.current.params.skey});
-            return Params;
+            // console.log("resolve Params", );
+            return Params.get($route.current.params.skey);
           }
         ],
         system: ['System',
@@ -51,9 +52,11 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
       "checked": false
     }
 
-    $scope.params.get($route.current.params.skey).then(function(data) {
-      console.log('params success', data);
-    });
+    // $scope.params.get($route.current.params.skey).then(function(data) {
+    //   console.log('params success', data);
+    // });
+
+    console.log('params success', $scope.params);
 
     $scope.isFiltered = function(item) {
       if (!$scope.filtered) {
@@ -139,7 +142,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
 
 .filter('isFiltered', function() {
   return function(value, status) {
-    // console.log('isFiltered:', value, status);
+    console.log('isFiltered:', value, status);
     if (!status) {
       return value;
     }

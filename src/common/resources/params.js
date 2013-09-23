@@ -341,7 +341,7 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
 
     var Params = {
         skey: null,
-        value: null
+        data: null
     };
 
     var updater = Connect.updater.on('cfg_upd', function(msg) {
@@ -363,13 +363,18 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
             method: 'GET',
             url: SERVER.api + "/systems/" + encodeURIComponent(skey) + "/params"
         }).success(function(data){
-            // console.log('params.Params.get.success', data);
-            Params.skey = data.skey;
-            Params.value = data.value;
+            console.log('params.Params.get.success', data);
+            // Params.skey = data.skey;
+            Params.skey = skey;
+            Params.data = {};
 
-            for (var k in data.value) {
-                var p = data.value[k];
-                angular.extend(p, params_descs[k]);
+            for (var k in data.data) {
+                var p = data.data[k];
+                var newk = k.replace(/#/g, '.');
+
+                Params.data[newk] = angular.extend(p, params_descs[newk]);
+                //;
+
                 // p.newvalue = p.value;
                 p.newqueue = p.queue;
             };
