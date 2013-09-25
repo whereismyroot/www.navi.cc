@@ -13,7 +13,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       templateUrl: 'templates/config/params/params.tpl.html',
       controller: 'ConfigParamsCtrl',
       resolve: {
-        // account: ['Account',
+        // account: ['Account', 
         //   function(Account) {
         //     //TODO: sure for fetch only one for the current user
         //     return Account.get();
