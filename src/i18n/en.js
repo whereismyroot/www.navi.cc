@@ -62,6 +62,9 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'STOP_NUMBERS': 'Numbering of stops / parks',
 
         // Config page
-        'add_system': 'Add system'
+        'add_system': 'Add system',
+
+        // params
+        'contenteditableTitle': 'To change the description, place the cursor in the field'
 });
 }]);

@@ -60,6 +60,9 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'STOP_NUMBERS': 'Numeracja przystanków / parki',
 
         // Config page
-        'add_system': 'Add system (translate)'
+        'add_system': 'Add system (translate)',
+
+        // params
+        'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu'
     });
 }]);

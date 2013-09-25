@@ -66,11 +66,14 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       return item.filter;
     };
 
-  $scope.onChangeTitle = function(){
+    $scope.onChangeTitle = function(){
+      console.log('onChangeTitle', $scope.system.title);
+      system.update(skey, {title: $scope.system.title});
+    };
+
+    $scope.onChangeGosNumber = function(){
     console.log('onChangeTitle', $scope.system.title);
     system.update(skey, {title: $scope.system.title});
-
-    // system.update(el, {title: $scope.system.systems[el].title});
   };
 
     /*$scope.onChange = function(el){
@@ -139,7 +142,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
     $scope.setIcon = function(icon) {
       // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
-      system.setIcon($scope.skey, icon.class);
+      system.update(skey, {icon: icon.class});
       system.icon = icon.class;
     }
 
