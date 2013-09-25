@@ -2,6 +2,7 @@ angular.module('resources.system', [])
 
 .factory('System', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
     var System = {
+        data: null,
         systems: {}
     };
 
@@ -52,46 +53,62 @@ angular.module('resources.system', [])
     }
 
     // Запросить все сисетмы авторизованного аккаунта
-    System.getall = function(){
+    // TODO: Операция должна кешироваться
+    System.getall = function(reload){
         var defer = $q.defer();
-        $http({
-            method: 'GET',
-            url: SERVER.api + "/account/systems"
-        }).success(function(data){
-            System.systems = {};
-            for(var i=0; i<data.length; i++){
-                var s = data[i];
-                if(!s.error){
-                    System.systems[s["id"]] = s;
+
+        if(!System.data || reload){
+
+            $http({
+                method: 'GET',
+                url: SERVER.api + "/account/systems"
+            }).success(function(data){
+                System.data = data;
+                System.systems = {};
+                for(var i=0; i<data.length; i++){
+                    var s = data[i];
+                    if(!s.error){
+                        System.systems[s["id"]] = s;
+                    }
                 }
-            }
-            console.log("System.getall:", data, System.systems);
+                console.log("System.getall:", data, System.systems);
+                defer.resolve(System);
+            });
+        } else {
             defer.resolve(System);
-        });
+        }
         return defer.promise;
     }
 
     // Запросить подробности для системы skey
-    System.get = function(skey){
+    System.get = function(skey, reload){
         var defer = $q.defer();
 
         // console.log('-- System.get');
 
-        $http({
-            method: 'GET',
-            url: SERVER.api + "/system/" + encodeURIComponent(skey)
-        }).success(function(data){
-            // console.log('System.get.success', data);
-            // System.skey = data.skey;
+        if(!System.systems[skey] || reload) {
+            $http({
+                method: 'GET',
+                url: SERVER.api + "/systems/" + encodeURIComponent(skey)
+            }).success(function(data){
+                console.log('System.get.success', data);
 
-            if(data && data.value.params.fuel){
-                data.fuelarray = System.fuelrecalc(data.value.params.fuel);
-            } else {
-                data.fuelarray = [];
-            }
+                System.data = data;
+                System.systems[skey] = angular.copy(data);
+                // System.skey = data.skey;
 
-            defer.resolve(data);
-        });
+                // if(data && data.value.params.fuel){
+                //     data.fuelarray = System.fuelrecalc(data.value.params.fuel);
+                // } else {
+                //     data.fuelarray = [];
+                // }
+
+                defer.resolve(System);
+            });
+        } else {
+            System.data = System.systems[skey];
+            defer.resolve(System);
+        }
 
         return defer.promise;
     }

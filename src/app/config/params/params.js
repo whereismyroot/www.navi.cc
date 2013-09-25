@@ -29,9 +29,9 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
             return Params.get($route.current.params.skey);
           }
         ],
-        system: ['System',
-          function(System) {
-            return System;
+        system: ['System', '$route',
+          function(System, $route) {
+            return System.get($route.current.params.skey);
           }
         ]
       }
@@ -42,7 +42,8 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
 .controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system',
   function($scope, $route, $routeParams, account, params, system) {
     // console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
-    $scope.account = account;
+    // $scope.account = account;
+    $scope.system = system.data;
     $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;

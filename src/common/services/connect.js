@@ -48,12 +48,16 @@ angular.module('services.connect', [])
         console.log('connecting to ' + ws_server + '...');
 
         //new SockJS(ws_server)
-        //var ws = $rootScope.ws = new WebSocket(ws_server);
-        var ws = $rootScope.ws = new SockJS(ws_server);
+        var ws = $rootScope.ws = new WebSocket(ws_server);
+        // var ws = $rootScope.ws = new SockJS(ws_server);
         ws.onopen = function () {
             console.log('WebSocket connected');
             //$('#main').append('<div>Opened</div>');
             //ws.send("First msg");
+            var message = {
+                "message": "ping"
+            };
+            ws.send(JSON.stringify(message));
         };
         ws.onmessage = function(event) {
             var msg = JSON.parse(event.data);

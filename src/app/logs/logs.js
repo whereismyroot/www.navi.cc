@@ -1,13 +1,17 @@
-angular.module('logs', ['ngRoute', 'resources.account', 'resources.logs'])
+angular.module('logs', ['ngRoute', 'resources.account', 'resources.system', 'resources.logs'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/logs', {
     templateUrl:'templates/logs/logs.tpl.html',
     controller:'LogsViewCtrl',
     resolve:{
-      account:['Account', function (Account) {
-        //TODO: sure for fetch only one for the current user
-        return Account;
+      // account:['Account', function (Account) {
+      //   //TODO: sure for fetch only one for the current user
+      //   return Account;
+      // }],
+      system:['System', function (System) {
+        // Нужен список систем
+        return System.getall();
       }],
       logs:['Logs', function(Logs){
         return Logs;
@@ -18,48 +22,56 @@ angular.module('logs', ['ngRoute', 'resources.account', 'resources.logs'])
     templateUrl:'templates/logs/logs.tpl.html',
     controller:'LogsViewCtrl',
     resolve:{
-      account:['Account', function (Account) {
-        //TODO: sure for fetch only one for the current user
-        return Account;
+      system:['System', function (System) {
+        // Нужен список систем
+        return System.getall();
       }],
-      logs:['Logs', function(Logs){
-        return Logs;
+      // account:['Account', function (Account) {
+      //   //TODO: sure for fetch only one for the current user
+      //   return Account;
+      // }],
+      logs:['Logs', '$route', function(Logs, $route){
+        // var skey = $route.current.params.skey;
+        // console.log('skey=', skey);
+        return Logs.get($route.current.params.skey);
       }]
     }
   });
 }])
 
-.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'logs', function ($scope, $location, $routeParams, account, logs) {
-  $scope.account = account;
-  var startskey = $routeParams['skey'];
-  $scope.skey = account.skey;
+.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'system', 'logs', function ($scope, $location, $routeParams, system, logs) {
+  $scope.systems = system.data;
+  // var startskey = $routeParams['skey'];
+  // $scope.skey = account.skey;
+  $scope.skey = $routeParams['skey'];
 
-  $scope.logs = logs;
+  $scope.logs = logs.data;
+  console.log('$scope.logs = ', $scope.logs);
   $scope.comment = "Данные еще не получены";
-  $scope.onSelect = function(){
-    console.log('selected');
-  };
+  // $scope.onSelect = function(){
+  //   console.log('selected');
+  // };
 
-  var reload = function(){
-    console.log('reload', $scope.account.skey);
-    if((!$scope.account.skey) || ($scope.account.skey === "")) {
-      return;
-    }
-    $scope.logs.logs = [];
-    $scope.comment = "Данные загружаются...";
-    console.log(['change skey', $scope.account.skey, $scope.account]);
-    $scope.logs.get($scope.account.skey, $scope.account.akey, function(res){
-      if(res === 0) {
-        $scope.comment = "Нет событий.";
-      } else {
-        $scope.comment = "Неизвестно";
-      }
-    });
-  };
+  // var reload = function(){
+  //   console.log('reload', $scope.account.skey);
+  //   if((!$scope.account.skey) || ($scope.account.skey === "")) {
+  //     return;
+  //   }
+  //   $scope.logs.logs = [];
+  //   $scope.comment = "Данные загружаются...";
+  //   console.log(['change skey', $scope.account.skey, $scope.account]);
+  //   $scope.logs.get($scope.account.skey, $scope.account.akey, function(res){
+  //     if(res === 0) {
+  //       $scope.comment = "Нет событий.";
+  //     } else {
+  //       $scope.comment = "Неизвестно";
+  //     }
+  //   });
+  // };
 
-  $scope.onReload = function(){
-    reload();
-  };
+  // $scope.onReload = function(){
+  //   reload();
+  // };
 
   $scope.onSysSelect = function(){
     console.log('skey=', $scope.skey, $location);
@@ -69,5 +81,5 @@ angular.module('logs', ['ngRoute', 'resources.account', 'resources.logs'])
       $location.path('/logs');
     }
   }
-  reload();
+  // reload();
 }]);

@@ -6,14 +6,17 @@
         <option value="">Выберите систему</option>
     </select>
  -->
-    <select class="form-control" ng-model="skey" ng-options="account.account.systems[s].desc for s in account.account.skeys"  style="width: 210px;" ng-change="onSysSelect()">
+    <select class="form-control" ng-model="skey" ng-options="s.id as s.title for s in systems" style="width: 210px;" ng-change="onSysSelect()">
         <option value="" ng-show="!skey">Выберите систему</option>
     </select>
-    <button class="btn" ng-show="account.skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
+    <button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
     <!-- skey:{{account.skey}} -->
+    SKEY: {{ skey }}
 </form>
 
-<table class="table table-bordered table-condensed table-striped table-hover" ng-show="account.skey">
+<!-- {{ logs }} -->
+
+<table class="table table-bordered table-condensed table-striped table-hover" ng-show="skey">
     <thead>
     <tr>
         <th>Дата и время</th>
@@ -22,13 +25,13 @@
     </tr>
     </thead>
     <tbody>
-    <!--tr ng-repeat="p in params | isFiltered:filtered"-->
-    <tr ng-repeat="l in logs.logs | filter:isFiltered">
+    <!-- <tr ng-repeat="l in logs | filter:isFiltered"> -->
+    <tr ng-repeat="l in logs">
         <td><datetime datetime="{{l.dt}}"></datetime></td>
         <td ng-bind-html-unsafe="l.text"><!-- {{l.text}} --><!--i class="icon-filter cmd" title="Показать только события данного типа" ng-click="filtered=!filtered"></i--></td>
-        <td>{{l.comments}}</td>
+        <td>{{l.text}}</td>
     </tr>
-    <tr ng-show="!logs.logs.length">
+    <tr ng-show="!logs.length">
         <td colspan="7">{{ comment }}</td>
     </tr>
     </tbody>

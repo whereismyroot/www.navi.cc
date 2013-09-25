@@ -34,7 +34,8 @@ angular.module('app').constant('SERVER', {
   // api_withCredentials: false,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
   //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8181/' : 'http://point.newgps.navi.cc/',
-  channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
+  // channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
+  channel: DEVELOP ? 'ws://localhost:8983/websocket' : 'http://channel.newgps.navi.cc:8888/socket'
 });
 
 angular.module('app').constant('globals', {
