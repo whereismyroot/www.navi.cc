@@ -344,13 +344,13 @@ angular.module('resources.params', ['services.connect', 'ngResource'])
         data: null
     };
 
-    var updater = Connect.updater.on('cfg_upd', function(msg) {
-        // console.log('Need update configure:', msg);
-        if(msg.skey === Params.skey) {
-            Params.get(Params.skey);
-        }
-        //$rootScope.$apply();
-    });
+    // var updater = Connect.updater.on('cfg_upd', function(msg) {
+    //     // console.log('Need update configure:', msg);
+    //     if(msg.skey === Params.skey) {
+    //         Params.get(Params.skey);
+    //     }
+    //     //$rootScope.$apply();
+    // });
 
 
     // Запросить значения параметров для системы skey

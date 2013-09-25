@@ -1,7 +1,11 @@
 angular.module('services.connect', [])
 
 .factory('Connect', ["$rootScope", 'SERVER', function($rootScope, SERVER) {
-    var shared = {};
+    var shared = {
+        scope: $rootScope.$new(true)
+    };
+
+    if(0){
     shared.updater = {};
     shared.updater.queue = {};
 
@@ -32,6 +36,7 @@ angular.module('services.connect', [])
         shared.updater.queue[msg].splice(index, 1);
         console.log(["===> TODO!!!! Not implemented.", updater, shared.updater.queue, index]);
     };
+    }
 
     // console.log("===> Connect:init");
 
@@ -62,12 +67,13 @@ angular.module('services.connect', [])
         ws.onmessage = function(event) {
             var msg = JSON.parse(event.data);
             console.log('onmessage:', msg);
-            //msg.map(function f(m){ shared.updater.process(m); });
-            shared.updater.process(msg);
-            //shared.send(event.data);
-            //$rootScope.$broadcast('channel_data', event.data);
-            //$rootScope.$broadcast('change_last');
-            //$('#main').append('<div>' + event.data + '</div>');
+
+            var resource = msg.resource;
+            var id = msg.id;
+
+            shared.scope.$emit('update', msg);
+
+            // shared.updater.process(msg);
         };
         ws.onclose = function(event) {
             console.log('WebSocket disconnected');
@@ -78,17 +84,32 @@ angular.module('services.connect', [])
     };
     connect(1);
 
-    shared.message = '';
+    //shared.message = '';
 
-    shared.send = function(msg) {
+    /*shared.send = function(msg) {
         this.message = msg;
         //this.broadcastItem();
         $rootScope.$broadcast('channel_data', 'aaa');
     };
+    */
 
     /*sharedService.broadcastItem = function() {
         $rootScope.$broadcast('channel_data');
     };*/
+
+    shared.on = function(resource, callback){
+        shared.scope.$on('update', function(event, message){
+            if(message.messages){
+                var m = message.messages;
+                m.map(function(msg){
+                    console.log("Connect:message", msg);
+                    if(msg.resource === resource){
+                        callback(msg);
+                    }
+                });
+            }
+        });
+    }
 
     return shared;
 }]);

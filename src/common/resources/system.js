@@ -1,6 +1,6 @@
-angular.module('resources.system', [])
+angular.module('resources.system', ['services.connect'])
 
-.factory('System', ['SERVER', '$http', '$q', function (SERVER, $http, $q) {
+.factory('System', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
     var System = {
         data: null,
         systems: {}
@@ -170,6 +170,14 @@ angular.module('resources.system', [])
           // console.log('login data=', data);
         });
     };
+
+    Connect.on('system', function(message){
+        console.log("system/update event", message, System.systems);
+        angular.extend(System.systems[message.id], message.data);
+        if(System.data && System.data.id == message.id){
+            angular.extend(System.data, message.data);
+        }
+    });
 
     return System;
 }]);

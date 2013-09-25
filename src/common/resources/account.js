@@ -249,18 +249,18 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   };
 
   //$scope.access_token = access_token;
-  var updater = Connect.updater.on('update_dynamic', function(msg) {
-      console.log('==Update dynamic', msg);
-      if(msg.skey in Account.account.systems){
-        if(!Account.account.systems[msg.skey].dynamic){
-          Account.account.systems[msg.skey].dynamic = {};
-        }
-        angular.extend(Account.account.systems[msg.skey].dynamic, msg.dynamic);
-      }
-      $rootScope.$apply();
-      //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
-      //lastpos.setPosition(newpos);
-  });
+  // var updater = Connect.updater.on('update_dynamic', function(msg) {
+  //     console.log('==Update dynamic', msg);
+  //     if(msg.skey in Account.account.systems){
+  //       if(!Account.account.systems[msg.skey].dynamic){
+  //         Account.account.systems[msg.skey].dynamic = {};
+  //       }
+  //       angular.extend(Account.account.systems[msg.skey].dynamic, msg.dynamic);
+  //     }
+  //     $rootScope.$apply();
+  //     //var newpos = new google.maps.LatLng(msg.point.lat, msg.point.lon);
+  //     //lastpos.setPosition(newpos);
+  // });
 
   Account.setSkey = function(skey){
     Account.skey = skey;

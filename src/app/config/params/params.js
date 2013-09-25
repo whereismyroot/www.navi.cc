@@ -1,4 +1,4 @@
-angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
+angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params', 'app.filters', 'config.system.params.master', 'config.system.params.fuel'])
 
 .config(['$routeProvider',
   function($routeProvider) {
@@ -13,12 +13,12 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
       templateUrl: 'templates/config/params/params.tpl.html',
       controller: 'ConfigParamsCtrl',
       resolve: {
-        account: ['Account',
-          function(Account) {
-            //TODO: sure for fetch only one for the current user
-            return Account.get();
-          }
-        ],
+        // account: ['Account',
+        //   function(Account) {
+        //     //TODO: sure for fetch only one for the current user
+        //     return Account.get();
+        //   }
+        // ],
         // params:['Params', '$route', function (Params, $route) {
         //   //return Params.get({skey:$route.current.params.skey});
         // }],
@@ -39,12 +39,12 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
   }
 ])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system',
-  function($scope, $route, $routeParams, account, params, system) {
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'params', 'system',
+  function($scope, $route, $routeParams, params, system) {
     // console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
     // $scope.account = account;
     $scope.system = system.data;
-    $scope.skey = $routeParams['skey'];
+    var skey = $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
 
@@ -66,6 +66,12 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
       return item.filter;
     };
 
+  $scope.onChangeTitle = function(){
+    console.log('onChangeTitle', $scope.system.title);
+    system.update(skey, {title: $scope.system.title});
+
+    // system.update(el, {title: $scope.system.systems[el].title});
+  };
 
     /*$scope.onChange = function(el){
     // console.log('onChange', el);
@@ -134,7 +140,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.account'
       // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
       system.setIcon($scope.skey, icon.class);
-      account.account.systems[$scope.skey].icon = icon.class;
+      system.icon = icon.class;
     }
 
     // $("[rel=tooltip]").tooltip();
