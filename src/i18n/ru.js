@@ -62,6 +62,9 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'STOP_NUMBERS': 'Нумерация остановок / стоянок',
 
         // Страница настроек
-        'add_system': 'Добавить трекер'
+        'add_system': 'Добавить трекер',
+
+        // Страница params
+        'contenteditableTitle': 'Для изменения описания поместите курсор в поле'
     });
 }]);

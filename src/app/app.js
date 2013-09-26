@@ -32,7 +32,6 @@ angular.module('app').constant('SERVER', {
   // api: (DEVELOP ? 'http://erlapi.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
   api: (DEVELOP ? 'http://178.219.90.47:8982/' : 'http://api.newgps.navi.cc/') + API_VERSION,
   api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
-  // api_withCredentials: false,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
   //api_port: DEVELOP ? '8183' : '',
   point: DEVELOP ? 'http://localhost:8981/' : 'http://point.newgps.navi.cc/',
   // channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'

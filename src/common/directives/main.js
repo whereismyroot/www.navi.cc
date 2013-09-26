@@ -57,12 +57,15 @@ angular.module('directives.lists', [])
         restrict: 'A',
         require: '?ngModel',
         link: function(scope, element, attr, ngModel) {
+
             var read;
             var translate = $filter('translate');
             element.attr('title', translate('contenteditableTitle'));
             if (!ngModel) {
                 return;
             }
+            var translate = $filter('translate');
+            element.attr('title', translate('contenteditableTitle'));
             ngModel.$render = function() {
                 return element.text(ngModel.$viewValue);
             };

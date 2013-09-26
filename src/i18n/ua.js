@@ -60,6 +60,9 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'STOP_NUMBERS': 'Нумерація зупинок / стоянок',
 
         // Config page
-        'add_system': 'Add system (translate)'
+        'add_system': 'Add system (translate)',
+
+        // params
+        'contenteditableTitle': 'Для зміни опису помістіть курсор в полі'
     });
 }]);
