@@ -16,6 +16,10 @@ angular.module('resources.system', ['services.connect'])
         }
     }
 
+    System.add = function(system){
+        addtoset(system);
+    }
+
     // Запросить подробности для системы skey
     System.get = function(skey, reload){
         var defer = $q.defer();

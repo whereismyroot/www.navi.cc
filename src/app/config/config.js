@@ -6,7 +6,6 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     controller:'ConfigViewCtrl',
     resolve:{
       account:['Account', function (Account) {
-        //TODO: sure for fetch only one for the current user
         return Account.get();
       }],
       systems: ['System', function (System) {
@@ -23,13 +22,6 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   $scope.systems = systems;
 
   $scope.deleteenable = false;
-  //$scope.addform = false;
-  /*$scope.onAdd = function(imei){
-    console.log('onAdd', imei, account, document.getElementById('config_add_file'));
-
-    account.systemadd([imei]);
-    $scope.addform = false;
-  };*/
 
   $scope.onFromFiles = function(){
     console.log('multiple add', $scope.files);
