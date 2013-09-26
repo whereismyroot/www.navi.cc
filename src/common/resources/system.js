@@ -2,9 +2,61 @@ angular.module('resources.system', ['services.connect'])
 
 .factory('System', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
     var System = {
-        data: null,
-        systems: {}
+        // data: null,
+        all: false,     // Будет установлен в true если был произведен вызов getall()
+        systems: {}     // Объект с системами skey => System_repr
     };
+
+    var addtoset = function(system){
+        var skey = system["id"];
+        if(System.systems[skey]){
+            angular.extend(System.systems[skey], system);
+        } else {
+            System.systems[skey] = angular.copy(system);
+        }
+    }
+
+    // Запросить подробности для системы skey
+    System.get = function(skey, reload){
+        var defer = $q.defer();
+
+        if(!System.systems[skey] || reload) {
+            $http({
+                method: 'GET',
+                url: SERVER.api + "/systems/" + encodeURIComponent(skey)
+            }).success(function(data){
+                addtoset(data);
+                defer.resolve(System.systems[skey]);
+            });
+        } else {
+            defer.resolve(System.systems[skey]);
+        }
+
+        return defer.promise;
+    }
+
+    // Запросить все сисетмы авторизованного аккаунта
+    System.getall = function(reload){
+        var defer = $q.defer();
+
+        if(!System.all || reload){ // Это не работает
+
+            $http({
+                method: 'GET',
+                url: SERVER.api + "/account/systems"
+            }).success(function(data){
+                System.all = true;
+
+                data.map(addtoset);
+
+                defer.resolve(System.systems);
+            });
+        } else {
+            defer.resolve(System.systems);
+        }
+        return defer.promise;
+    }
+
 
     // Построим формулу преобразования значения АЦП в объем топлива
     // В цепи измерения делитель: 22k/10k
@@ -52,66 +104,6 @@ angular.module('resources.system', ['services.connect'])
         return out;
     }
 
-    // Запросить все сисетмы авторизованного аккаунта
-    // TODO: Операция должна кешироваться
-    System.getall = function(reload){
-        var defer = $q.defer();
-
-        if(!System.data || reload){
-
-            $http({
-                method: 'GET',
-                url: SERVER.api + "/account/systems"
-            }).success(function(data){
-                System.data = data;
-                System.systems = {};
-                for(var i=0; i<data.length; i++){
-                    var s = data[i];
-                    if(!s.error){
-                        System.systems[s["id"]] = s;
-                    }
-                }
-                console.log("System.getall:", data, System.systems);
-                defer.resolve(System);
-            });
-        } else {
-            defer.resolve(System);
-        }
-        return defer.promise;
-    }
-
-    // Запросить подробности для системы skey
-    System.get = function(skey, reload){
-        var defer = $q.defer();
-
-        // console.log('-- System.get');
-
-        if(!System.systems[skey] || reload) {
-            $http({
-                method: 'GET',
-                url: SERVER.api + "/systems/" + encodeURIComponent(skey)
-            }).success(function(data){
-                console.log('System.get.success', data);
-
-                System.data = data;
-                System.systems[skey] = angular.copy(data);
-                // System.skey = data.skey;
-
-                // if(data && data.value.params.fuel){
-                //     data.fuelarray = System.fuelrecalc(data.value.params.fuel);
-                // } else {
-                //     data.fuelarray = [];
-                // }
-
-                defer.resolve(System);
-            });
-        } else {
-            System.data = System.systems[skey];
-            defer.resolve(System);
-        }
-
-        return defer.promise;
-    }
 
     // Установить значение одного из параметров (или нескольких)
     System.setParams = function(skey, params){
@@ -134,9 +126,8 @@ angular.module('resources.system', ['services.connect'])
         return defer.promise;
     }
 
-    // Изменения описания (наименования системы)
+    // Изменения поля ресурса
     System.update = function(skey, param){
-        console.log('System.update', skey, param);
         $http({
             method: 'PATCH',
             withCredentials: SERVER.api_withCredentials,
@@ -145,38 +136,12 @@ angular.module('resources.system', ['services.connect'])
         }).success(function(data){
           console.log('System.update.result', data);
         });
-
-        /*
-        $http({
-            method: 'GET',
-            withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/system/changedesc/" + encodeURIComponent(skey) +
-          "?desc=" + encodeURIComponent(desc)
-        }).success(function(data){
-          console.log('login data=', data);
-        });
-        */
-    };
-
-    // Изменения описания (наименования системы)
-    System.setIcon = function(skey, icon){
-        // console.log(['System.change_desc', skey, desc]);
-        $http({
-            method: 'PATCH',
-            withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/system/" + encodeURIComponent(skey),
-            data: JSON.stringify({icon: icon})
-        }).success(function(data){
-          // console.log('login data=', data);
-        });
     };
 
     Connect.on('system', function(message){
         console.log("system/update event", message, System.systems);
-        angular.extend(System.systems[message.id], message.data);
-        if(System.data && System.data.id == message.id){
-            angular.extend(System.data, message.data);
-        }
+        var system = angular.extend({}, {id: message.id}, message.data);
+        addtoset(system);
     });
 
     return System;

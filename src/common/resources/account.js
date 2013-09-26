@@ -10,7 +10,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
     account: null,
     // 'hint': null,
     'isAuthenticated': false,
-    skey: null    // Выбранный skey. Используется как глобальное значение сквозь все страницы
+    skey: null    // Выбранный skey. Используется как глобальное значение сквозь все страницы (Устаревшее)
   };
 
   $rootScope.$on('$routeChangeSuccess', function(angularEvent, current, previous){
@@ -265,6 +265,18 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   Account.setSkey = function(skey){
     Account.skey = skey;
   };
+
+  Connect.on('account', function(message){
+      console.log("account/update event", message, Account.account);
+      if(Account.account.username === message.id){
+        angular.extend(Account.account, message.data);
+      }
+      // angular.extend(System.systems[message.id], message.data);
+      // if(System.data && System.data.id == message.id){
+      //     angular.extend(System.data, message.data);
+      // }
+  });
+
 
   // Account.skey = function(){
   //   return Account.skey;

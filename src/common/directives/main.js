@@ -52,13 +52,14 @@ angular.module('directives.lists', [])
     };
 })
 
-.directive('contenteditable', function() {
+.directive('contenteditable', ['$filter', function($filter) {
     return {
         restrict: 'A',
         require: '?ngModel',
         link: function(scope, element, attr, ngModel) {
             var read;
-            //console.log('===contenteditable', scope, element, attr, ngModel);
+            var translate = $filter('translate');
+            element.attr('title', translate('contenteditableTitle'));
             if (!ngModel) {
                 return;
             }
@@ -99,7 +100,7 @@ angular.module('directives.lists', [])
             //return read;
         }
     };
-})
+}])
 
 .directive('fileload', function() {
     return {

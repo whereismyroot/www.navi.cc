@@ -39,11 +39,11 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
   }
 ])
 
-.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'params', 'system',
-  function($scope, $route, $routeParams, params, system) {
+.controller('ConfigParamsCtrl', ['$scope', '$route', '$routeParams', 'params', 'system', 'System',
+  function($scope, $route, $routeParams, params, system, System) {
     // console.log('ConfigParamsCtrl', $scope, $route, $routeParams, account, params);
     // $scope.account = account;
-    $scope.system = system.data;
+    $scope.system = system;
     var skey = $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
@@ -68,7 +68,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
 
   $scope.onChangeTitle = function(){
     console.log('onChangeTitle', $scope.system.title);
-    system.update(skey, {title: $scope.system.title});
+    System.update(skey, {title: $scope.system.title});
 
     // system.update(el, {title: $scope.system.systems[el].title});
   };

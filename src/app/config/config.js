@@ -9,18 +9,18 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
         //TODO: sure for fetch only one for the current user
         return Account.get();
       }],
-      system: ['System', function (System) {
-        return  System.getall();
+      systems: ['System', function (System) {
+        return System.getall();
       }]
     }
   });
 }])
 
-.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', function ($scope, $location, account, system) {
+.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'systems', 'System', function ($scope, $location, account, systems, System) {
   // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
-  $scope.system = system;
+  $scope.systems = systems;
 
   $scope.deleteenable = false;
   //$scope.addform = false;
@@ -38,8 +38,8 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   };
 
   $scope.onChange = function(el){
-    console.log('onChange', el, $scope.system.systems[el].title);
-    system.update(el, {title: $scope.system.systems[el].title});
+    console.log('onChange', el, $scope.systems[el].title);
+    System.update(el, {title: $scope.systems[el].title});
   };
 
   $scope.onoff = function(el){
