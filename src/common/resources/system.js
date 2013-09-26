@@ -158,19 +158,6 @@ angular.module('resources.system', ['services.connect'])
         */
     };
 
-    // Изменения описания (наименования системы)
-    System.setIcon = function(skey, icon){
-        // console.log(['System.change_desc', skey, desc]);
-        $http({
-            method: 'PATCH',
-            withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/system/" + encodeURIComponent(skey),
-            data: JSON.stringify({icon: icon})
-        }).success(function(data){
-          // console.log('login data=', data);
-        });
-    };
-
     Connect.on('system', function(message){
         console.log("system/update event", message, System.systems);
         angular.extend(System.systems[message.id], message.data);
