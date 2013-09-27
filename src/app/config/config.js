@@ -29,11 +29,6 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     $scope.addform = false;
   };
 
-  $scope.onChange = function(el){
-    console.log('onChange', el, $scope.systems[el].title);
-    System.update(el, {title: $scope.systems[el].title});
-  };
-
   $scope.onoff = function(el){
     $scope.account.account.systems[el].off = !$scope.system.systems[el].off;
     console.log('onoff', el);

@@ -54,7 +54,8 @@
 
         <dl class="dl-horizontal">
             <dt>Значек</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ system.icon || 'caricon-truck'}} icon-large"></i></a></dd>
-            <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="onChangeTitle()"></dd>
+            <!-- <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="onChangeTitle()"></dd> -->
+            <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="system.$patch('title')"></dd>
             <dt>Гос номер</dt><dd>AA 0000 AA</dd>
             <dt>Год выпуска</dt><dd>-</dd>
             <dt>№ двигателя</dt><dd>-</dd>
@@ -75,6 +76,8 @@
     <h4>Программирование параметров системы</h4>
     <!-- a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a-->
 
+    <!--    [[[ {{ params }} ]]] -->
+
     <table class="table table-bordered table-condensed table-striped table-hover">
         <thead>
         <tr>
@@ -82,7 +85,7 @@
             <th>Описание</th>
             <!-- <th>Тип</th> -->
             <th>Значение</th>
-            <th>Заводское значение</th>
+            <th>Заводское</th>
             <th>Изменить на</th>
         </tr>
         </thead>
@@ -90,15 +93,22 @@
         <!--tr ng-repeat="p in params | isFiltered:filtered"-->
         <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
 
-        <tr ng-repeat="(k, p) in filtered(params.data)">
-        <!-- <tr ng-repeat="(k, p) in params.data"> -->
+        <!-- <tr ng-repeat="(k, p) in filtered(params.data)"> -->
+        <tr ng-repeat="(k, p) in params.data">
             <td>{{k}}</td>
-            <td>{{p.desc}}</td>
+            <td>{{extend(k).desc}}</td>
             <!-- <td>{{p.type}}</td> -->
             <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
             <td>{{p.value}}</td>
             <td>{{p.default}}</td>
-            <td><form class="form form-inline" ng-submit="setqueue(k)" style="margin:0"><input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input> <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button><i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i></form></td>
+            <td>
+                {{ params.queue[k] }}
+                <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
+                    <input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input>
+                    <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button>
+                    <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
+                </form>
+            </td>
         </tr>
         <tr ng-show="!params.value">
             <td colspan="7">Данные еще не получены</td>

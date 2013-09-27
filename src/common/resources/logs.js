@@ -28,13 +28,6 @@ angular.module('resources.logs', ['services.connect'])
             console.log('data=', data);
             Logs.data = data;
             defer.resolve(Logs);
-
-            // if(data.logs.length === 0){
-            //     callback(0);
-            // } else {
-            //     callback(-1);
-            // }
-
         });
         return defer.promise;
     };

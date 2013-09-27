@@ -1,66 +1,15 @@
 angular.module('resources.system', ['services.connect'])
 
-.factory('System', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
-    var System = {
-        // data: null,
-        all: false,     // Будет установлен в true если был произведен вызов getall()
-        systems: {}     // Объект с системами skey => System_repr
-    };
+.factory('System', ['REST', function (REST) {
+    var Systems = new REST('system');
 
-    var addtoset = function(system){
-        var skey = system["id"];
-        if(System.systems[skey]){
-            angular.extend(System.systems[skey], system);
-        } else {
-            System.systems[skey] = angular.copy(system);
-        }
-    }
+    // Systems.prototype.
+    return Systems;
 
-    System.add = function(system){
-        addtoset(system);
-    }
+}])
 
-    // Запросить подробности для системы skey
-    System.get = function(skey, reload){
-        var defer = $q.defer();
-
-        if(!System.systems[skey] || reload) {
-            $http({
-                method: 'GET',
-                url: SERVER.api + "/systems/" + encodeURIComponent(skey)
-            }).success(function(data){
-                addtoset(data);
-                defer.resolve(System.systems[skey]);
-            });
-        } else {
-            defer.resolve(System.systems[skey]);
-        }
-
-        return defer.promise;
-    }
-
-    // Запросить все сисетмы авторизованного аккаунта
-    System.getall = function(reload){
-        var defer = $q.defer();
-
-        if(!System.all || reload){ // Это не работает
-
-            $http({
-                method: 'GET',
-                url: SERVER.api + "/account/systems"
-            }).success(function(data){
-                System.all = true;
-
-                data.map(addtoset);
-
-                defer.resolve(System.systems);
-            });
-        } else {
-            defer.resolve(System.systems);
-        }
-        return defer.promise;
-    }
-
+// Устаревшее описание. Пока не удаляю, так как еще нужно разобраться с топливом
+.factory('System2', ['SERVER', '$http', '$q', 'Connect', function (SERVER, $http, $q, Connect) {
 
     // Построим формулу преобразования значения АЦП в объем топлива
     // В цепи измерения делитель: 22k/10k
@@ -107,46 +56,6 @@ angular.module('resources.system', ['services.connect'])
         // data.fuelarray = out;
         return out;
     }
-
-
-    // Установить значение одного из параметров (или нескольких)
-    System.setParams = function(skey, params){
-        var defer = $q.defer();
-
-        console.log('-- System.get');
-
-        $http({
-            method: 'PATCH',
-            url: SERVER.api + "/system/" + encodeURIComponent(skey),
-            withCredentials: SERVER.api_withCredentials,
-            data: JSON.stringify({params: params})
-        }).success(function(data){
-            console.log('System.patch.success', data);
-            // System.skey = data.skey;
-
-            defer.resolve();
-        });
-
-        return defer.promise;
-    }
-
-    // Изменения поля ресурса
-    System.update = function(skey, param){
-        $http({
-            method: 'PATCH',
-            withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/systems/" + encodeURIComponent(skey),
-            data: JSON.stringify(param)
-        }).success(function(data){
-          console.log('System.update.result', data);
-        });
-    };
-
-    Connect.on('system', function(message){
-        console.log("system/update event", message, System.systems);
-        var system = angular.extend({}, {id: message.id}, message.data);
-        addtoset(system);
-    });
 
     return System;
 }]);
