@@ -6,41 +6,28 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     controller:'ConfigViewCtrl',
     resolve:{
       account:['Account', function (Account) {
-        //TODO: sure for fetch only one for the current user
         return Account.get();
       }],
-      system: ['System', function (System) {
-        return  System.getall();
+      systems: ['System', function (System) {
+        return System.getall();
       }]
     }
   });
 }])
 
-.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', 'sysManage', function ($scope, $location, account, system, sysManage) {
+.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'systems', 'System', 'sysManage', function ($scope, $location, account, systems, System, sysManage) {
   // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
-  $scope.system = system;
+  $scope.systems = systems;
   $scope.sysManage = sysManage;
 
   $scope.deleteenable = false;
-  //$scope.addform = false;
-  /*$scope.onAdd = function(imei){
-    console.log('onAdd', imei, account, document.getElementById('config_add_file'));
-
-    account.systemadd([imei]);
-    $scope.addform = false;
-  };*/
 
   $scope.onFromFiles = function(){
     console.log('multiple add', $scope.files);
     account.systemadd($scope.files);
     $scope.addform = false;
-  };
-
-  $scope.onChange = function(el){
-    console.log('onChange', el, $scope.system.systems[el].title);
-    system.update(el, {title: $scope.system.systems[el].title});
   };
 
   $scope.onoff = function(el){

@@ -102,7 +102,7 @@ angular.module('services.connect', [])
             if(message.messages){
                 var m = message.messages;
                 m.map(function(msg){
-                    console.log("Connect:message", msg);
+                    // console.log("Connect:message", msg);
                     if(msg.resource === resource){
                         callback(msg);
                     }

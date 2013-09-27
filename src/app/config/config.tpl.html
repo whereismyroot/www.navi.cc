@@ -7,16 +7,16 @@
     <addtracker account="account"></addtracker>
 </div>
 <ul class="config_sys_list" ui-sortable="sortableOptions" ng-model="account.account.skeys">
-    <li ng-repeat="s in account.account.skeys" ng-class="{off: system.systems[s].off}">
+    <li ng-repeat="s in account.account.skeys" ng-class="{off: systems[s].off}">
         <i class="msp icon-reorder icon-large" title="Нажмите и тяните чтобы изменить порядок отображения объектов"></i
         ><!--i class="syspicto icon-globe icon-large" title="Нажмите чтобы задать значок" ng-click="icon(s)"></i
-        ><i class="systag icon-tags icon-large" title="Нажмите чтобы назначить ярлыки" ng-click="tags(s)"></i
-        --><i class="icon-wrench icon-large" title="Нажмите чтобы настроить трекер" ng-click="sysManage.manageSystemParams(s)"></i
-        ><i class="{{ system.systems[s].icon }} icon-large"></i>
-        <span class="sysimei canselect"><input class="clone" value="{{ system.systems[s].imei }}"/><!--span class="sysimei canselect" title="IMEI">{{ account.account.systems[s].imei }}--></span>
-        <span class="sysphone" title="номер телефона"><input class="clone" value="{{ system.systems[s].phone }}"/></span>
+        ><i class="systag icon-tags icon-large" title="Нажмите чтобы назначить ярлыки" ng-click="tags(s)"></i-->
+        <i class="icon-wrench icon-large" title="Нажмите чтобы настроить трекер" ng-click="sysManage.manageSystemParams(s)"></i
+        ><i class="{{ systems[s].icon }} icon-large"></i>
+        <span class="sysimei canselect"><input class="clone" value="{{ systems[s].imei }}"/><!--span class="sysimei canselect" title="IMEI">{{ account.account.systems[s].imei }}--></span>
+        <span class="sysphone" title="номер телефона"><input class="clone" value="{{ systems[s].phone }}"/></span>
         <!--span class="control"><i class="icon-edit" title="Редактировать описание системы" ng-click="edit(s)"></i></span-->
-        <span class="sysname canselect" contenteditable ng-model="system.systems[s].title" ng-change="onChange(s)" title="Для изменения описания поместите курсор в поле"></span>
+        <span class="sysname canselect" contenteditable ng-model="systems[s].title" ng-change="systems[s].$patch('title')"></span>
         <span class="sysrightcontrol control">
             <i class="systag icon-off icon-large" title="Временно отключить наблюдение за системой" ng-click="onoff(s)"></i>
             <i class="systag icon-trash icon-large" ng-class="{hidden: !deleteenable}" title="Удалить систему из списка наблюдения (без подтверждения)" ng-click="del(s)"></i>
