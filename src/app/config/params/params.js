@@ -505,7 +505,6 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
     $scope.setIcon = function(icon) {
       // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
-      system.update(skey, {icon: icon.class});
       system.icon = icon.class;
       system.$patch('icon');
     }
