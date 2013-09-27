@@ -13,7 +13,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       templateUrl: 'templates/config/params/params.tpl.html',
       controller: 'ConfigParamsCtrl',
       resolve: {
-        // account: ['Account', 
+        // account: ['Account',
         //   function(Account) {
         //     //TODO: sure for fetch only one for the current user
         //     return Account.get();
@@ -71,9 +71,24 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       system.update(skey, {title: $scope.system.title});
     };
 
-    $scope.onChangeGosNumber = function(){
-    console.log('onChangeTitle', $scope.system.title);
-    system.update(skey, {title: $scope.system.title});
+    $scope.onChangeNumber = function(){
+    console.log('onChangeNumber', $scope.system.car.number);
+    system.update(skey, {car: {number: $scope.system.car.number}});
+  };
+
+  $scope.onChangeYear = function(){
+    console.log('onChangeGosNumber', $scope.system.car.number);
+    //system.update(skey, {car: {number: $scope.system.car.number}});
+  };
+
+  $scope.onChangeGosNumber = function(){
+    console.log('onChangeGosNumber', $scope.system.car.number);
+    system.update(skey, {car: {number: $scope.system.car.number}});
+  };
+
+  $scope.onChangeGosNumber = function(){
+    console.log('onChangeGosNumber', $scope.system.car.number);
+    system.update(skey, {car: {number: $scope.system.car.number}});
   };
 
     /*$scope.onChange = function(el){

@@ -1,4 +1,4 @@
-angular.module('directives.main', ['newgps.services'])
+angular.module('directives.main', ['newgps.services', 'services.sysManage'])
 
 .directive('mapsyslist', ["$location", "$routeParams", function($location, $routeParams) {
     return {
@@ -50,7 +50,7 @@ angular.module('directives.main', ['newgps.services'])
     }
 }])
 
-.directive('mapsysitem', ["$location", "$routeParams", "$freshmark", function($location, $routeParams, $freshmark) {
+.directive('mapsysitem', ["$location", "$routeParams", "$freshmark", "sysManage", function($location, $routeParams, $freshmark, sysManage) {
     return {
         restrict: 'E',
         require: '^mapsyslist',
@@ -69,11 +69,12 @@ angular.module('directives.main', ['newgps.services'])
         //     };
         // },
 
-        controller: ['$element', '$scope', '$attrs', function($element, $scope, $attrs) {
+        controller: ['$element', '$scope', '$attrs', 'sysManage', function($element, $scope, $attrs, sysManage) {
 
             $scope.popup = false;
             $scope.$routeParams = $routeParams;
             $scope.$freshmark = $freshmark;
+            $scope.sysManage = sysManage;
 
             $scope.onClick = function(skey){
                 console.log('mapsyslist:onClick', skey);

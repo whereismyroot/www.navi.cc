@@ -1,4 +1,4 @@
-angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language'])
+angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'directives.main', 'directives.timeline', 'resources.geogps', 'i18n', 'directives.language', 'resources.system'])
 
 .config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when('/map', {
@@ -8,7 +8,10 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
             account:['Account', function (Account) {
                 //TODO: need to know the current user here
                 return Account.get();
-            }]
+            }],
+          system: ['System', function (System) {
+            return  System.getall();
+          }]
         },
         reloadOnSearch: false
     }).
@@ -25,8 +28,9 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     });
 }])
 
-.controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, GeoGPS, $log) {
+.controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'system', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, system, GeoGPS, $log) {
     $scope.account = account;
+    $scope.system = system;
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
@@ -151,7 +155,11 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     $scope.onSelect = function(skey){
         if(angular.isUndefined(skey)) return;
 
-        var s = account.account.systems[skey];
+        var s = system.systems[skey];
+        $scope.skey = skey;
+        var params = angular.copy($routeParams);
+        angular.extend(params, {skey: skey});
+        $location.search(params);
         console.log('onSelect', skey, s);
         if(s.dynamic && s.dynamic.latitude && s.dynamic.longitude){
             $scope.center = {lat: s.dynamic.latitude, lon: s.dynamic.longitude};

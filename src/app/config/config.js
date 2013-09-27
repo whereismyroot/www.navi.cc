@@ -1,4 +1,4 @@
-angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists'])
+angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui.sortable', 'config.system.params', 'directives.lists', 'services.sysManage'])
 
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider.when('/config', {
@@ -16,11 +16,12 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   });
 }])
 
-.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', function ($scope, $location, account, system) {
+.controller('ConfigViewCtrl', ['$scope', '$location', 'account', 'system', 'sysManage', function ($scope, $location, account, system, sysManage) {
   // console.log(["ConfigViewCtrl:", system]);
 
   $scope.account = account;
   $scope.system = system;
+  $scope.sysManage = sysManage;
 
   $scope.deleteenable = false;
   //$scope.addform = false;
@@ -82,7 +83,7 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     console.log('$watch:account');
   }, true);*/
 
-  $scope.manageSystem = function (skey) {
+  /*$scope.manageSystem = function (skey) {
     $location.path('/config/' + skey);
   };
 
@@ -92,6 +93,6 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
 
   $scope.manageSystemParams = function (skey) {
     $location.path('/config/' + skey + '/params');
-  };
+  };*/
   //$("[rel=tooltip]").tooltip();
 }]);

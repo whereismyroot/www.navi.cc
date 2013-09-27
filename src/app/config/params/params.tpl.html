@@ -54,12 +54,12 @@
 
         <dl class="dl-horizontal">
             <dt>Значек</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ system.icon || 'caricon-truck'}} icon-large"></i></a></dd>
-            <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="onChangeTitle()"></dd>
-            <dt>Гос номер</dt><dd>AA 0000 AA</dd>
-            <dt>Год выпуска</dt><dd>-</dd>
-            <dt>№ двигателя</dt><dd>-</dd>
-            <dt>№ кузова</dt><dd>-</dd>
-            <dt>№ страхового полиса</dt><dd>-</dd>
+            <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="onChangeTitle()">-</dd>
+            <dt>Гос номер</dt><dd contenteditable ng-model="system.car.number" ng-change="onChangeNumber()">-</dd>
+            <dt>Год выпуска</dt><dd contenteditable ng-model="system.car.number" ng-change="onChangeYear()">-</dd>
+            <dt>№ двигателя</dt><dd contenteditable ng-model="system.car.number" ng-change="onChangeEngine()">-</dd>
+            <dt>№ кузова</dt><dd contenteditable ng-model="system.car.number" ng-change="onChangeVin()">-</dd>
+            <dt>№ страхового полиса</dt><dd contenteditable ng-model="system.car.number" ng-change="onChangeInsurance()">-</dd>
         </dl>
 
         {{ system }}

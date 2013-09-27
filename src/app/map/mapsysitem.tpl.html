@@ -5,12 +5,12 @@
         <span class="desc">
             <!-- <a class="icon-wrench" title="Нажмите чтобы настроить трекер" href="#/config/{{s}}/params"></a> -->
                 <!-- <freshmark item="item"></freshmark> -->
-                <i class="{{ item.icon }} icon-large {{ $freshmark.get(item.dynamic).class }}" title="{{ $freshmark.get(item.dynamic).title }}"></i>
+                <i class="{{ item.icon }} icon-large {{ item.dynamic ? $freshmark.get(item.dynamic).class : ''}}" title="{{ item.dynamic ? $freshmark.get(item.dynamic).title : '' }}"></i>
                 {{ item.desc }}
                 <!-- {{ skey }} -->
         </span>
         <ul class="popup active">
-            <li><a title="Нажмите чтобы настроить трекер" href="#/config/{{item.skey}}/params"><i class="icon-cogs"></i></a></li>
+            <li><a title="Нажмите чтобы настроить трекер" ng-click="sysManage.manageSystemParams(item.skey)"><i class="icon-cogs"></i></a></li>
             <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.skey}}"><i class="icon-table"></i></a></li>
         </ul>
 <!--         <ul class="popup" ng-class="{active: popup}">
