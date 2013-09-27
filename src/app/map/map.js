@@ -9,8 +9,8 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
                 //TODO: need to know the current user here
                 return Account.get();
             }],
-          system: ['System', function (System) {
-            return  System.getall();
+          systems: ['System', function (System) {
+            return System.getall();
           }]
         },
         reloadOnSearch: false
@@ -21,19 +21,23 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
         resolve:{
             account:['Account', function (Account) {
                 //TODO: need to know the current user here
-                return Account;
+                return Account.get();
+            }],
+            systems: ['System', function (System) {
+                return System.getall();
             }]
         },
         reloadOnSearch: false
     });
 }])
 
-.controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'system', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, system, GeoGPS, $log) {
+.controller('MapCtrl', ['$scope', '$location', '$route', '$routeParams', 'account', 'systems', 'GeoGPS', '$log', function ($scope, $location, $route, $routeParams, account, systems, GeoGPS, $log) {
     $scope.account = account;
-    $scope.system = system;
+    $scope.systems = systems;
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
+    console.log('MapCtrl', account, systems);
     //$scope.systems = account.account.systems;
 
     var dp = $('#datepicker').datepicker({
@@ -155,7 +159,7 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     $scope.onSelect = function(skey){
         if(angular.isUndefined(skey)) return;
 
-        var s = system.systems[skey];
+        var s = systems[skey];
         $scope.skey = skey;
         var params = angular.copy($routeParams);
         angular.extend(params, {skey: skey});

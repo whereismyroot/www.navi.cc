@@ -7,6 +7,7 @@ angular.module('directives.main', ['newgps.services', 'services.sysManage'])
         scope: {
             // zoom: "@",
             account: '=',
+            systems: '=',
             skey: '=',
             select: '='
             // select: "&"        // Используется чтобы навесить обработчик на выбор ng-click="select()"

@@ -1,24 +1,25 @@
 
-<li ng-class="{active: (item.skey == skey)}" ng-click="onClick(item.skey)">
+<li ng-class="{active: (item.id == skey)}" ng-click="onClick(item.id)">
+
     <!-- <i href="/#/config/{{ item.skey }}/params"><span class="icon-wrench"></span></i> -->
     <div style="position: relative;">
         <span class="desc">
             <!-- <a class="icon-wrench" title="Нажмите чтобы настроить трекер" href="#/config/{{s}}/params"></a> -->
                 <!-- <freshmark item="item"></freshmark> -->
                 <i class="{{ item.icon }} icon-large {{ item.dynamic ? $freshmark.get(item.dynamic).class : ''}}" title="{{ item.dynamic ? $freshmark.get(item.dynamic).title : '' }}"></i>
-                {{ item.desc }}
+                {{ item.title }}
                 <!-- {{ skey }} -->
         </span>
         <ul class="popup active">
-            <li><a title="Нажмите чтобы настроить трекер" ng-click="sysManage.manageSystemParams(item.skey)"><i class="icon-cogs"></i></a></li>
-            <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.skey}}"><i class="icon-table"></i></a></li>
+            <li><a title="Нажмите чтобы настроить трекер" ng-click="sysManage.manageSystemParams(item.id)"><i class="icon-cogs"></i></a></li>
+            <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.id}}"><i class="icon-table"></i></a></li>
         </ul>
 <!--         <ul class="popup" ng-class="{active: popup}">
             <li><a title="Нажмите чтобы вызвать дополнительные функции" ng-click="popup=!popup;$event.stopPropagation()"><i class="icon-wrench"></i></a></li>
-            <li><a title="Нажмите чтобы настроить трекер" href="#/config/{{item.skey}}/params"><i class="icon-cogs"></i></a></li>
-            <li><a title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{item.skey}}"><i class="icon-eye-open"></i></a></li>
-            <li><a title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{item.skey}}/{{$routeParams.day}}"><i class="icon-film"></i></a></li>
-            <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.skey}}"><i class="icon-table"></i></a></li>
+            <li><a title="Нажмите чтобы настроить трекер" href="#/config/{{item.id}}/params"><i class="icon-cogs"></i></a></li>
+            <li><a title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{item.id}}"><i class="icon-eye-open"></i></a></li>
+            <li><a title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{item.id}}/{{$routeParams.day}}"><i class="icon-film"></i></a></li>
+            <li><a title="Нажмите чтобы построить отчеты" href="#/reports/{{item.id}}"><i class="icon-table"></i></a></li>
         </ul>
  -->    </div>
 
