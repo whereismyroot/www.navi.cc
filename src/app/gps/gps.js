@@ -6,7 +6,10 @@ angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'reso
     controller:'GPSViewCtrl',
     resolve:{
       account:['Account', function (Account) {
-        return Account;
+        return Account.get();
+      }],
+      systems: ['System', function (System) {
+        return System.getall();
       }]
     }
   })
@@ -15,10 +18,10 @@ angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'reso
     controller:'GPSViewCtrl',
     resolve:{
       account:['Account', function (Account) {
-        return Account;
+        return Account.get();
       }],
-      system: ['System', function (System) {
-        return  System;
+      systems: ['System', function (System) {
+        return System.getall();
       }]
     }
   })
@@ -27,21 +30,22 @@ angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'reso
     controller:'GPSViewCtrl',
     resolve:{
       account:['Account', function (Account) {
-        return Account;
+        return Account.get();
       }],
-      system: ['System', function (System) {
-        return  System;
+      systems: ['System', function (System) {
+        return  System.getall();
       }]
     }
   });
 
 }])
 
-.controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, GeoGPS) {
+.controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'systems', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, systems, GeoGPS) {
   var day = $scope.day = $routeParams['day'] || 0;
 
   $scope.skey = $routeParams['skey'];
   $scope.account = account;
+  $scope.systems = systems;
   $scope.track = null;
 
   var date;
