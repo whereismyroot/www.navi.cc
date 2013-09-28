@@ -104,9 +104,10 @@ angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'ap
   */
   $scope.$watch('account.account.title', function(newValue, oldValue){
     console.log(['bind fire', newValue, oldValue]);
-    if(newValue && oldValue && (newValue !== oldValue)) {
-      $scope.account.update({title: newValue});
-    }
+    $scope.account.$patch('title');
+    // if(newValue && oldValue && (newValue !== oldValue)) {
+    //   $scope.account.update({title: newValue});
+    // }
   });
 
   //console.log('LoginViewCtrl controller', $scope, $location, account, i18n);
