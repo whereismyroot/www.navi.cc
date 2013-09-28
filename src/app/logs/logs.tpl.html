@@ -6,7 +6,7 @@
         <option value="">Выберите систему</option>
     </select>
  -->
-    <select class="form-control" ng-model="skey" ng-options="s.id as s.title for s in systems" style="width: 210px;" ng-change="onSysSelect()">
+    <select class="form-control" ng-model="skey" ng-options="systems[s].id as systems[s].title for s in account.skeys" style="width: 210px;" ng-change="onSysSelect()">
         <option value="" ng-show="!skey">Выберите систему</option>
     </select>
     <button class="btn" ng-show="skey" ng-click="onReload()"><i class="icon-refresh"></i> Обновить</button>
