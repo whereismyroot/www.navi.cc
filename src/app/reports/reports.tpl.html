@@ -1,3 +1,136 @@
 <h4><navtool></navtool> Отчеты</h4>
 <hr>
-В разработке...
+ <button class="btn btn-primary" ng-click="showReportWIndow()" translate>Generate report</button>
+ <input type="checkbox" class="btn btn-primary" ng-model="report.reportSplittedByDays" translate>По дням</input>
+<br>
+<br>
+<div id="reportT" ng-show="report.reportGenerated">
+  <table class="table table-hover table-bordered table-condensed" ng-hide="report.reportSplittedByDays">
+    <thead>
+    <tr>
+      <th>Событие</th>
+      <th>Координаты</th>
+      <th>Период</th>
+      <th>Изменение уровня топлива</th>
+      <th>Уровень топлива</th>
+      <th>Продолжительность</th>
+      <th>Средняя скорость</th>
+      <th>Пройдено</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in report.reportData.rows | orderBy:-dt">
+	  <td>{{item.event}}</td>
+      <td>{{item.address || item.position}}</td>
+      <td>
+	   <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
+	  </td>
+      <td>{{item.fuelChange}}</td>
+      <td>{{item.fuel}}</td>
+      <td>{{item.duration}}</td>
+      <td>{{item.speed}}</td>
+      <td>{{item.distance}}</td>      
+    </tr>
+    </tbody>
+  </table>
+  <table class="table table-hover table-bordered table-condensed" ng-show="report.reportSplittedByDays">
+    <thead>
+    <tr>
+      <th>Событие</th>
+      <th>Координаты</th>
+      <th>Период</th>
+      <th>Изменение уровня топлива</th>
+      <th>Уровень топлива</th>
+      <th>Продолжительность</th>
+      <th>Средняя скорость</th>
+      <th>Пройдено</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="items in report.reportData.days | orderBy:-date.getTime()">
+    <tr >
+	  <td colspan = 8 ng-show="items.events.length>0">{{items.strFormatted}}</td>	  
+	</tr>
+	<tr ng-repeat="item in items.events | orderBy: dt">
+	  <td>{{item.event}}</td>
+      <td>{{item.address || item.position}}</td>
+      <td>
+	   <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
+	  </td>
+      <td>{{item.fuelChange}}</td>
+      <td>{{item.fuel}}</td>
+      <td>{{item.duration}}</td>
+      <td>{{item.speed}}</td>
+      <td>{{item.distance}}</td>      
+    </tr>
+    </tbody>
+  </table>
+  <table ng-model="report.reportData.summary" class="table table-hover table-bordered table-condensed">
+    <thead>
+    <tr>
+      <th>Контролируемые параметры</th>
+      <th>Результат</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr><td>Пройденная дистанция </td><td>{{report.reportData.summary.distance}}</td></tr>
+      <tr><td>Общее время в пути </td><td>{{report.reportData.summary.moveDuration}}</td></tr>
+      <tr><td>Средняя скорость движения </td><td>{{report.reportData.summary.speed}}</td></tr>
+      <tr><td>Общее время стоянок и остановок </td><td>{{report.reportData.summary.stopDuration}}</td></tr>
+      <tr><td>Максимальная скорость </td><td>{{report.reportData.summary.maxspeed}}</td></tr>
+      <tr><td>Расход топлива</td><td>{{report.reportData.summary.fuel}}</td></tr>
+    </tbody>
+  </table>
+  
+</div>
+
+<div id="downloadLink" ng-show="report.reportGenerated">
+ <a href="" ng-click="refreshLink()" download="{{report.title+'.xlsx'}}">Сгенерировать отчет</a>
+</div>
+</div>
+
+<div class="modal fade" id="reportSettingsModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	        <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	            <h3>Настройки отчёта</h3>
+	        </div>
+	          <div class="modal-body">
+	          <div class="name-select-group">
+			    <label>Система:</label>
+			    <select class="" ng-model="report.systemKey" ng-options="key as systems[key].title for key in  account.account.skeys" data-style="btn-primary" bs-select></select>
+			  </div>
+			    <div class="name-select-group">
+			      <label>Шаблон отчёта:</label>
+			      <select class="" ng-model="report.templateId" ng-options="value.id as value.name for (key, value) in templates" data-style="btn-primary" bs-select></select>
+			    </div>
+			    <br>
+			    <div class="btn-group">
+			        <button type="button" class="btn btn-primary" ng-model="report.interval.radio.value" btn-radio="'perDay'">За сутки</button>
+			        <button type="button" class="btn btn-primary" ng-model="report.interval.radio.value" btn-radio="'perInterval'">За интервал</button>
+			    </div>
+			    <div class="well">
+			      <div>
+			        <label ng-show="report.interval.radio.value == 'perInterval'">Начало:</label>
+			        <div class="control-group input-append">
+			          <input type="text" ng-model="report.interval.start" data-date-format="d/m/yyyy" bs-datepicker>
+			          <!--<button type="button" class="btn" data-toggle="report.interval.start"><i class="icon-calendar"></i></button>-->
+			        </div>
+			      </div>
+			      <div ng-show="report.interval.radio.value == 'perInterval'">
+			        <label>Конец:</label>
+			        <div class="control-group input-append">
+			          <input type="text" ng-model="report.interval.end" data-date-format="d/m/yyyy" bs-datepicker>
+			          <!--<button type="button" class="btn" data-toggle="report.interval.end"><i class="icon-calendar"></i></button>-->
+			        </div>
+			      </div>
+			    </div> 
+			</div>
+	      <div class="modal-footer">
+	        <button class="btn"  data-dismiss="modal">Отмена</button>
+	        <button class="btn btn-primary" ng-click="report.generateReport()">Построить отчёт</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+ </div><!-- /.modal -->
+

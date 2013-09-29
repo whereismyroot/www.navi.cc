@@ -412,31 +412,6 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       return item.filter;
     };
 
-    $scope.onChangeTitle = function(){
-      console.log('onChangeTitle', $scope.system.title);
-      system.update(skey, {title: $scope.system.title});
-    };
-
-    $scope.onChangeNumber = function(){
-    console.log('onChangeNumber', $scope.system.car.number);
-    system.update(skey, {car: {number: $scope.system.car.number}});
-  };
-
-  $scope.onChangeYear = function(){
-    console.log('onChangeGosNumber', $scope.system.car.number);
-    //system.update(skey, {car: {number: $scope.system.car.number}});
-  };
-
-  $scope.onChangeGosNumber = function(){
-    console.log('onChangeGosNumber', $scope.system.car.number);
-    system.update(skey, {car: {number: $scope.system.car.number}});
-  };
-
-  $scope.onChangeGosNumber = function(){
-    console.log('onChangeGosNumber', $scope.system.car.number);
-    system.update(skey, {car: {number: $scope.system.car.number}});
-  };
-
     $scope.onChangeValue = function(k) {
       params.set(k); // Отправим значение в очередь на сервер
     };
@@ -505,7 +480,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
     $scope.setIcon = function(icon) {
       // console.log("setIcon", icon, system);
       $('#carIconsModal').modal('hide');
-      system.update(skey, {icon: icon.class});
+      //system.update(skey, {icon: icon.class});
       system.icon = icon.class;
       system.$patch('icon');
     }
