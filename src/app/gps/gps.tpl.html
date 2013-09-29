@@ -2,7 +2,7 @@
 
 <div id="geos_head">
     <form class="form-inline" style="margin:10px 0 10px 0;">
-        <select class="form-control" ng-model="skey" ng-options="account.account.systems[s].desc for s in account.account.skeys" style="width: 210px;" ng-change="onSysSelect()">
+        <select class="form-control" ng-model="skey" ng-options="systems[s].title for s in account.account.skeys" style="width: 210px;" ng-change="onSysSelect()">
             <option value="" ng-show="!skey">Выберите систему</option>
         </select>
 

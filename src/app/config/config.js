@@ -36,10 +36,8 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   };
 
   $scope.sortableOptions = {
-    // stop: function(e, ui) {
-    update: function(e, ui) {
-      // console.log("Update", e, account.account.skeys);
-      account.systemsort();
+    stop: function(e, ui) {
+      account.$patch('skeys');
     },
     handle: ".msp",
     revert: true,

@@ -199,6 +199,20 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
     });
   };
 
+  // Подготовка к унификации
+  Account.$patch = function(field){
+    var data = {};
+    data[field] = Account.account[field];
+
+    $http({
+      method: 'PATCH',
+      url: SERVER.api + "/account",
+      data: JSON.stringify(data)
+    }).success(function(data){
+      console.log('return data=', data);
+    });
+  }
+
   Account.setSkey = function(skey){
     Account.skey = skey;
   };

@@ -302,7 +302,12 @@ angular.module('resources.geogps', [])
             method: 'GET',
             cache: false,
             withCredentials: SERVER.api_withCredentials,
-            url: SERVER.api + "/geo/hours/" + encodeURIComponent(skey) + "/" + encodeURIComponent(hourfrom) + "/" + encodeURIComponent(hourto) + '?rand=' + (Math.random()*1e18)
+            url: SERVER.api + "/geos/" + encodeURIComponent(skey) + "/hours",
+            params: {
+                from: hourfrom,
+                to: hourto,
+                rand: (Math.random()*1e18)|0
+            }
         }).success(function(data){
             // console.log('hours data=', data);
             days = {};
@@ -345,10 +350,13 @@ angular.module('resources.geogps', [])
             method: 'GET',
             cache: false,
             withCredentials: SERVER.api_withCredentials,
+            headers: {"Accept": "application/octet-stream"},
             responseType: 'arraybuffer',
-            url: SERVER.api +
-                '/geo/get/' +
-                encodeURIComponent(skey) + '/' + encodeURIComponent(hourfrom) + '/' + encodeURIComponent(hourto)
+            url: SERVER.api + "/geos/" + encodeURIComponent(skey),
+            params: {
+                from: hourfrom,
+                to: hourto
+            }
         }).success(function(data){
             // console.log('GeoGPS.getTrack.success', data);
             if(!data) {

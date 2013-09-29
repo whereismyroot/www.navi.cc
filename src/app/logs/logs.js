@@ -5,11 +5,10 @@ angular.module('logs', ['ngRoute', 'resources.account', 'resources.system', 'res
     templateUrl:'templates/logs/logs.tpl.html',
     controller:'LogsViewCtrl',
     resolve:{
-      // account:['Account', function (Account) {
-      //   //TODO: sure for fetch only one for the current user
-      //   return Account;
-      // }],
-      system:['System', function (System) {
+      account:['Account', function (Account) {
+        return Account.get();
+      }],
+      systems:['System', function (System) {
         // Нужен список систем
         return System.getall();
       }],
@@ -22,14 +21,13 @@ angular.module('logs', ['ngRoute', 'resources.account', 'resources.system', 'res
     templateUrl:'templates/logs/logs.tpl.html',
     controller:'LogsViewCtrl',
     resolve:{
-      system:['System', function (System) {
+      account:['Account', function (Account) {
+        return Account.get();
+      }],
+      systems:['System', function (System) {
         // Нужен список систем
         return System.getall();
       }],
-      // account:['Account', function (Account) {
-      //   //TODO: sure for fetch only one for the current user
-      //   return Account;
-      // }],
       logs:['Logs', '$route', function(Logs, $route){
         // var skey = $route.current.params.skey;
         // console.log('skey=', skey);
@@ -39,8 +37,9 @@ angular.module('logs', ['ngRoute', 'resources.account', 'resources.system', 'res
   });
 }])
 
-.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'system', 'logs', function ($scope, $location, $routeParams, system, logs) {
-  $scope.systems = system.data;
+.controller('LogsViewCtrl', ['$scope', '$location', '$routeParams', 'account', 'systems', 'logs', function ($scope, $location, $routeParams, account, systems, logs) {
+  $scope.account = account.account;
+  $scope.systems = systems;
   // var startskey = $routeParams['skey'];
   // $scope.skey = account.skey;
   $scope.skey = $routeParams['skey'];
