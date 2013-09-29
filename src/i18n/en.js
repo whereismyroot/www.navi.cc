@@ -65,6 +65,9 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'add_system': 'Add system',
 
         // params
-        'contenteditableTitle': 'To change the description, place the cursor in the field'
+        'contenteditableTitle': 'To change the description, place the cursor in the field',
+
+        // report
+        'Generate report': 'Generate report'
 });
 }]);

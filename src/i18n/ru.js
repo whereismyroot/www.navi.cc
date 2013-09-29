@@ -65,6 +65,9 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'add_system': 'Добавить трекер',
 
         // Страница params
-        'contenteditableTitle': 'Для изменения описания поместите курсор в поле'
+        'contenteditableTitle': 'Для изменения описания поместите курсор в поле',
+
+        // report
+        'Generate report': 'Сгенерировать отчет'
     });
 }]);

@@ -12,7 +12,8 @@ angular.module('reports', ['ngRoute', 'resources.account', '$strap.directives','
       systems: ['System', function (System) {
         return System.getall();
       }]
-    }
+    },
+    reloadOnSearch: false
   }).
   when('/reports/:skey', {
     templateUrl:'templates/reports/reports.tpl.html',
@@ -25,7 +26,8 @@ angular.module('reports', ['ngRoute', 'resources.account', '$strap.directives','
       systems: ['System', function (System) {
         return System.getall();
       }]
-    }
+    },
+    reloadOnSearch: false
   });
 }])
 .value('$strapConfig', {
@@ -50,7 +52,7 @@ data: [
     title: "translateKey"
 ]
 }*/
-.controller('ReportsViewCtrl', ['$scope', '$location', 'account', '$http','SERVER','GeoGPS', 'System', 'systems',function ($scope, $location, account, $http,SERVER,GeoGPS, System, systems) {
+.controller('ReportsViewCtrl', ['$scope', '$location', 'account', '$http','SERVER','GeoGPS', 'System', 'systems', '$route',function ($scope, $location, account, $http, SERVER, GeoGPS, System, systems, $route) {
   $scope.account = account;
   $scope.systems = systems;
   $scope.geocoder = new google.maps.Geocoder();
@@ -59,9 +61,7 @@ data: [
     return $scope.account.account.systems[0];
   }
   
-  $scope.showReportWIndow = function() {
-      if ($scope.report.systemKey == "")
-        $scope.report.systemKey = $scope.account.account.skeys[0];
+  $scope.showReportWindow = function() {
       // console.log("showReportWIndow");
       // bs-modal="'modal.html'"
       var options = {};
@@ -239,7 +239,7 @@ data: [
      $scope.formatPosition(0);
      
      //gererate filename
-     $scope.report.title = $scope.account.account.systems[$scope.report.systemKey].desc
+     $scope.report.title = $scope.systems[$scope.report.systemKey].title
        +"_"+moment($scope.report.interval.start).format("DD/MM/YYYY")
        +"_"+moment($scope.report.interval.end).format("DD/MM/YYYY")
      
@@ -331,6 +331,10 @@ data: [
         "title": "Средняя скорость"}]
     }
   ];
+  if ($scope.report.systemKey == "" && $route.current.params.skey) {
+        $scope.report.systemKey = $route.current.params.skey;//$scope.account.account.skeys[0];
+        $scope.showReportWindow();
+      }
 }]);
 
 

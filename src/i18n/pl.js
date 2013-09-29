@@ -63,6 +63,9 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'add_system': 'Add system (translate)',
 
         // params
-        'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu'
+        'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu',
+
+        // report
+        'Generate report': 'Generowanie raportu'
     });
 }]);

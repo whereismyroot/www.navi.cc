@@ -1,7 +1,7 @@
 <h4><navtool></navtool> Отчеты</h4>
 <hr>
- <button class="btn btn-primary" ng-click="showReportWIndow()" translate>Generate report</button>
- <input type="checkbox" class="btn btn-primary" ng-model="report.reportSplittedByDays" translate>По дням</input>
+ <button class="btn btn-primary" ng-click="showReportWindow()" translate>Generate report</button>
+ <!--<input type="checkbox" class="btn btn-primary" ng-model="report.reportSplittedByDays" translate>По дням</input>-->
 <br>
 <br>
 <div id="reportT" ng-show="report.reportGenerated">
@@ -98,11 +98,11 @@
 	          <div class="modal-body">
 	          <div class="name-select-group">
 			    <label>Система:</label>
-			    <select class="" ng-model="report.systemKey" ng-options="key as systems[key].title for key in  account.account.skeys" data-style="btn-primary" bs-select></select>
+			    <select class="" ng-model="report.systemKey" ng-options="key as systems[key].title for key in  account.account.skeys"></select>
 			  </div>
 			    <div class="name-select-group">
 			      <label>Шаблон отчёта:</label>
-			      <select class="" ng-model="report.templateId" ng-options="value.id as value.name for (key, value) in templates" data-style="btn-primary" bs-select></select>
+			      <select class="" ng-model="report.templateId" ng-options="value.id as value.name for (key, value) in templates"></select>
 			    </div>
 			    <br>
 			    <div class="btn-group">

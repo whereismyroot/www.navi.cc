@@ -63,6 +63,9 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'add_system': 'Add system (translate)',
 
         // params
-        'contenteditableTitle': 'Для зміни опису помістіть курсор в полі'
+        'contenteditableTitle': 'Для зміни опису помістіть курсор в полі',
+
+        // report
+        'Generate report': 'Згенерувати звіт'
     });
 }]);

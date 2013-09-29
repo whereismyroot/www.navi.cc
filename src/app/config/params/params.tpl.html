@@ -54,12 +54,12 @@
 
         <dl class="dl-horizontal">
             <dt>Значек</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ system.icon || 'caricon-truck'}} icon-large"></i></a></dd>
-            <dt>Наименование ТС</dt><dd contenteditable ng-model="system.title" ng-change="system.$patch('title')">-</dd>
-            <dt>Гос номер</dt><dd contenteditable ng-model="system.car.number" ng-change="system.$patch('car')">-</dd>
-            <dt>Год выпуска</dt><dd contenteditable ng-model="system.car.year" ng-change="system.$patch('car')">-</dd>
-            <dt>№ двигателя</dt><dd contenteditable ng-model="system.car.engine" ng-change="system.$patch('car')">-</dd>
-            <dt>№ кузова</dt><dd contenteditable ng-model="system.car.vin" ng-change="system.$patch('car')">-</dd>
-            <dt>№ страхового полиса</dt><dd contenteditable ng-model="system.car.insurance" ng-change="system.$patch('car')">-</dd>
+            <dt>Наименование ТС</dt><dd contenteditable="true" ng-model="system.title" ng-change="system.$patch('title')">-</dd>
+            <dt>Гос номер</dt><dd contenteditable="true" ng-model="system.car.number" ng-change="system.$patch('car')">-</dd>
+            <dt>Год выпуска</dt><dd contenteditable="true" ng-model="system.car.year" ng-change="system.$patch('car')">-</dd>
+            <dt>№ двигателя</dt><dd contenteditable="true" ng-model="system.car.engine" ng-change="system.$patch('car')">-</dd>
+            <dt>№ кузова</dt><dd contenteditable="true" ng-model="system.car.vin" ng-change="system.$patch('car')">-</dd>
+            <dt>№ страхового полиса</dt><dd contenteditable="true" ng-model="system.car.insurance" ng-change="system.$patch('car')">-</dd>
         </dl>
 
         <a class="btn btn-primary" href="#drivers">Водители</a>
