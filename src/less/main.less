@@ -247,10 +247,15 @@ i.cmd:hover {
 }
 
 *[contenteditable] {
+    min-width: 50px;
+    min-height: 21px;
     cursor: pointer;
-    border-bottom: 1px dashed blue;
+    border-bottom: 1px dashed #00D6FF;
     position: relative;
     //.sysname:hover {
+    &:focus{
+        outline: 0px solid transparent;
+    }
     &:hover {
         background-color: #ffe;
         /*border: 1px solid black;

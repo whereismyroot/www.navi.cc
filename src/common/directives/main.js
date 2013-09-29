@@ -70,6 +70,31 @@ angular.module('directives.lists', [])
             ngModel.$render = function() {
                 return element.text(ngModel.$viewValue);
             };
+
+            /* Позволим ставить курсор в поле нулевой длины */
+            element.click(function(e) {
+                e.preventDefault();
+
+                // var div = $(this).parent().children("div")[0];
+                var div = element[0];
+                div.focus();
+
+                if (window.getSelection && document.createRange) {
+                    // IE 9 and non-IE
+                    var sel = window.getSelection();
+                    var range = document.createRange();
+                    range.setStart(div, 0);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (document.body.createTextRange) {
+                    // IE < 9
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(div);
+                    textRange.collapse(true);
+                    textRange.select();
+                }
+            });
             element.bind('blur', function() {
                 //console.log("blur", ngModel.$viewValue, element.html());
                 if($.trim(element.text()) === '') {
