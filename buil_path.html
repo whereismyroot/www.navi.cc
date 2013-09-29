@@ -26,11 +26,15 @@
     <span class="info" style="">
       IMEI: <input id="imei" value="test-01"></input><br/>
       <input type="checkbox" name="fast" id="fast"></input><label for="fast">Максимальная скорость</label><br/>
-      <input type="checkbox" name="pack" id="pack"></input><label for="pack">Отправка по 100 точек</label>
+      <input type="checkbox" name="pack" id="pack"></input><label for="pack">Отправка по <input id="points" size="4" maxlength="4" value="100" />точек</label><br/>
+      <label>Пакеты:</label>
+        <input type="radio" id="ptype_f5" name="ptype" value="f5" checked="checked"><label for="ptype_f5">F5</label>
+        <input type="radio" id="ptype_f2" name="ptype" value="f2"><label for="ptype_f2">F2</label>
     </span>
     <span class="info">
       <select name="server" id="server" value="http://localhost:8181">
         <option value="http://localhost:8181">Локальный</option>
+        <option value="http://localhost:8981">Локальный (Эрланг)</option>
         <option value="http://point.newgps.navi.cc">Боевой</option>
         <!--option value="http://point.gps.navi.cc">За деньги!!!</option-->
       </select><br/>
@@ -40,7 +44,7 @@
     <span class="info">
     <a id="rebuild" class="cmdbtn" href="#">Новый трек</a><br/>
     Длина трека: <span id="tracklen"></span> </span>
-    <a id="download" class="cmdbtn" href="#">Загрузить...</a>
+    <!-- <a id="download" class="cmdbtn" href="#">Загрузить...</a> -->
     <a id="run" class="cmdbtn" href="#">Запустить!</a>
   </div>
   <script type="text/javascript">
@@ -145,7 +149,7 @@
     var rabbit_pos = null;
     var runner_id;
 
-    var BuildPacket = function(){
+    var BuildPacketF5 = function(){
       if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
         return;
       }
@@ -224,6 +228,111 @@
       return packet;
     }
 
+    var BuildPacketF2 = function(){
+      if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
+        return;
+      }
+
+      var p = out2[rabbit_pos];
+      var lat = p[0];
+      var lon = p[1];
+
+      //var packet = new ArrayBuffer(32 + 2);
+      //var dv = new DataView(packet);
+      var packet = new Uint8Array(32);
+
+      var lat_s = 0;
+      if(lat < 0) {
+        lat_s = 1;
+        lat = -lat;
+      }
+
+      var lat_i = Math.floor(lat);
+      var lat_f = (lat - lat_i) * 60.0;
+      var lat_t = Math.floor((lat_f - Math.floor(lat_f)) * 10000);
+
+      var lon_s = 0
+      if(lon < 0) {
+        lon_s = 2;
+        lon = -lon;
+      }
+
+      var lon_i = Math.floor(lon);
+      var lon_f = (lon - lon_i) * 60.0;
+      var lon_t = Math.floor((lon_f - Math.floor(lon_f)) * 10000);
+
+// D0: Заголовок (должен быть == 0xFF)
+      packet[0] = 0xFF;
+// D1: Идентификатор пакета (должен быть == 0xF2)
+      packet[1] = 0xF2;
+// D2: Длина пакета в байтах, включая HEADER, ID и LENGTH (32)
+      packet[2] = 32;
+// D3    день    День месяца = 1..31
+      packet[3] = dt.getUTCDate();
+// D4 месяц | ((год-2010) << 4)   Месяц = 1..12 год = 0..14 → 2010..2024
+      packet[4] = dt.getUTCMonth()+1 + (dt.getUTCFullYear() - 2010) * 16;
+// D5    Часы    Часы = 0..23
+      packet[5] = dt.getUTCHours();
+// D6   Минуты  Минуты = 0..59
+      packet[6] = dt.getUTCMinutes();
+// D7  Cекунды Cекунды = 0..59
+      packet[7] = dt.getUTCSeconds();
+// D8 Широта (LL) Градусы широты = 0..89
+      packet[8] = lat_i;
+// D9    Широта (ll) Минуты целая часть = 0..59
+      packet[9] = Math.floor(lat_f);
+// D10  Широта (mm) Минуты дробная часть1 = 0..99
+      packet[10] = Math.floor(lat_t / 100);
+// D11 Широта (nn) Минуты дробная часть2 = 0..99
+      packet[11] = lat_t % 100;
+// D12    Долгота (LLL)   Градусы долготы = 0..179
+      packet[12] = lon_i;
+// D13   Долгота (ll)    Минуты целая часть = 0..59
+      packet[13] = Math.floor(lon_f);
+// D14  Долгота (mm)    Минуты дробная часть1 = 0..99
+      packet[14] = Math.floor(lon_t / 100);
+// D15 Долгота (nn)    Минуты дробная часть2 = 0..99
+      packet[15] = lon_t % 100;
+// D16    D16.0 = NS  D16.1 = EW  D16.2 = (Course & 1)    D16.0=0 для N   D16.0=1 для S   D16.1=0 для E   D16.1=1 для W   D16.2=0 для четных Course   D16.2=1 для нечетных Course
+      packet[16] = lat_s + lon_s;
+// D17   Спутники    Кол-во спутников 3..12
+      packet[17] = Math.floor(Math.random() * 10) + 3;
+// D18  Скорость    Скорость в узлах 0..239
+      packet[18] = 50;
+// D19 Скорость дробная часть  Дробная часть скорости 0..99
+      packet[19] = 20;
+// D20    Направление Направление/2 = 0..179
+      packet[20] = Math.floor(Math.random() * 180);
+// D21   Направление дробная часть   Дробная часть направления 0..99
+      packet[21] = 0;
+// D22, D23 Напряжение внешнего питания Напряжение/100 = 0..2000    D22 – младшая часть D23 – старшая часть
+      packet[22] = 1200 % 256;
+      packet[23] = 1200 / 256;
+// D24, D25   Напряжение внутреннего аккумулятора Напряжение/100 = 0..5000    D24 – младшая часть D25 – старшая часть
+      packet[24] = 420 % 256;
+      packet[25] = 420 / 256;
+// D26  Зарезервировано =0
+      packet[26] = 0;
+// D27 Тип точки   Причина фиксации точки
+      packet[27] = FSOURCE["ANGLE"];
+// D28, D29   Неточное смещение   Смещение относительно точного времени в секундах. Значение 0xFFFF означает превышение лимита и должно игнорироваться если это возможно.
+      packet[28] = 0;
+      packet[29] = 0;
+// D30  Зарезервировано =0
+      packet[30] = 0;
+// D31 Зарезервировано =0
+      packet[31] = 0;
+
+      rabbit_pos += 1;
+      dt.setUTCSeconds(dt.getUTCSeconds()+1);
+      localStorage.setItem("dt", dt.getTime());
+      el_date.valueAsDate = dt;
+      el_time.valueAsDate = dt;
+
+      return packet;
+    }
+
+
     var runner = function(){
       // console.log('Runner ', rabbit_pos);
       if((runner_id === null) || (rabbit_pos==null) || (rabbit_pos>=out2.length)) {
@@ -241,13 +350,13 @@
       rabbit.setPosition(pos);
       //var blob = new Blob();
 
-      var multi = document.getElementById("pack").checked?100:1;
+      var multi = document.getElementById("pack").checked ? (document.getElementById("points").value|0) : 1;
       // console.log('multi=', multi);
       var uInt8Array = new Uint8Array(multi * 32 + 2); // Это максимальный размер, но может быть меньше в конце трека
       var pack_len = 0;
 
       for(var i=0; i<multi; i++) {
-        var packet = BuildPacket();
+        var packet = document.getElementById("ptype_f5").checked ? BuildPacketF5() : BuildPacketF2();
         //console.log('packet=', packet);
         if(packet) {
           uInt8Array.set(packet, pack_len);
