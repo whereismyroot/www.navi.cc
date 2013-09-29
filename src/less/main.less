@@ -127,7 +127,7 @@ ul.config_sys_list li {
     border-top: 1px solid black;
     margin-top: -1px;
     background-color: #fff;
-    /*height: 31px;*/
+    height: 31px;
     /*padding-top: 4px;
     padding-bottom: 4px;*/
 }
@@ -248,33 +248,37 @@ i.cmd:hover {
 
 *[contenteditable] {
     cursor: pointer;
+    border-bottom: 1px dashed blue;
+    position: relative;
+    //.sysname:hover {
+    &:hover {
+        background-color: #ffe;
+        /*border: 1px solid black;
+        margin-top: -1px;
+        margin-bottom: -1px;
+        padding-left: 2px;*/
+    }
+
+    //.sysname:hover:after {
+    &:hover:after {
+        content: '\f044';
+        font-family: FontAwesome;
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        /*width: 25px;
+        height: 25px;*/
+        // padding-left: 4px;
+        // border: 1px solid black;
+    // border-bottom: 1px dashed blue;
+        border-radius: 10px;
+        // box-shadow: 1px 1px #000;
+        padding: 1px 4px 1px 4px;
+        background-color: #ffe;
+        //float: right;
+    }
 }
 
-//.sysname:hover {
-*[contenteditable]:hover {
-    background-color: #ffe;
-    /*border: 1px solid black;
-    margin-top: -1px;
-    margin-bottom: -1px;
-    padding-left: 2px;*/
-}
-
-//.sysname:hover:after {
-*[contenteditable]:hover:after {
-    content: '\f044';
-    font-family: FontAwesome;
-    display: inline-block;
-    position: absolute;
-    /*width: 25px;
-    height: 25px;*/
-    // padding-left: 4px;
-    // border: 1px solid black;
-    border-radius: 10px;
-    // box-shadow: 1px 1px #000;
-    padding: 1px 4px 1px 4px;
-    background-color: #ffe;
-    //float: right;
-}
 
 
 
@@ -462,5 +466,4 @@ input.clone:focus {
 .error-alert.ng-hide-remove.ng-hide-remove-active {
   opacity:1;
 }
-
 
