@@ -31,6 +31,9 @@ angular.module('services.lastmarker', ['newgps.services'])
             div.marker = this;
             var panes = this.getPanes();
             this.panes = panes;
+            
+
+
 
             // var marker = d3.select(svg);
 
@@ -63,6 +66,7 @@ angular.module('services.lastmarker', ['newgps.services'])
             // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
             var div = this.div;
 
+ 
             // var x = divpx.x;
             // var y = divpx.y;
 
@@ -80,12 +84,70 @@ angular.module('services.lastmarker', ['newgps.services'])
             .on('click', function(d) {
                 console.log(d3.select(this), d);
             });
-
-            // div.append("i").attr("class", "icon-shopping-cart icon-large");
+///////////////////
+            
+             // div.append("i").attr("class", "icon-shopping-cart icon-large");
             div.append("i"); //.attr("class", function(d){ return d.icon + " icon-large"});
-            div.append("span").attr("class", "title").text(function(d) {
+            var label = div.append("span").attr("class", "title").text(function(d) {
                 return d.title;
             });
+
+            /*var label = div.append("div").attr("class", "lastmarker-label").text(function(d) {
+                return d.title;
+            });*/
+            
+            var control = label.append('div').attr("class", "lastmarker-control");
+            var table = control.append('table').attr('class','hide').attr('id',function(d) {return 'lastmarkerID_' + d.key;});
+            var tbody = table.append('tbody');
+            //tbody = table.append('tbody');
+            var timeLine = tbody.append('tr');
+            timeLine.append('td').text(function(d) { return 'Время';});
+            timeLine.append('td').text(function(d) { var tz = (new Date()).getTimezoneOffset()/60; return moment((new Date(d.dynamic.dt - tz))).format("DD/MM/YYYY : hh:mm");});
+            var speedLine = tbody.append('tr');
+            speedLine.append('td').text(function(d) { return 'Скорость';});
+            speedLine.append('td').text(function(d) { return d.dynamic.speed;});
+            var voutLine = tbody.append('tr');
+            voutLine.append('td').text(function(d) { return 'Осн.питание';});
+            voutLine.append('td').text(function(d) { return d.dynamic.vout;});
+            var vinLine = tbody.append('tr');
+            vinLine.append('td').text(function(d) { return 'Рез.питание';});
+            vinLine.append('td').text(function(d) { return d.dynamic.vin;});
+            var statsLine = tbody.append('tr');
+            statsLine.append('td').text(function(d) { return 'Спутники';});
+            statsLine.append('td').text(function(d) { return d.dynamic.sats;});
+            var fuelLine = tbody.append('tr');
+            fuelLine.append('td').text(function(d) { return 'Топливо';});
+            fuelLine.append('td').text(function(d) { return '-';});
+            
+
+
+	div.on('mouseout', function(e){
+		//log('lastmarker: mouseout', e, this);
+		//control.innerHTML = '';
+		//me.hint = false;
+		//if(this.control){
+		//	this.label.removeChild(this.control);
+		//}
+        var lastM = document.getElementById('lastmarkerID_' + e.key);
+        lastM.setAttribute('class','hide');
+	});
+            
+            
+        div.on('mouseover', function(e){
+            //console.log('this', this);
+		//if(!me.hint){
+		//me.hint = true;
+		//log('lastmarker: mouseover', e, this);
+        var lastM = document.getElementById('lastmarkerID_' + e.key);
+        lastM.setAttribute('class','');
+	}); 
+            
+///////////////////
+            
+           
+            
+            
+            
             div.append("svg")
                 .attr("style", 'position:absolute; left: -5px; top: -5px')
                 .attr("width", 32)
