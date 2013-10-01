@@ -5,41 +5,48 @@ angular.module('services.connect', [])
         scope: $rootScope.$new(true)
     };
 
-    if(0){
-    shared.updater = {};
-    shared.updater.queue = {};
-
-    shared.updater.on = function(msg, foo){
-        shared.updater.queue[msg] = shared.updater.queue[msg] || [];
-        shared.updater.queue[msg].push(foo);
-        // console.log(["shared.updater.on(", msg, foo, shared.updater.queue]);
-        return foo;
+    // Список ресурсов, на которые оформлена подписка-слежение за обновлением
+    // Примитивная реализация set
+    var Subscribes = function() {
+        this.set = {};
     };
 
-    shared.updater.process = function(msg){
-        var i;
-        if(shared.updater.queue[msg.message]){
-            for(i in shared.updater.queue[msg.message]){
-                shared.updater.queue[msg.message][i](msg);
+    Subscribes.prototype.add = function(resource, id) {
+        var key = resource + ":" + id;
+        this.set[key] = {
+            resource: resource,
+            id: id
+        }
+    };
+
+    Subscribes.prototype.isEmpty = function(){
+        for(var key in this.set) {
+            if (this.set.hasOwnProperty(key)) {
+                return false;
             }
         }
-        if(shared.updater.queue['*']){
-            for(i in shared.updater.queue['*']){
-                shared.updater.queue['*'][i](msg);
+        return true;
+    };
+
+    Subscribes.prototype.forEach = function(callback) {
+        for(var key in this.set){
+            if (this.set.hasOwnProperty(key)) {
+                callback(this.set[key]);
             }
         }
-        // console.log(["shared.updater.process(", msg, shared.updater.queue]);
     };
 
-    shared.updater.remove = function(msg, updater){
-        var index = shared.updater.queue[msg].indexOf(updater);
-        shared.updater.queue[msg].splice(index, 1);
-        console.log(["===> TODO!!!! Not implemented.", updater, shared.updater.queue, index]);
+    Subscribes.prototype.toArray = function() {
+        var array = [];
+        for(var key in this.set){
+            if (this.set.hasOwnProperty(key)) {
+                array.push(this.set[key]);
+            }
+        }
+        return array;
     };
-    }
 
-    // console.log("===> Connect:init");
-
+    var subscribes = new Subscribes();
 
     //var ws_server = "ws://gpsapi04.navi.cc:8888/socket";
     //var ws_server = "http://gpsapi04.navi.cc:8888/socket";
@@ -47,35 +54,40 @@ angular.module('services.connect', [])
 
     //var ws_server = "http://localhost:8888/socket";
     var ws_server = SERVER.channel;
+    var ws = null;
 
     var connect = function(timeout){
         if(timeout>60) { timeout = 60; }
         console.log('connecting to ' + ws_server + '...');
 
         //new SockJS(ws_server)
-        var ws = $rootScope.ws = new WebSocket(ws_server);
+        ws = new WebSocket(ws_server);
         // var ws = $rootScope.ws = new SockJS(ws_server);
         ws.onopen = function () {
             console.log('WebSocket connected');
             //$('#main').append('<div>Opened</div>');
             //ws.send("First msg");
-            var message = {
-                "message": "ping"
-            };
-            ws.send(JSON.stringify(message));
+            // var message = {
+            //     "message": "ping"
+            // };
+            // ws.send(JSON.stringify(message));
+
+            if(!subscribes.isEmpty()){
+                ws.send(JSON.stringify({
+                    subscribe: subscribes.toArray()
+                }));
+            }
+
         };
         ws.onmessage = function(event) {
             var msg = JSON.parse(event.data);
             console.log('onmessage:', msg);
-
-            var resource = msg.resource;
-            var id = msg.id;
-
+            // var resource = msg.resource;
+            // var id = msg.id;
             shared.scope.$emit('update', msg);
-
-            // shared.updater.process(msg);
         };
         ws.onclose = function(event) {
+            ws = null;
             console.log('WebSocket disconnected');
             setTimeout(function(){
                 connect(timeout*2);
@@ -84,25 +96,25 @@ angular.module('services.connect', [])
     };
     connect(1);
 
-    //shared.message = '';
-
-    /*shared.send = function(msg) {
-        this.message = msg;
-        //this.broadcastItem();
-        $rootScope.$broadcast('channel_data', 'aaa');
-    };
-    */
-
-    /*sharedService.broadcastItem = function() {
-        $rootScope.$broadcast('channel_data');
-    };*/
+    shared.subscribe = function(resource, id) {
+        subscribes.add(resource, id);
+        if(ws){
+            if(ws.readyState === ws.OPEN){
+                ws.send(JSON.stringify({
+                    subscribe: [{
+                        resource: resource,
+                        id: id
+                    }]
+                }));
+            }
+        }
+    }
 
     shared.on = function(resource, callback){
         shared.scope.$on('update', function(event, message){
             if(message.messages){
                 var m = message.messages;
                 m.map(function(msg){
-                    // console.log("Connect:message", msg);
                     if(msg.resource === resource){
                         callback(msg);
                     }

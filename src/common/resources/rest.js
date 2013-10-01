@@ -21,6 +21,7 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
 
     */
 
+
     var Model = function(name, value){
         angular.copy(value || {}, this);
         this.$name = name;
@@ -82,6 +83,8 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
                 } else {
                     that.models[id] = new Model(that.name, data);
                 }
+                // Оформим подписку на оповещение об обновлении
+                Connect.subscribe(that.name, id);
 
                 defer.resolve(that.models[id]);
             });
@@ -109,6 +112,8 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
                     } else {
                         that.models[id] = new Model(that.name, data);
                     }
+                    // Оформим подписку на оповещение об обновлении каждого экземпляра
+                    Connect.subscribe(that.name, id);
 
                 });
 

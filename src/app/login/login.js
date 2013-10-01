@@ -1,4 +1,4 @@
-angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'app.filters', 'directives.modal', 'i18n', 'directives.language'])
+angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'app.filters', '$strap.directives', /*'directives.modal',*/ 'i18n', 'directives.language'])
 
 .config(['$routeProvider', function ($routeProvider) {
 

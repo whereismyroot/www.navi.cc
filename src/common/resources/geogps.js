@@ -133,6 +133,7 @@ angular.module('resources.geogps', [])
                 "lcrc": lcrc
             };
         } else {
+            console.warn("Unsupported packet type", packet[1]);
             return null;
         }
     };
