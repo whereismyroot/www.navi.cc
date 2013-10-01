@@ -56,11 +56,11 @@
     //var url = "http://point.gps.navi.cc";
     //var url = "http://point.newgps.navi.cc";
     //var url = "http://localhost:8181";
-    IMEI = "test-01";
+    // IMEI = "test-01";
 
-    document.getElementById("imei").oninput = function(){
-      IMEI = this.value;
-    }
+    // document.getElementById("imei").oninput = function(){
+    //   IMEI = this.value;
+    // }
     var el_date = document.querySelector('#start_date');
     var el_time = document.querySelector('#start_time');
 
@@ -384,6 +384,7 @@
 
       var req = new XMLHttpRequest();
       var url = document.getElementById("server").value;
+      var IMEI = document.getElementById("imei").value;
       req.open("POST", url + "/bingps?imei=" + IMEI, true);
       // set headers and mime-type appropriately
       req.setRequestHeader("Content-Length", pack_len + 2);
