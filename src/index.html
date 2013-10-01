@@ -15,7 +15,7 @@
 
     <!-- <link rel='stylesheet' href='css/jquery-ui-1.10.3.css' /> -->
     <!-- <link rel='stylesheet' href='css/bootstrap-3.0.0.css' /> -->
-    <link rel='stylesheet' href='css/bootstrap-3.0.0-rc1.min.css' />   
+    <link rel='stylesheet' href='css/bootstrap-3.0.0-rc1.min.css' />
 
     <!--link rel='stylesheet' href='css/datepicker.min.css' /-->
     <link rel='stylesheet' href='css/font-awesome-3.2.1.min.css' />
@@ -59,12 +59,13 @@
     <loginform></loginform>
 
     <div id="loader">
-        <i class="icon-refresh icon-4x icon-spin"></i>
+            <i class="icon-refresh icon-4x icon-spin"></i>
     </div>
 
-    <div style=" position: absolute; left: 280px; top: -2px; width: 460px; height: 50px; border: 1px solid lightgray; background-color: rgba(255,255,255,0.8); box-shadow: 2px 2px 6px rgba(0,0,0,0.2); padding: 2px;">
+    <div class="debug-panel" style=" ">
         <!-- $route.current.params={{ $route.current.params }} -->
         now = {{ now() }}
+        <button class="btn btn-primary" role="button" onclick="document.documentElement.webkitRequestFullScreen()"><i class="icon-fullscreen"></i> Full screen</button>
     </div>
 
     <script type="text/javascript" src="js/xlsx.js"></script>
