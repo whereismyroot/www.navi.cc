@@ -6,7 +6,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
 .directive('gmap', ["Connect", "EventMarker", "LastMarker", function(Connect, EventMarker, LastMarker) {
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
-
+    
     var link = function(scope, element, attrs) {
         var path = null;
         var gmarker = null;
@@ -165,16 +165,61 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         });
 
         var lastmarker = new LastMarker(map);
-        scope.$watch("account.account.systems", function(systems){
+        /*//TODO убрать это тестовые данные!!!
+        ///////////////////////////////
+        var lastpos = [{
+            dynamic: {
+                course: 64,
+                csq: "22",
+                dt: 1380475196,
+                flags: "0",
+                fsource: 3,
+                fuel: 0,
+                lastping: 1380475230,
+                latitude: 48.509835,
+                longitude: 34.58397166666666,
+                sats: 8,
+                speed: 0,
+                vin: 4.2,
+                vout: 2.39
+            },
+            icon: "caricon-truck",
+            key: "MDEzMjI2MDAyNDM2NDIb",
+            title: "HYUNDAI"
+        },
+                      {
+            dynamic: {
+                course: 64,
+                csq: "22",
+                dt: 1380475196,
+                flags: "0",
+                fsource: 3,
+                fuel: 0,
+                lastping: 1380475230,
+                latitude: 48.809835,
+                longitude: 34.58397166666666,
+                sats: 8,
+                speed: 80,
+                vin: 4.2,
+                vout: 10.39
+            },
+            icon: "caricon-truck",
+            key: "MDEzMjI2MDAyNDM2NDIy",
+            title: "test2"
+        }];
+        lastmarker.setData(lastpos);
+        ///////////////////////////////*/
+        
+        scope.$watch("systems", function(systems){
             if(!systems) return;
             var lastpos = [];
             //for(var i in systems){}
-            angular.forEach(systems, function(sys, key){
+            angular.forEach(systems, function(sys){
                 if(sys.dynamic && sys.dynamic.latitude){
                     // console.log('forEach ', sys, key);
                     lastpos.push({
-                        key: key,
-                        title: sys.desc,
+                        key: sys.id,
+                        title: sys.title,
                         icon: sys.icon,
                         dynamic: sys.dynamic
                     })
@@ -197,7 +242,8 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             track: "=",
             config: "=",
             center: "=",
-            account: "="
+            account: "=",
+            systems: "="
         },
         link: link/*,
         controller: ["$scope", "Connect", function($scope, Connect){

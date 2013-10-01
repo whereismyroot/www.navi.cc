@@ -31,7 +31,7 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   };
 
   $scope.onoff = function(el){
-    $scope.account.account.systems[el].off = !$scope.system.systems[el].off;
+    $scope.systems[el].off = !$scope.systems[el].off;
     console.log('onoff', el);
   };
 

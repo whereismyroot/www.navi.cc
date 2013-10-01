@@ -12,7 +12,7 @@ angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'res
         resolve:{
             account:['Account', function (Account) {
                 //TODO: sure for fetch only one for the current user
-                return Account;
+                return Account.get();
             }],
             // params:['Params', '$route', function (Params, $route) {
             //   //return Params.get({skey:$route.current.params.skey});
