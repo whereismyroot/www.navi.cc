@@ -14,7 +14,7 @@
     #map_canvas { height: 100% }
     div.cmdbtnpanel { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; }
     span.info { color: black; border: 1px solid white; background-color: rgba(255,255,255,0.6); padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5); display: inline-block; text-align: left;}
-    a.cmdbtn { text-decoration: none; color: black; padding: 5px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5);}
+    a.cmdbtn { text-decoration: none; color: black; padding: 5px; line-height: 30px; box-shadow: 1px 1px 6px rgba(0,0,0,0.5);}
     a.cmdbtn:hover { background-color: #def; }
   </style>
   <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false">
@@ -42,10 +42,17 @@
       <input type="time" id="start_time"></input>
     </span>
     <span class="info">
-    <a id="rebuild" class="cmdbtn" href="#">Новый трек</a><br/>
-    Длина трека: <span id="tracklen"></span> </span>
+      <a id="rebuild" class="cmdbtn" href="#">Новый трек</a><br/>
+      Длина трека: <span id="tracklen"></span>
+    </span>
     <!-- <a id="download" class="cmdbtn" href="#">Загрузить...</a> -->
-    <a id="run" class="cmdbtn" href="#">Запустить!</a>
+    <span class="info">
+      <a id="run" class="cmdbtn" href="#">Запустить!</a><br/>
+      <input type="checkbox" name="stop" id="stop"></input><label for="stop">Стоянка</label>
+    </span>
+
+    <!-- <a id="run" class="cmdbtn" href="#">Стоянка!</a> -->
+
   </div>
   <script type="text/javascript">
   var directionsDisplay;
@@ -168,12 +175,15 @@
       var vout = 12.3;
       var vin = 4.22;
 
+      var isstop = document.getElementById("stop").checked;
+
 // B: Заголовок (должен быть == 0xFF)
       packet[0] = 0xFF;
 // B: Идентификатор пакета (должен быть == 0xF5)
       packet[1] = 0xF5;
 // B: Тип точки   Причина фиксации точки
-      packet[2] = FSOURCE["ANGLE"];
+
+      packet[2] = FSOURCE[isstop ? "TIMESTOP" : "ANGLE"];
 // B: Спутники    Кол-во спутников 3..12
       packet[3] = Math.floor(Math.random() * 10) + 3;
 // I: Датавремя
@@ -219,7 +229,9 @@
 // B: Локальная CRC
       packet[31] = 0;
 
-      rabbit_pos += 1;
+      if(!isstop){
+        rabbit_pos += 1;
+      }
       dt.setUTCSeconds(dt.getUTCSeconds()+1);
       localStorage.setItem("dt", dt.getTime());
       el_date.valueAsDate = dt;
@@ -260,6 +272,8 @@
       var lon_i = Math.floor(lon);
       var lon_f = (lon - lon_i) * 60.0;
       var lon_t = Math.floor((lon_f - Math.floor(lon_f)) * 10000);
+
+      var isstop = document.getElementById("stop").checked;
 
 // D0: Заголовок (должен быть == 0xFF)
       packet[0] = 0xFF;
@@ -314,7 +328,7 @@
 // D26  Зарезервировано =0
       packet[26] = 0;
 // D27 Тип точки   Причина фиксации точки
-      packet[27] = FSOURCE["ANGLE"];
+      packet[27] = FSOURCE[isstop ? "TIMESTOP" : "ANGLE"];
 // D28, D29   Неточное смещение   Смещение относительно точного времени в секундах. Значение 0xFFFF означает превышение лимита и должно игнорироваться если это возможно.
       packet[28] = 0;
       packet[29] = 0;
@@ -323,7 +337,9 @@
 // D31 Зарезервировано =0
       packet[31] = 0;
 
-      rabbit_pos += 1;
+      if(!isstop) {
+        rabbit_pos += 1;
+      }
       dt.setUTCSeconds(dt.getUTCSeconds()+1);
       localStorage.setItem("dt", dt.getTime());
       el_date.valueAsDate = dt;
