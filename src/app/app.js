@@ -155,6 +155,11 @@ angular.module('app').controller('AppCtrl', ['$scope', '$location', '$route', '$
   // $scope.$on('$routeChangeError', function(event, current, previous, rejection){
   //   i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
   // });
+  $scope.debugpanel = "";
+  $scope.showDebugPanel = function(){
+    $scope.debugpanel = ($scope.debugpanel === "") ? "active" : "";
+  }
+
 }]);
 
 if(0){

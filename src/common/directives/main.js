@@ -77,6 +77,7 @@ angular.module('directives.lists', [])
 
                 // var div = $(this).parent().children("div")[0];
                 var div = element[0];
+                if(document.activeElement == div) return;
                 div.focus();
 
                 if (window.getSelection && document.createRange) {

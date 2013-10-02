@@ -66,11 +66,13 @@
         <h4 class="modal-title">Регистрация успешна</h4>
       </div>
       <div class="modal-body">
-        <p>Авторизация пользователя <strong>{{ user.username }}</strong> прошла успешно.</p>
+        <p>Регистрация пользователя <strong>{{ user.username }}</strong> прошла успешно.</p>
         <p>Теперь вы можете закрыть текущую вкладку и вернуться на вкладку входа.</p>
+        <p>Или закрыть окно и зарегестрировать еще одного пользователя.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть предупреждение и зарегестрировать еще одного пользователя</button>
+        <button type="button" class="btn btn-primary" onclick="window.close();return false;">Закрыть окно.</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Зарегестрировать еще одного пользователя</button>
       </div>
     </div>
   </div>
