@@ -90,4 +90,16 @@ filter('fsource', function(){
     return function (index) {
         return fsource[1 * index];
     };
+})
+
+.filter('isoff', function(){
+    return function (data, off) {
+        // console.log("isoff filter", data, off);
+        var filtered = [];
+        data.map(function(item){
+            if(!off.hasOwnProperty(item)) filtered.push(item);
+        })
+        return filtered;
+    };
 });
+

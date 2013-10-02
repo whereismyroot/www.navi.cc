@@ -31,8 +31,15 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
   };
 
   $scope.onoff = function(el){
-    $scope.systems[el].off = !$scope.systems[el].off;
-    console.log('onoff', el);
+    // console.log('onoff', el);
+    var off = $scope.account.account.off;
+    if(off.hasOwnProperty(el)) {
+      delete off[el];
+    } else {
+      off[el] = true;
+    }
+    // $scope.systems[el].off = !$scope.systems[el].off;
+    account.$patch('off');
   };
 
   $scope.sortableOptions = {

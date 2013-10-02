@@ -34,6 +34,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
         if(data) {
           Account.account = data;
+          Account.account.off = Account.account.off || {};
           Account.isAuthenticated = true;
         }
 
