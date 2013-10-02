@@ -193,7 +193,8 @@ angular.module('directives.lists', [])
         restrict: 'E',
         require: '?ngModel',
         scope: {
-            account: "="
+            account: "=",
+            systems: "="
         },
         template: '<div><button class="btn btn-primary" ng-click="addform=!addform;"><i class="icon-plus-sign"></i><span translate>add_system</span></button>' +
                     '<span ng-show="addform">' +
@@ -210,11 +211,21 @@ angular.module('directives.lists', [])
         },
         controller: ["$scope", "Account", function($scope, Account){
             $scope.addform = false;
+
+            var add = function(imeis){
+                Account.systemadd(imeis, function(system){
+                    console.log("system=", system);
+                    // $scope.systems[system.id] = System.add(system);
+                    // System.add(system);
+                    $scope.systems.$add(system);
+                });
+            }
+
             $scope.onAdd = function(imei){
                 console.log('onAdd', imei, $scope.account, document.getElementById('config_add_file'));
 
+                add([imei]);
                 // $scope.account.systemadd([imei]);
-                Account.systemadd([imei]);
                 $scope.addform = false;
             };
 
@@ -225,7 +236,8 @@ angular.module('directives.lists', [])
 
             $scope.onFromFiles = function(){
                 console.log('TODO! multiple add', $scope.files);
-                Account.systemadd($scope.files);
+                add($scope.files);
+                // Account.systemadd($scope.files);
                 // $scope.account.systemadd($scope.files);
                 $scope.addform = false;
             };

@@ -11,7 +11,7 @@ angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'ap
         //TODO: sure for fetch only one for the current user
         return Account.get();
       }],
-      system:['System', function (System) {
+      systems:['System', function (System) {
         //TODO: sure for fetch only one for the current user
         return System.getall();
       }]
@@ -38,8 +38,9 @@ angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'ap
   $route.current.$route.template = "<div>Loaded</div>";
 }])
 
-.controller('LoginViewCtrl', ['$scope', '$location', 'account', '$templateCache', function ($scope, $location, account, $templateCache) {
+.controller('LoginViewCtrl', ['$scope', '$location', 'account', 'systems', '$templateCache', function ($scope, $location, account, systems, $templateCache) {
   $scope.account = account;
+  $scope.systems = systems;
   $scope.test = "Hello, it's test.";
   $scope.showLoginForm = true;
   $scope.user = {};

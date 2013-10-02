@@ -4,7 +4,7 @@
     <span style="display:inline-block; float:right; margin-right: 8px;" title="Удаление систем">
         <label style="display: inline-block" for="config_delete">Удаление</label> <input id="config_delete" type="checkbox" ng-model="deleteenable" ></input>
     </span>
-    <addtracker account="account"></addtracker>
+    <addtracker account="account" systems="systems"></addtracker>
 </div>
 <ul class="config_sys_list" ui-sortable="sortableOptions" ng-model="account.account.skeys">
     <li ng-repeat="s in account.account.skeys" ng-class="{off: systems[s].off}">

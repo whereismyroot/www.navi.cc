@@ -47,26 +47,42 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
     }
 
 
+    // Множество моделей
+    var Models = function(name, value){
+        angular.copy(value || {}, this);
+        this.$name = name;
+    }
+
+    Models.prototype.$add = function(data){
+        // var model = new Model(that.name, data);
+        console.log("Models.prototype.$add this=", this);
+        var id = data.id;
+        if(this.hasOwnProperty(id)){
+            angular.extend(this[id], data);
+        } else {
+            this[id] = new Model(this.$name, data);
+        }
+        // Оформим подписку на оповещение об обновлении этого экземпляра
+        Connect.subscribe(this.$name, id);
+    }
+
     var REST = function(name){
         this.name = name;
-        this.models = {};   // Сюда будут помещаться все документы: ключ => значение
+        // this.models = {};   // Сюда будут помещаться все документы: ключ => значение
+        this.models = new Models(name, {});
         this.all = false;   // Будет установлен в true после вызова .getall()
         var that = this;
 
         Connect.on(name, function(message){
-            console.log("REST:update event", message);
-            console.log(that.models);
-            // var system = angular.extend({}, {id: message.id}, message.data);
-            // addtoset(system);
+            // console.log("REST:update event", message);
+            // console.log(that.models);
 
             if(that.models.hasOwnProperty(message.id)){
-                console.log("extend");
+                // console.log("extend");
                 angular.extend(that.models[message.id], message.data);
             }
 
         });
-
-
     }
 
     REST.prototype.get = function(id, reload){
@@ -78,13 +94,14 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
                 method: 'GET',
                 url: SERVER.api + "/" + this.name + "s/" + encodeURIComponent(id)
             }).success(function(data){
-                if(that.models.hasOwnProperty(id)){
-                    angular.extend(that.models[id], data);
-                } else {
-                    that.models[id] = new Model(that.name, data);
-                }
-                // Оформим подписку на оповещение об обновлении
-                Connect.subscribe(that.name, id);
+                that.models.$add(data);
+                // if(that.models.hasOwnProperty(id)){
+                //     angular.extend(that.models[id], data);
+                // } else {
+                //     that.models[id] = new Model(that.name, data);
+                // }
+                // // Оформим подписку на оповещение об обновлении
+                // Connect.subscribe(that.name, id);
 
                 defer.resolve(that.models[id]);
             });
@@ -107,14 +124,7 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
 
                 dataall.map(function(data){
                     var id = data.id;
-                    if(that.models.hasOwnProperty(id)){
-                        angular.extend(that.models[id], data);
-                    } else {
-                        that.models[id] = new Model(that.name, data);
-                    }
-                    // Оформим подписку на оповещение об обновлении каждого экземпляра
-                    Connect.subscribe(that.name, id);
-
+                    that.models.$add(data);
                 });
 
                 defer.resolve(that.models);
@@ -123,6 +133,11 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
             defer.resolve(this.models);
         }
         return defer.promise;
+    }
+
+    // Ручное добавление ресурса. Алиас на models.$add(data)
+    REST.prototype.add = function(data){
+        this.models.$add(data);
     }
 
     return REST;
