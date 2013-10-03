@@ -116,7 +116,9 @@ angular.module('services.connect', [])
                 var m = message.messages;
                 m.map(function(msg){
                     if(msg.resource === resource){
-                        callback(msg);
+                        $rootScope.$apply(function(){
+                            callback(msg);
+                        });
                     }
                 });
             }
