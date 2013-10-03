@@ -69,7 +69,7 @@ angular.module('services.lastmarker', ['newgps.services'])
                 var now = Math.round((new Date()).valueOf() / 1000);
                 var delta = now - sys.dynamic.lastping;
                 value = Math.floor(delta / 60);
-              return moment((new Date((sys.dynamic.dt - tz) * 1000))).format("DD/MM/YYYY : hh:mm");
+              return moment((new Date((sys.dynamic.dt * 1000)))).format("DD/MM/YYYY : hh:mm");
             } else
                 return '-';
         };
