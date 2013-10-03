@@ -34,6 +34,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
         if(data) {
           Account.account = data;
+          Account.account.off = Account.account.off || {};
           Account.isAuthenticated = true;
         }
 
@@ -136,7 +137,8 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
   };
 
 
-  Account.systemadd = function(imeis){
+  Account.systemadd = function(imeis, callback){
+    // var defer = $q.defer();
     $http({
       method: 'POST',
       url: SERVER.api + "/account/systems",
@@ -158,11 +160,14 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
         var item = systems[i];
         if(item.result === "added") {
           Account.account.skeys.push(item.system.id);
-          System.add(item.system);
+          // System.add(item.system);
+          callback(item.system);
           // Account.systemsUpdate();
         }
       }
+      // defer.resolve(data);
     });
+    // return defer.promise;
   };
 
   Account.systemsort = function(){
