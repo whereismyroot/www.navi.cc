@@ -86,7 +86,7 @@ angular.module('resources.account').factory('Account', ['SERVER', '$http', '$q',
 
       if(!SERVER.api_withCredentials) {
         localStorage.setItem('access_token', data.access_token);
-        $http.defaults.headers.common["Authorization"] = data.access_token;
+        $http.defaults.headers.common["Authorization"] = "Bearer " + data.access_token;
       }
 
       Account.account = data;
