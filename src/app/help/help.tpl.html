@@ -1,3 +1,156 @@
-<h4><navtool></navtool> Информация и помощь</h4>
+<h3><navtool></navtool> Информация и помощь</h3>
 <hr>
-В разработке
+
+<h4>Команды управления трекером через SMS</h4>
+
+<table class="table table-condensed">
+    <thead>
+        <tr class="ui-widget-header">
+            <th>Команда</th>
+            <th>Описание</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>config</td><td>Обновить конфигурацию</td>
+        </tr>
+        <tr>
+            <td>gps off</td><td>Выключить только GPS-модуль</td>
+        </tr>
+        <tr>
+            <td>gps on</td><td>Включить только GPS-модуль</td>
+        </tr>
+        <tr>
+            <td>reboot</td><td>Перезагрузить устройство</td>
+        </tr>
+        <tr>
+            <td>power off</td><td>Отключить устройство</td>
+        </tr>
+        <tr>
+            <td>fwupdate</td><td>Обновить внутреннее программное обеспечение</td>
+        </tr>
+        <tr>
+            <td>gsm reboot</td><td>Перезапустить GSM-модуль</td>
+        </tr>
+        <tr>
+            <td>param параметр значение</td><td>Установить значение параметра</td>
+        </tr>
+        <tr>
+            <td>iparam параметр значение</td><td>Установить значение числового параметра</td>
+        </tr>
+        <tr>
+            <td>param gsm.apn www.ab.kyivstar.net</td><td>Настроить точку доступа для оператора Киевстар-предоплаченый.</td>
+        </tr>
+        <tr>
+            <td>param gsm.apn www.kyivstar.net</td><td>Настроить точку доступа для оператора Киевстар-контракт.</td>
+        </tr>
+        <tr>
+            <td>param gsm.apn internet</td><td>Настроить точку доступа для оператора MTC.</td>
+        </tr>
+        <tr>
+            <td>param gsm.apn 3g.kyivstar.net</td><td>Настроить точку доступа для оператора Киевстар 3G.</td>
+        </tr>
+        <tr>
+            <td>param gsm.user username</td><td>Настроить имя пользовалетя для точки доступа</td>
+        </tr>
+        <tr>
+            <td>param gsm.pwd password</td><td>Настроить пароль пользовалетя для точки доступа</td>
+        </tr>
+        <tr>
+            <td>out on  <i>или</i>  iparam out.1 1</td><td>Активировать выход.</td>
+        </tr>
+        <tr>
+            <td>out off  <i>или</i>  iparam out.1 0</td><td>Деактивировать выход.</td>
+        </tr>
+        <tr>
+            <td>iparam out.1 8</td><td>Включить режим контроля датчика движения.</td>
+        </tr>
+        <tr>
+            <td>alarm confirm</td><td>Подтверждение получения сигнала тревоги.</td>
+        </tr>
+        <tr>
+            <td>alarm cancel</td><td>Отмена сигнала тревоги.</td>
+        </tr>
+        <tr>
+            <td>alarm start</td><td>Дистанционный запуск тревоги.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Точки доступа для различных GSM-операторов</h4>
+
+<table class="table table-condensed table-bordered">
+    <thead>
+        <tr class="ui-widget-header"><th>APN</th><th>Пользователь</th><th>Пароль</th><th>Оператор</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>www.ab.kyivstar.net</td><td></td><td></td><td>Киевстар, предоплаченный, Ace&Base</td></tr>
+        <tr><td>www.kyivstar.net</td><td></td><td></td><td>Киевстар, контракт</td></tr>
+        <tr><td>www.kyivstar.net</td><td>igprs</td><td>internet</td><td>Киевстар</td></tr>
+        <tr><td>internet</td><td></td><td></td><td>Life, MTC, Екотел</td></tr>
+        <tr><td>internet.beeline.ua</td><td></td><td></td><td>Beeline</td></tr>
+        <tr><td>www.umc.ua</td><td></td><td></td><td>MTC *контрактным абонентам, которые подключились до 25.07.2007</td></tr>
+        <tr><td>www.djuice.com.ua</td><td></td><td></td><td>Djuice</td></tr>
+        <tr><td>3g.utel.ua</td><td></td><td></td><td>Utel (национальный роуминг)</td></tr>
+        <tr><td>3g.kyivstar.net</td><td></td><td></td><td>Киевстар, 3G</td></tr>
+
+        <tr><td colspan="4"><strong>Операторы России</strong></td></tr>
+
+        <tr><td>internet.beeline.ru</td><td>beeline</td><td>beeline</td><td rowspan="21">Росийские</td></tr>
+        <tr><td>internet.mts.ru</td><td></td><td></td></tr>
+        <tr><td>internet.mts.ru</td><td>mts</td><td>mts</td></tr>
+        <tr><td>home.beeline.ru</td><td></td><td></td></tr>
+        <tr><td>internet.beeline.ru</td><td></td><td></td></tr>
+        <tr><td>inet.bwc.ru</td><td></td><td></td></tr>
+        <tr><td>internet.msk</td><td></td><td></td></tr>
+        <tr><td>internet.bashcell.ru</td><td></td><td></td></tr>
+        <tr><td>internet.etk.ru</td><td></td><td></td></tr>
+        <tr><td>internet.kuban</td><td></td><td></td></tr>
+        <tr><td>inet.ycc.ru</td><td></td><td></td></tr>
+        <tr><td>internet.ntc</td><td></td><td></td></tr>
+        <tr><td>internet.primtel.ru</td><td></td><td></td></tr>
+        <tr><td>internet.smarts.ru</td><td></td><td></td></tr>
+        <tr><td>internet.tatincom.ru</td><td></td><td></td></tr>
+        <tr><td>internet.tele2.ru</td><td></td><td></td></tr>
+        <tr><td>internet.usi.ru</td><td></td><td></td></tr>
+        <tr><td>internet.volgogsm.ru</td><td></td><td></td></tr>
+        <tr><td>internet.akos.ru</td><td></td><td></td></tr>
+        <tr><td>liderinternet.smarts.ru</td><td></td><td></td></tr>
+        <tr><td>internet.yo.ru</td><td></td><td></td></tr>
+
+        <tr><td colspan="3"><strong>Операторы Испании</strong></td></tr>
+
+        <tr><td>movistar.es</td><td>MOVISTAR</td><td>MOVISTAR</td><td>Movistar</td></tr>
+        <tr><td>movistar.es</td><td>movistar</td><td>movistar</td><td>Telefonica(Movistar)</td></tr>
+        <tr><td>internet</td><td>web</td><td>web</td><td>Vodafone (Pay monthly / Business)</td></tr>
+        <tr><td>smart</td><td>web</td><td>web</td><td>Vodafone (£5 for 250MB/30 days)</td></tr>
+        <tr><td>airtel.es</td><td>vodafone</td><td>vodafone</td><td>Vodafone</td></tr>
+        <tr><td>airtelnet.es</td><td>vodafone</td><td>vodafone</td><td>Vodafone(Airtel)</td></tr>
+        <tr><td>ac.vodafone.es</td><td>vodafone</td><td>vodafone</td><td>Vodafone</td></tr>
+        <tr><td>internetmas</td><td></td><td></td><td>Masmovil (Standard)</td></tr>
+        <tr><td>int.socialmas</td><td></td><td></td><td>Masmovil (30MB)</td></tr>
+        <tr><td>internet</td><td>orange</td><td>orange</td><td>Orange</td></tr>
+        <tr><td>internet</td><td></td><td></td><td>Yoigo, Digi.Mobil</td></tr>
+        <tr><td>gprs-service.com</td><td></td><td></td><td>Simyo</td></tr>
+        <tr><td>carrefourinternet</td><td></td><td></td><td>Carrefour Móvil</td></tr>
+        <tr><td>internet.euskaltel.mobi</td><td></td><td></td><td>Euskaltel</td></tr>
+        <tr><td>multimedia.lebara.nl</td><td></td><td></td><td>Lebara Mobile</td></tr>
+        <tr><td>purtona.net</td><td></td><td></td><td>Lebara Mobile</td></tr>
+        <tr><td>gprsmov.pepephone.com</td><td></td><td></td><td>Pepephone</td></tr>
+        <tr><td>gprs.eroskimovil.es</td><td>wap@wap</td><td>wap125</td><td>Eroski Móvil</td></tr>
+        <tr><td>internet.bt.es</td><td>bt@internet</td><td>internet</td><td>BT Mobile</td></tr>
+        <tr><td>internet.ono.com</td><td></td><td></td><td>ONO Móvil</td></tr>
+        <tr><td>internet.telecable.es</td><td>telecable</td><td>telecable</td><td>TeleCable</td></tr>
+        <tr><td>internettph</td><td></td><td></td><td>MoviData</td></tr>
+        <tr><td>pc.hitsmobile.es</td><td></td><td></td><td>HITS Mobile</td></tr>
+        <tr><td>tel.hitsmobile.es</td><td></td><td></td><td>HITS Mobile</td></tr>
+        <tr><td>jazzinternet</td><td></td><td></td><td>Jazztel</td></tr>
+        <tr><td>internet</td><td>CLIENTE</td><td>AMENA</td><td>Amena</td></tr>
+    </tbody>
+</table>
+
+<!--h3>Установить как приложение для Google Chrome</h3>
+Это позволяет ускорить работу приложения.
+Требуется версия Google Chrome 9 или более поздняя.
+<div><a href="/gps-maps.crx">Установить для gps-maps.appspot.com</a></div>
+<div><a href="/gps.batrak.net.crx">Установить для gps.batrak.net</a></div-->
