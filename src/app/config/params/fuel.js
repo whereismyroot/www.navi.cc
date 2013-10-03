@@ -134,10 +134,10 @@ angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'res
     }
 
     $scope.onSave = function(){
-        console.log('save');
-        system.setParams($scope.skey, {
-            fuel: angular.copy($scope.fuel)     // Strip $$hashkey
-        });
+        // console.log('save');
+        // system.setParams($scope.skey, {
+        //     fuel: angular.copy($scope.fuel)     // Strip $$hashkey
+        // });
     }
 
     $scope.sortableOptions = {
