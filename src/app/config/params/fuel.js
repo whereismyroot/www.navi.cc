@@ -23,17 +23,21 @@ angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'res
             }],
             system: ['System', function (System) {
                 return  System;
+            }],
+            sys: ['System', '$route', function(System, $route) {
+                return System.get($route.current.params.skey);
             }]
         }
     });
 }])
 
-.controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'system', '$timeout', function ($scope, $route, $routeParams, account, params, system, $timeout) {
+.controller('ConfigParamsFuelCtrl', ['$scope', '$route', '$routeParams', 'account', 'params', 'sys', 'system', '$timeout', function ($scope, $route, $routeParams, account, params, sys, system, $timeout) {
     // console.log('ConfigParamsFuelCtrl', $scope, $route, $routeParams, account, params);
     $scope.account = account;
     $scope.skey = $routeParams['skey'];
     $scope.params = params;
     $scope.filtered = true;
+    $scope.sys = sys;
 
     // console.log('account.account.systems@ConfigParamsFuelCtrl=', account.account.systems);
 
@@ -44,8 +48,8 @@ angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'res
     ];
 
     system.get($scope.skey).then(function(data){
-        if((data.value.params) && (data.value.params.fuel)){
-            $scope.fuel = data.value.params.fuel;
+        if((data.params) && (data.params.fuel)){
+            $scope.fuel = data.params.fuel;
         }
         // if($scope.system)
     });

@@ -58,9 +58,72 @@ angular.module('services.lastmarker', ['newgps.services'])
             this.arrdiv = null;
             this.div = null;
         }
+        
+        var sysTitle = function(sys) {
+            return sys.title;
+        };
+        
+        var sysTime = function(sys) {
+            if (sys && sys.dynamic) {
+                var tz = (new Date()).getTimezoneOffset()/60;
+                var now = Math.round((new Date()).valueOf() / 1000);
+                var delta = now - sys.dynamic.lastping;
+                value = Math.floor(delta / 60);
+              return moment((new Date((sys.dynamic.dt - tz) * 1000))).format("DD/MM/YYYY : hh:mm");
+            } else
+                return '-';
+        };
+        
+        var sysSpeed = function(sys) {
+            if (sys && sys.dynamic)
+                return Math.round(sys.dynamic.speed * 10) / 10;
+            else
+                return '-';
+        };
+        
+        var sysVout = function(sys) {
+            if (sys && sys.dynamic)
+                return Math.round(sys.dynamic.vout * 100) / 100;
+            else
+                return '-';
+        };
+        
+        var sysVin = function(sys) {
+            if (sys && sys.dynamic)
+                return Math.round(sys.dynamic.vin * 100)/100;
+            else
+                return '-';
+        };
+        
+        var sysSats = function(sys) {
+            if (sys && sys.dynamic)
+                return sys.dynamic.sats;
+            else
+                return '-';
+        };
+        
+        var sysFuel = function(sys) {
+            if(sys.params && sys.params.fuel && sys.dynamic) {
+                var fuelMap = sys.params.fuel;
+                var fuel = sys.dynamic.fuel;
+                var voltage = data * fuelMap[$scope.fuelMap.length-1].voltage/1024;
+  
+                for(var i = 1; i < fuelMap.length; i++){
+                if(voltage==fuelMap[i-1].voltage) 
+                    return fuelMap[i].liters;
+                if(fuelMap[i-1].voltage<voltage && voltage<fuelMap[i].voltage){
+                    var otnosh = (voltage - fuelMap[i-1].voltage)/(fuelMap[i].voltage - fuelMap[i-1].voltage)
+                    var liters = fuelMap[i-1].liters + otnosh*(fuelMap[i].liters - fuelMap[i-1].liters)
+                    return liters
+                }
+              }
+            }
+            return '-';
+        };
 
         LastMarker.prototype.draw = function() {
             var overlayProjection = this.getProjection();
+            
             if (!overlayProjection) return;
 
             // var divpx = overlayProjection.fromLatLngToDivPixel(this.position);
@@ -89,55 +152,46 @@ angular.module('services.lastmarker', ['newgps.services'])
              // div.append("i").attr("class", "icon-shopping-cart icon-large");
             div.append("i"); //.attr("class", function(d){ return d.icon + " icon-large"});
             var label = div.append("span").attr("class", "title").text(function(d) {
-                return d.title;
+                return sysTitle(d);
             });
 
             /*var label = div.append("div").attr("class", "lastmarker-label").text(function(d) {
                 return d.title;
             });*/
-            
             var control = label.append('div').attr("class", "lastmarker-control");
-            var table = control.append('table').attr('class','hide').attr('id',function(d) {return 'lastmarkerID_' + d.key;});
-            var tbody = table.append('tbody');
+            var table = control.append('table').attr('class','hide').attr('id',function(d) {return 'lastmarkerID_' + d.key});
+            var tbody = table.append('tbody').attr('id',function(d) {return 'lastmarker_tbodyID_' + d.key});
             //tbody = table.append('tbody');
             var timeLine = tbody.append('tr');
             timeLine.append('td').text(function(d) { return 'Время';});
-            timeLine.append('td').text(function(d) { var tz = (new Date()).getTimezoneOffset()/60; return moment((new Date(d.dynamic.dt - tz))).format("DD/MM/YYYY : hh:mm");});
+            timeLine.append('td').attr('class', 'lastmarkerTime').text(function(d) { return sysTime(d)});
             var speedLine = tbody.append('tr');
             speedLine.append('td').text(function(d) { return 'Скорость';});
-            speedLine.append('td').text(function(d) { return d.dynamic.speed;});
+            speedLine.append('td').attr('class', 'lastmarkerSpeed').text(function(d) { return sysSpeed(d)});
             var voutLine = tbody.append('tr');
             voutLine.append('td').text(function(d) { return 'Осн.питание';});
-            voutLine.append('td').text(function(d) { return d.dynamic.vout;});
+            voutLine.append('td').attr('class', 'lastmarkerVout').text(function(d) { return sysVout(d)});
             var vinLine = tbody.append('tr');
             vinLine.append('td').text(function(d) { return 'Рез.питание';});
-            vinLine.append('td').text(function(d) { return d.dynamic.vin;});
+            vinLine.append('td').attr('class', 'lastmarkerVin').text(function(d) { return sysVin(d)});
             var statsLine = tbody.append('tr');
             statsLine.append('td').text(function(d) { return 'Спутники';});
-            statsLine.append('td').text(function(d) { return d.dynamic.sats;});
+            statsLine.append('td').attr('class', 'lastmarkerSats').text(function(d) { return sysSats(d)});
             var fuelLine = tbody.append('tr');
             fuelLine.append('td').text(function(d) { return 'Топливо';});
-            fuelLine.append('td').text(function(d) { return '-';});
+            fuelLine.append('td').attr('class', 'lastmarkerFuel').text(function(d) { return sysFuel(d)});
+            
             
 
 
 	div.on('mouseout', function(e){
-		//log('lastmarker: mouseout', e, this);
-		//control.innerHTML = '';
-		//me.hint = false;
-		//if(this.control){
-		//	this.label.removeChild(this.control);
-		//}
         var lastM = document.getElementById('lastmarkerID_' + e.key);
         lastM.setAttribute('class','hide');
 	});
             
             
         div.on('mouseover', function(e){
-            //console.log('this', this);
-		//if(!me.hint){
-		//me.hint = true;
-		//log('lastmarker: mouseover', e, this);
+
         var lastM = document.getElementById('lastmarkerID_' + e.key);
         lastM.setAttribute('class','');
 	}); 
@@ -173,13 +227,45 @@ angular.module('services.lastmarker', ['newgps.services'])
                 .attr('class', function(d){
                     return d.icon + " icon-large " + $freshmark.get(d.dynamic).class;
                 });
-
             points.exit().remove();
-
-            // console.log('draw', this.data, points.select("div.stop"));
-
-            // div.style.left = divpx.x - 16 + 'px';
-            // div.style.top = divpx.y - 32 + 'px';
+            
+            var sp = d3.select("span");
+            var title = sp.selectAll(".title").data(this.data);
+            title.enter();
+            title.text(function(d) { return sysTitle(d)});
+            title.exit().remove();
+            
+            var body = d3.select("body");
+            
+            var time = body.selectAll(".lastmarkerTime").data(this.data);
+            time.enter();
+            time.text(function(d) { return sysTime(d)});
+            time.exit().remove();
+            
+            var speed = body.selectAll(".lastmarkerSpeed").data(this.data);
+            speed.enter();
+            speed.text(function(d) { return sysSpeed(d)});
+            speed.exit().remove();
+            
+            var vout = body.selectAll(".lastmarkerVout").data(this.data);
+            vout.enter();
+            vout.text(function(d) { return sysVout(d)});
+            vout.exit().remove();
+            
+            var vin = body.selectAll(".lastmarkerVin").data(this.data);
+            vin.enter();
+            vin.text(function(d) { return sysVin(d)});
+            vin.exit().remove();
+            
+            var sats = body.selectAll(".lastmarkerSats").data(this.data);
+            sats.enter();
+            sats.text(function(d) { return sysSats(d)});
+            sats.exit().remove();
+            
+            var fuel = body.selectAll(".lastmarkerFuel").data(this.data);
+            fuel.enter();
+            fuel.text(function(d) { return sysFuel(d)});
+            fuel.exit().remove();
         }
 
 
