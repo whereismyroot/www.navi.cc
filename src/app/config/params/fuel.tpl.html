@@ -17,7 +17,7 @@
             </li>
         </ul>
         <button class="btn btn-primary" ng-click="onAdd()"><i class="icon-plus-sign"></i> Добавить строку</button>
-        <button class="btn btn-primary" ng-click="sys.$patch('params');onSave()" ng-show="!valid"><i class="icon-save"></i> Сохранить</button>
+        <button class="btn btn-primary" ng-click="sys.$patch('params')" ng-show="!valid"><i class="icon-save"></i> Сохранить</button>
         <div ng-show="valid" class="alert warning">
             <i class="icon-warning-sign"></i>
             {{ valid.title }}

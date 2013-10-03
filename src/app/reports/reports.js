@@ -210,8 +210,8 @@ data: [
      //погрешность (литров) 
      var delta = 1
      //форматирование дат
-     item.startdt=moment(item.startdt*1000).format("DD/MM hh:mm")
-     item.finishdt=moment(item.finishdt*1000).format("DD/MM hh:mm");
+     item.startdt=moment(item.startdt*1000).format("DD/MM HH:mm")
+     item.finishdt=moment(item.finishdt*1000).format("DD/MM HH:mm");
      //Форматирование координат
      item.lat = Math.floor(item.lat*10000)/10000;    
      item.lon = Math.floor(item.lon*10000)/10000;
@@ -280,20 +280,22 @@ data: [
     if((sys.params) && (sys.params.fuel)){
         $scope.fuelMap = sys.params.fuel;
     }
+      
   $scope.report.interval.start.setHours(0)
   $scope.report.interval.start.setMinutes(0)
   $scope.report.interval.start.setSeconds(0)
+  
     
-    if ($scope.report.interval.radio.perDay||$scope.report.interval.end == $scope.report.interval.start) {
+    if ($scope.report.interval.radio.value == 'perDay') {
       $scope.report.interval.end = moment($scope.report.interval.start).add('d',1).subtract('s',1).toDate();
     } 
   $scope.report.interval.end.setHours(23)
   $scope.report.interval.end.setMinutes(59)
   $scope.report.interval.end.setSeconds(59)
-      
-  var from = Math.floor($scope.report.interval.start/1000/3600);
-  var to = Math.floor($scope.report.interval.end/1000/3600);
-  
+     
+  var tz = (new Date()).getTimezoneOffset()/60;
+  var from = Math.floor(($scope.report.interval.start)/1000/3600 - tz);
+  var to = Math.floor(($scope.report.interval.end)/1000/3600 - tz);
   GeoGPS.select($scope.report.systemKey);
   var items = GeoGPS.getTrack(from,to);
   

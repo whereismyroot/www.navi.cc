@@ -33,7 +33,6 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
         var that = this;
 
         var request = {};
-        //request[field] = this[field];
         request[field] = angular.copy(this[field]);
 
         $http({
