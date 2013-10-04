@@ -75,48 +75,50 @@
     <h4>Программирование параметров системы</h4>
     <!-- a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a-->
 
-    <!--    [[[ {{ params }} ]]] -->
+    <div ng-hide="params.$isEmpty(params.data)">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+            <tr>
+                <th><i class="icon-filter cmd" data-tooltip="1" rel="tooltip" bs-tooltip="tooltip.title" ng-click="showall =! showall"></i>Имя</th>
+                <th>Описание</th>
+                <!-- <th>Тип</th> -->
+                <th>Значение</th>
+                <th>Заводское</th>
+                <th>Изменить на</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--tr ng-repeat="p in params | isFiltered:filtered"-->
+            <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
 
-    <table class="table table-bordered table-condensed table-striped table-hover">
-        <thead>
-        <tr>
-            <th><i class="icon-filter cmd" data-tooltip="1" rel="tooltip" bs-tooltip="tooltip.title" ng-click="showall =! showall"></i>Имя</th>
-            <th>Описание</th>
-            <!-- <th>Тип</th> -->
-            <th>Значение</th>
-            <th>Заводское</th>
-            <th>Изменить на</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!--tr ng-repeat="p in params | isFiltered:filtered"-->
-        <!-- <tr ng-repeat="(k, p) in params.value | filter:isFiltered"> -->
-
-        <!-- <tr ng-repeat="(k, p) in filtered(params.data)"> -->
-        <tr ng-repeat="(k, p) in params.data">
-            <td>{{k}}</td>
-            <td>{{extend(k).desc}}</td>
-            <!-- <td>{{p.type}}</td> -->
-            <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
-            <td>{{p.value}}</td>
-            <td>{{p.default}}</td>
-            <td>
-                {{ params.queue[k] }}
-                <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
-                    <input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input>
-                    <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button>
-                    <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
-                </form>
-            </td>
-        </tr>
-        <tr ng-show="!params.value">
-            <td colspan="7">Данные еще не получены</td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="" style="text-align: right;">
-        <button class="btn btn-danger" ng-click="stopqueue()"><i class="icon-trash icon-white"></i> Отменить внесенные изменения</button>
-        <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
+            <!-- <tr ng-repeat="(k, p) in filtered(params.data)"> -->
+            <tr ng-repeat="(k, p) in params.data">
+                <td>{{k}}</td>
+                <td>{{extend(k).desc}}</td>
+                <!-- <td>{{p.type}}</td> -->
+                <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
+                <td>{{p.value}}</td>
+                <td>{{p.default}}</td>
+                <td>
+                    {{ params.queue[k] }}
+                    <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
+                        <input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input>
+                        <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button>
+                        <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="" style="text-align: right;">
+            <button class="btn btn-danger" ng-click="stopqueue()"><i class="icon-trash icon-white"></i> Отменить внесенные изменения</button>
+            <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
+        </div>
+    </div>
+    <div class="alert" ng-show="params.$isEmpty(params.data)">
+        <i class="icon-warning-sign"></i>
+        Трекер еще не сохранил конфигурацию. Попробуйте позже или отправьте на номер карточки трекера SMS:
+        <b>saveconfig</b>
     </div>
 <!--/div-->
 <!--/div-->
