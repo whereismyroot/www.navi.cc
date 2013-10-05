@@ -137,11 +137,7 @@ angular.module('services.lastmarker', ['newgps.services'])
             var points = track.selectAll(".marker")
                 .data(this.data);
             var div = points.enter().append("div")
-                .attr("class", function(d) {
-                    if (d.hide)
-                        return "marker hide";
-                    else
-                        return "marker";})
+                .attr("class", "marker")
             // .attr("style", function(d){
             //     var px = overlayProjection.fromLatLngToDivPixel(d.pos);
             //     // console.log("d=", d, "px=", px);
