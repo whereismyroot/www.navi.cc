@@ -217,11 +217,17 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             angular.forEach(systems, function(sys){
                 if(sys.dynamic && sys.dynamic.latitude){
                     // console.log('forEach ', sys, key);
+                    var _hide = false;
+                    var off = scope.account.account.off;
+                    if(off.hasOwnProperty(sys.id)) {
+                      _hide = true;
+                    }
                     lastpos.push({
                         key: sys.id,
                         title: sys.title,
                         icon: sys.icon,
-                        dynamic: sys.dynamic
+                        dynamic: sys.dynamic,
+                        hide: _hide
                     })
                 }
             });

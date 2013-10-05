@@ -34,8 +34,12 @@ angular.module('config', ['ngRoute','resources.account', 'resources.system', 'ui
     // console.log('onoff', el);
     var off = $scope.account.account.off;
     if(off.hasOwnProperty(el)) {
+      var s = systems[el];
+      s.hide = false;
       delete off[el];
     } else {
+      var s = systems[el];
+      s.hide = true;
       off[el] = true;
     }
     // $scope.systems[el].off = !$scope.systems[el].off;
