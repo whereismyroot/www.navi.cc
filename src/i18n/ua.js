@@ -53,6 +53,7 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         // Map
         "Display Settings": "Налаштування відображення",
         "Hide track": "Приховати трек",
+        "Show track": "Показати трек",
         "points_in_track": "Точок в треку: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Автоматично центрувати трек',

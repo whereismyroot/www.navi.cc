@@ -37,7 +37,7 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
-    console.log('MapCtrl', account, systems);
+    //console.log('MapCtrl', account, systems);
     //$scope.systems = account.account.systems;
 
     var dp = $('#datepicker').datepicker({
@@ -180,16 +180,32 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     //             $('#datepicker').datepicker("fill");
     //         });
     // };
-
-    $scope.hideTrack = function(){
+    $scope.hideTrack = false;
+    $scope.track_hide = null;
+    $scope.timeLine_hide = [];
+    $scope.revertVisibleTrack = function(){
         // console.log("Hide track");
         // //GeoGPS.hideTrack();
         // if(path) {
         //     path.setMap(null);
         //     path = null;
         // }
-        $scope.track = null;
-        $scope.timeline = [];
+        if ($scope.hideTrack) {
+            $scope.track = $scope.track_hide;
+            $scope.timeline = $scope.timeLine_hide
+            $scope.track_hide = null;
+            $scope.timeLine_hide = [];  
+            $scope.hideTrack = false;
+            
+        } else {
+            $scope.track_hide = $scope.track;
+            $scope.timeLine_hide = $scope.timeline
+            $scope.track = null;
+            $scope.timeline = [];  
+            $scope.hideTrack = true;
+        }
+        
+        
     };
 
 
@@ -199,6 +215,14 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
         numbers: true,      // Нумерация стоянок/остановок
         centermarker: false // Не показывать маркер центра карты
     };
+    
+    $scope.$watch('mapconfig.numbers', function(){
+                if ($scope.mapconfig.numbers) {
+                    $(".eventmarker .track.STOP span").attr("class", "");
+                } else {
+                    $(".eventmarker .track.STOP span").attr("class", "hide");
+                }
+            });
 
     $scope.showconfig = false;
     // $scope.toggleShowConfig = function(){

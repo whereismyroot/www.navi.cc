@@ -46,6 +46,10 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
         return defer.promise;
     }
 
+    Model.prototype.$isEmpty = function(field) {
+        return $.isEmptyObject(angular.copy(field || this));
+    }
+
 
     // Множество моделей
     var Models = function(name, value){

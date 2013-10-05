@@ -55,6 +55,7 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         // Map
         "Display Settings": "Display Settings",
         "Hide track": "Hide track",
+        "Show track": "Show track",
         "points_in_track": "Points in track: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Automatic bound track',

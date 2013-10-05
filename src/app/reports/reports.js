@@ -88,6 +88,7 @@ data: [
     "systemKey": "",
     "templateId": "0",
     "reportGenerated": false,
+    "repotSelectedIntervalNotHaveEvents" : false,
   "reportSplittedByDays": true,
     "reportData": {
       rows: [],
@@ -165,6 +166,9 @@ data: [
   }
   $scope.parseData = function(data){
      $scope.report.reportData.rows.length=0
+     if (!data || !data.points || data.points.length == 0) {
+          return;
+      }
        var items = data.ranges.reverse();
      var points = data.points;
      var days = [];
@@ -219,16 +223,19 @@ data: [
          item.position = item.lat + " " + item.lon;
      
        switch(item.fsource){
-       case 2:
-       case 3:
-         item.event = $scope.zapravka(item.fuelChange,delta,"Стоянка") 
-       break;
-       case 4:       
-       item.event = $scope.zapravka(item.fuelChange,delta,"Остановка")
-       break;
-       case 6: 
-       case 8: item.event = "Движение"; item.position = ""; break;
-       default: item.event = item.fsource; break;
+        case 7:
+        case 2:
+        case 3:
+            item.event = $scope.zapravka(item.fuelChange,delta,"Стоянка") 
+            break;
+        case 4:       
+            item.event = $scope.zapravka(item.fuelChange,delta,"Остановка")
+            break;
+        case 6: 
+        case 8: item.event = "Движение"; item.position = ""; 
+            break;
+        default: item.event = item.fsource; 
+            break;
      }
      
        
@@ -318,7 +325,11 @@ data: [
   
   
   items.then($scope.parseData);
-  
+  if (!$scope.report.reportGenerated) {
+      $scope.report.repotSelectedIntervalNotHaveEvents = true;
+  } else {
+      $scope.report.repotSelectedIntervalNotHaveEvents = false;
+  }
     $('#reportSettingsModal').modal('hide');
   };
 
