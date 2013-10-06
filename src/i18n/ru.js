@@ -54,6 +54,7 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         // Карта
         "Display Settings": "Настройки отображения",
         "Hide track": "Скрыть трек",
+        "Show track": "Показать трек",
         "points_in_track": "Точек в треке: {{value}}",
 
         // Панель настроек карты

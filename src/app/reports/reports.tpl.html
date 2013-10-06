@@ -4,88 +4,92 @@
  <!--<input type="checkbox" class="btn btn-primary" ng-model="report.reportSplittedByDays" translate>По дням</input>-->
 <br>
 <br>
-<div id="reportT" ng-show="report.reportGenerated">
-  <table class="table table-hover table-bordered table-condensed" ng-hide="report.reportSplittedByDays">
-    <thead>
-    <tr>
-      <th>Событие</th>
-      <th>Координаты</th>
-      <th>Период</th>
-      <th>Изменение уровня топлива</th>
-      <th>Уровень топлива</th>
-      <th>Продолжительность</th>
-      <th>Средняя скорость</th>
-      <th>Пройдено</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="item in report.reportData.rows | orderBy:-dt">
-	  <td>{{item.event}}</td>
-      <td>{{item.address || item.position}}</td>
-      <td>
-	   <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
-	  </td>
-      <td>{{item.fuelChange}}</td>
-      <td>{{item.fuel}}</td>
-      <td>{{item.duration}}</td>
-      <td>{{item.speed}}</td>
-      <td>{{item.distance}}</td>      
-    </tr>
-    </tbody>
-  </table>
-  <table class="table table-hover table-bordered table-condensed" ng-show="report.reportSplittedByDays">
-    <thead>
-    <tr>
-      <th>Событие</th>
-      <th>Координаты</th>
-      <th>Период</th>
-      <th>Изменение уровня топлива</th>
-      <th>Уровень топлива</th>
-      <th>Продолжительность</th>
-      <th>Средняя скорость</th>
-      <th>Пройдено</th>
-    </tr>
-    </thead>
-    <tbody ng-repeat="items in report.reportData.days | orderBy:-date.getTime()">
-    <tr >
-	  <td colspan = 8 ng-show="items.events.length>0">{{items.strFormatted}}</td>	  
-	</tr>
-	<tr ng-repeat="item in items.events | orderBy: dt">
-	  <td>{{item.event}}</td>
-      <td>{{item.address || item.position}}</td>
-      <td>
-	   <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
-	  </td>
-      <td>{{item.fuelChange}}</td>
-      <td>{{item.fuel}}</td>
-      <td>{{item.duration}}</td>
-      <td>{{item.speed}}</td>
-      <td>{{item.distance}}</td>      
-    </tr>
-    </tbody>
-  </table>
-  <table ng-model="report.reportData.summary" class="table table-hover table-bordered table-condensed">
-    <thead>
-    <tr>
-      <th>Контролируемые параметры</th>
-      <th>Результат</th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr><td>Пройденная дистанция </td><td>{{report.reportData.summary.distance}}</td></tr>
-      <tr><td>Общее время в пути </td><td>{{report.reportData.summary.moveDuration}}</td></tr>
-      <tr><td>Средняя скорость движения </td><td>{{report.reportData.summary.speed}}</td></tr>
-      <tr><td>Общее время стоянок и остановок </td><td>{{report.reportData.summary.stopDuration}}</td></tr>
-      <tr><td>Максимальная скорость </td><td>{{report.reportData.summary.maxspeed}}</td></tr>
-      <tr><td>Расход топлива</td><td>{{report.reportData.summary.fuel}}</td></tr>
-    </tbody>
-  </table>
-  
+<div ng-show="report.reportGenerated">
+    <div id="reportT" ng-show="report.reportGenerated">
+      <table class="table table-hover table-bordered table-condensed" ng-hide="report.reportSplittedByDays">
+        <thead>
+        <tr>
+          <th>Событие</th>
+          <th>Координаты</th>
+          <th>Период</th>
+          <th>Изменение уровня топлива</th>
+          <th>Уровень топлива</th>
+          <th>Продолжительность</th>
+          <th>Средняя скорость</th>
+          <th>Пройдено</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in report.reportData.rows | orderBy:-dt">
+          <td>{{item.event}}</td>
+          <td>{{item.address || item.position}}</td>
+          <td>
+           <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
+          </td>
+          <td>{{item.fuelChange}}</td>
+          <td>{{item.fuel}}</td>
+          <td>{{item.duration}}</td>
+          <td>{{item.speed}}</td>
+          <td>{{item.distance}}</td>      
+        </tr>
+        </tbody>
+      </table>
+      <table class="table table-hover table-bordered table-condensed" ng-show="report.reportSplittedByDays">
+        <thead>
+        <tr>
+          <th>Событие</th>
+          <th>Координаты</th>
+          <th>Период</th>
+          <th>Изменение уровня топлива</th>
+          <th>Уровень топлива</th>
+          <th>Продолжительность</th>
+          <th>Средняя скорость</th>
+          <th>Пройдено</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="items in report.reportData.days | orderBy:-date.getTime()">
+        <tr >
+          <td colspan = 8 ng-show="items.events.length>0">{{items.strFormatted}}</td>	  
+        </tr>
+        <tr ng-repeat="item in items.events | orderBy: dt">
+          <td>{{item.event}}</td>
+          <td>{{item.address || item.position}}</td>
+          <td>
+           <span class="datelabel">{{item.startdt}} - {{item.finishdt}}</span>
+          </td>
+          <td>{{item.fuelChange}}</td>
+          <td>{{item.fuel}}</td>
+          <td>{{item.duration}}</td>
+          <td>{{item.speed}}</td>
+          <td>{{item.distance}}</td>      
+        </tr>
+        </tbody>
+      </table>
+      <table ng-model="report.reportData.summary" class="table table-hover table-bordered table-condensed">
+        <thead>
+        <tr>
+          <th>Контролируемые параметры</th>
+          <th>Результат</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr><td>Пройденная дистанция </td><td>{{report.reportData.summary.distance}}</td></tr>
+          <tr><td>Общее время в пути </td><td>{{report.reportData.summary.moveDuration}}</td></tr>
+          <tr><td>Средняя скорость движения </td><td>{{report.reportData.summary.speed}}</td></tr>
+          <tr><td>Общее время стоянок и остановок </td><td>{{report.reportData.summary.stopDuration}}</td></tr>
+          <tr><td>Максимальная скорость </td><td>{{report.reportData.summary.maxspeed}}</td></tr>
+          <tr><td>Расход топлива</td><td>{{report.reportData.summary.fuel}}</td></tr>
+        </tbody>
+      </table>
+      
+    </div>
+    
+    <div id="downloadLink">
+     <a href="" ng-click="refreshLink()" download="{{report.title+'.xlsx'}}">Загрузить отчет</a>
+    </div>
 </div>
-
-<div id="downloadLink" ng-show="report.reportGenerated">
- <a href="" ng-click="refreshLink()" download="{{report.title+'.xlsx'}}">Загрузить отчет</a>
-</div>
+<div ng-show="report.repotSelectedIntervalNotHaveEvents">
+    <p>За выбранный интервал нет данных</p>
 </div>
 
 <div class="modal fade" id="reportSettingsModal">

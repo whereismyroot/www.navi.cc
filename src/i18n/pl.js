@@ -53,6 +53,7 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         // Map
         "Display Settings": "Ustawienia ekranu",
         "Hide track": "Ukryj utwór",
+        "Show track": "Pokaż utwór",
         "points_in_track": "Punkty w utworu: {{value}}",
 
         'AUTO_BOUND_TRACK': 'Automatycznie wyśrodkować utwór',

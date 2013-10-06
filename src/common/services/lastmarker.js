@@ -69,7 +69,7 @@ angular.module('services.lastmarker', ['newgps.services'])
                 var now = Math.round((new Date()).valueOf() / 1000);
                 var delta = now - sys.dynamic.lastping;
                 value = Math.floor(delta / 60);
-              return moment((new Date((sys.dynamic.dt - tz) * 1000))).format("DD/MM/YYYY : hh:mm");
+              return moment((new Date((sys.dynamic.dt * 1000)))).format("DD/MM/YYYY : hh:mm");
             } else
                 return '-';
         };
@@ -136,7 +136,6 @@ angular.module('services.lastmarker', ['newgps.services'])
             var track = d3.select(this.div);
             var points = track.selectAll(".marker")
                 .data(this.data);
-
             var div = points.enter().append("div")
                 .attr("class", "marker")
             // .attr("style", function(d){

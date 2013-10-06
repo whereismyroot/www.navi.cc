@@ -88,6 +88,7 @@ data: [
     "systemKey": "",
     "templateId": "0",
     "reportGenerated": false,
+    "repotSelectedIntervalNotHaveEvents" : false,
   "reportSplittedByDays": true,
     "reportData": {
       rows: [],
@@ -165,6 +166,13 @@ data: [
   }
   $scope.parseData = function(data){
      $scope.report.reportData.rows.length=0
+     if (!data || !data.points || data.points.length == 0) {
+         $scope.report.reportGenerated = false;
+         $scope.report.repotSelectedIntervalNotHaveEvents = true;
+          return;
+      } else {
+          $scope.report.repotSelectedIntervalNotHaveEvents = false;
+      }
        var items = data.ranges.reverse();
      var points = data.points;
      var days = [];
@@ -210,8 +218,8 @@ data: [
      //погрешность (литров) 
      var delta = 1
      //форматирование дат
-     item.startdt=moment(item.startdt*1000).format("DD/MM hh:mm")
-     item.finishdt=moment(item.finishdt*1000).format("DD/MM hh:mm");
+     item.startdt=moment(item.startdt*1000).format("DD/MM HH:mm")
+     item.finishdt=moment(item.finishdt*1000).format("DD/MM HH:mm");
      //Форматирование координат
      item.lat = Math.floor(item.lat*10000)/10000;    
      item.lon = Math.floor(item.lon*10000)/10000;
@@ -219,16 +227,19 @@ data: [
          item.position = item.lat + " " + item.lon;
      
        switch(item.fsource){
-       case 2:
-       case 3:
-         item.event = $scope.zapravka(item.fuelChange,delta,"Стоянка") 
-       break;
-       case 4:       
-       item.event = $scope.zapravka(item.fuelChange,delta,"Остановка")
-       break;
-       case 6: 
-       case 8: item.event = "Движение"; item.position = ""; break;
-       default: item.event = item.fsource; break;
+        case 7:
+        case 2:
+        case 3:
+            item.event = $scope.zapravka(item.fuelChange,delta,"Стоянка") 
+            break;
+        case 4:       
+            item.event = $scope.zapravka(item.fuelChange,delta,"Остановка")
+            break;
+        case 6: 
+        case 8: item.event = "Движение"; item.position = ""; 
+            break;
+        default: item.event = item.fsource; 
+            break;
      }
      
        
@@ -280,20 +291,22 @@ data: [
     if((sys.params) && (sys.params.fuel)){
         $scope.fuelMap = sys.params.fuel;
     }
+      
   $scope.report.interval.start.setHours(0)
   $scope.report.interval.start.setMinutes(0)
   $scope.report.interval.start.setSeconds(0)
+  
     
-    if ($scope.report.interval.radio.perDay||$scope.report.interval.end == $scope.report.interval.start) {
+    if ($scope.report.interval.radio.value == 'perDay') {
       $scope.report.interval.end = moment($scope.report.interval.start).add('d',1).subtract('s',1).toDate();
     } 
   $scope.report.interval.end.setHours(23)
   $scope.report.interval.end.setMinutes(59)
   $scope.report.interval.end.setSeconds(59)
-      
-  var from = Math.floor($scope.report.interval.start/1000/3600);
-  var to = Math.floor($scope.report.interval.end/1000/3600);
-  
+     
+  var tz = (new Date()).getTimezoneOffset()/60;
+  var from = Math.floor(($scope.report.interval.start)/1000/3600 + tz);
+  var to = Math.floor(($scope.report.interval.end)/1000/3600 + tz);
   GeoGPS.select($scope.report.systemKey);
   var items = GeoGPS.getTrack(from,to);
   
@@ -316,7 +329,11 @@ data: [
   
   
   items.then($scope.parseData);
-  
+  /*if (!$scope.report.reportGenerated) {
+      $scope.report.repotSelectedIntervalNotHaveEvents = true;
+  } else {
+      $scope.report.repotSelectedIntervalNotHaveEvents = false;
+  }*/
     $('#reportSettingsModal').modal('hide');
   };
 

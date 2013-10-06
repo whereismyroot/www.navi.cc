@@ -133,13 +133,6 @@ angular.module('config.system.params.fuel', ['ngRoute','resources.account', 'res
         $scope.fuel.splice(index, 1);
     }
 
-    $scope.onSave = function(){
-        // console.log('save');
-        // system.setParams($scope.skey, {
-        //     fuel: angular.copy($scope.fuel)     // Strip $$hashkey
-        // });
-    }
-
     $scope.sortableOptions = {
         handle: ".msp",
         // revert: true,    // Имеет баг с прокруткой. Если в будущем исправят, то стоит вернуть.
