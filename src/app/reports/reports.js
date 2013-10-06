@@ -167,7 +167,11 @@ data: [
   $scope.parseData = function(data){
      $scope.report.reportData.rows.length=0
      if (!data || !data.points || data.points.length == 0) {
+         $scope.report.reportGenerated = false;
+         $scope.report.repotSelectedIntervalNotHaveEvents = true;
           return;
+      } else {
+          $scope.report.repotSelectedIntervalNotHaveEvents = false;
       }
        var items = data.ranges.reverse();
      var points = data.points;
@@ -301,8 +305,8 @@ data: [
   $scope.report.interval.end.setSeconds(59)
      
   var tz = (new Date()).getTimezoneOffset()/60;
-  var from = Math.floor(($scope.report.interval.start)/1000/3600 - tz);
-  var to = Math.floor(($scope.report.interval.end)/1000/3600 - tz);
+  var from = Math.floor(($scope.report.interval.start)/1000/3600 + tz);
+  var to = Math.floor(($scope.report.interval.end)/1000/3600 + tz);
   GeoGPS.select($scope.report.systemKey);
   var items = GeoGPS.getTrack(from,to);
   
@@ -325,11 +329,11 @@ data: [
   
   
   items.then($scope.parseData);
-  if (!$scope.report.reportGenerated) {
+  /*if (!$scope.report.reportGenerated) {
       $scope.report.repotSelectedIntervalNotHaveEvents = true;
   } else {
       $scope.report.repotSelectedIntervalNotHaveEvents = false;
-  }
+  }*/
     $('#reportSettingsModal').modal('hide');
   };
 
