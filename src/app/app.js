@@ -28,17 +28,11 @@ var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bi
 var API_VERSION = "1.0";
 
 angular.module('app').constant('SERVER', {
-  // api: (DEVELOP ? 'http://api.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
-  // api: (DEVELOP ? 'http://erlapi.localhost/' : 'http://api.newgps.navi.cc/') + API_VERSION,
-  // api: (DEVELOP ? 'http://gpsapi05.navi.cc:8982/' : 'http://api.newgps.navi.cc/') + API_VERSION, // Это локальный сервер, видимый извне
-  api: (DEVELOP ? 'http://gpsapi05.navi.cc:8982/' : 'http://gpsapi04.navi.cc:8982/') + API_VERSION,
+  // api: (DEVELOP ? 'http://gpsapi05.navi.cc:8982/' : 'http://gpsapi04.navi.cc:8982/') + API_VERSION,
+  api: (DEVELOP ? 'http://new.navi.cc/' : '/') + API_VERSION,
   api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
-  //api_port: DEVELOP ? '8183' : '',
-  // point: DEVELOP ? 'http://localhost:8981/' : 'http://point.newgps.navi.cc/',
-  // channel: DEVELOP ? 'http://localhost:8888/socket' : 'http://channel.newgps.navi.cc:8888/socket'
-  // channel: DEVELOP ? 'ws://localhost:8983/websocket' : 'http://channel.newgps.navi.cc:8888/socket'
-  // channel: DEVELOP ? 'ws://gpsapi05.navi.cc:8983/websocket' : 'http://channel.newgps.navi.cc:8888/socket'
-  channel: DEVELOP ? 'ws://gpsapi05.navi.cc:8983/websocket' : 'http://gpsapi04.navi.cc:8888/socket'
+  // channel: DEVELOP ? 'ws://gpsapi05.navi.cc:8983/websocket' : 'http://gpsapi04.navi.cc:8888/socket'
+  channel: DEVELOP ? 'ws://new.navi.cc:8983/websocket' : 'ws://' + location.hostname + ':8983/websocket'
 });
 
 angular.module('app').constant('globals', {
