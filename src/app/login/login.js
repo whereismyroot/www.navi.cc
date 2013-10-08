@@ -2,8 +2,7 @@ angular.module('login', ['ngRoute', 'resources.account', 'resources.system', 'ap
 
 .config(['$routeProvider', function ($routeProvider) {
 
-  $routeProvider.when('/login', {
-    // templateUrl:'login.tpl.html',
+  $routeProvider.when('/', {
     templateUrl:'templates/login/login.tpl.html',
     controller:'LoginViewCtrl',
     resolve:{
