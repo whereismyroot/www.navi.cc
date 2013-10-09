@@ -6,12 +6,12 @@ angular.module('resources.system', ['services.connect'])
     // Построим формулу преобразования значения АЦП в объем топлива
     // В цепи измерения делитель: 22k/10k
     // В перспективе значение должно быть привязано к hwid
-    Systems.$fuel = function(system, value){
+    // Systems.$fuel = function(system, value){
+    var fuel = function(fuel, value){
         var r1 = 22,
             r2 = 10,
             vdd = 3.3,
             out = [],
-            fuel = system.params.fuel,
             vmin = fuel[0].voltage,
             lmin = fuel[0].liters,
             vmax = fuel[fuel.length-1].voltage,
@@ -40,6 +40,12 @@ angular.module('resources.system', ['services.connect'])
             liters = l1 + (l2 - l1) * (v - v1) / (v2 - v1);
 
         return Math.round(liters * 100) / 100; // округление до 0.01
+    }
+
+    Systems.$update = function(){
+        if(this.dynamic && this.dynamic.fuel){
+            this.dynamic.fuel = fuel(this.params.fuel, this.dynamic.fuel);
+        }
     }
 
     return Systems;

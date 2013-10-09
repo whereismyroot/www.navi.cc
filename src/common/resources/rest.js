@@ -59,7 +59,6 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
 
     Models.prototype.$add = function(data){
         // var model = new Model(that.name, data);
-        console.log("Models.prototype.$add this=", this);
         var id = data.id;
         if(this.hasOwnProperty(id)){
             angular.extend(this[id], data);
@@ -68,6 +67,7 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
         }
         // Оформим подписку на оповещение об обновлении этого экземпляра
         Connect.subscribe(this.$name, id);
+        return this[id];
     }
 
     var REST = function(name){
@@ -78,12 +78,14 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
         var that = this;
 
         Connect.on(name, function(message){
-            // console.log("REST:update event", message);
             // console.log(that.models);
 
             if(that.models.hasOwnProperty(message.id)){
                 // console.log("extend");
                 angular.extend(that.models[message.id], message.data);
+                if(that.hasOwnProperty('$update')){
+                    that.$update.call(that.models[message.id]);
+                }
             }
 
         });
@@ -98,7 +100,10 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
                 method: 'GET',
                 url: SERVER.api + "/" + this.name + "s/" + encodeURIComponent(id)
             }).success(function(data){
-                that.models.$add(data);
+                var model = that.models.$add(data);
+                if(that.hasOwnProperty('$update')){
+                    that.$update.call(model);
+                }
                 // if(that.models.hasOwnProperty(id)){
                 //     angular.extend(that.models[id], data);
                 // } else {
@@ -128,7 +133,10 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
 
                 dataall.map(function(data){
                     var id = data.id;
-                    that.models.$add(data);
+                    var model = that.models.$add(data);
+                    if(that.hasOwnProperty('$update')){
+                        that.$update.call(model);
+                    }
                 });
 
                 defer.resolve(that.models);
