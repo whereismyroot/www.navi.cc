@@ -48,7 +48,8 @@
     <!-- <a id="download" class="cmdbtn" href="#">Загрузить...</a> -->
     <span class="info">
       <a id="run" class="cmdbtn" href="#">Запустить!</a><br/>
-      <input type="checkbox" name="stop" id="stop"></input><label for="stop">Стоянка</label>
+      <input type="checkbox" name="stop" id="stop"></input><label for="stop">Стоянка</label><br/>
+      Топливо: <input type="number" name="fuel" id="fuel" min="0" max="100" value="50" size="3" maxlength="3"/>%
     </span>
 
     <!-- <a id="run" class="cmdbtn" href="#">Стоянка!</a> -->
@@ -156,6 +157,9 @@
     var rabbit_pos = null;
     var runner_id;
 
+    /*
+      Новый протокол
+    */
     var BuildPacketF5 = function(){
       if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
         return;
@@ -240,6 +244,9 @@
       return packet;
     }
 
+    /*
+      Старый протокол
+    */
     var BuildPacketF2 = function(){
       if((rabbit_pos==null) || (rabbit_pos>=out2.length)) {
         return;
@@ -333,9 +340,13 @@
       packet[28] = 0;
       packet[29] = 0;
 // D30  Зарезервировано =0
-      packet[30] = 0;
 // D31 Зарезервировано =0
-      packet[31] = 0;
+
+      var fuel = (document.getElementById("fuel").value * 2048 / 100) | 0;
+
+      // Уровень топлива
+      packet[30] = fuel % 256;
+      packet[31] = fuel / 256;
 
       if(!isstop) {
         rabbit_pos += 1;

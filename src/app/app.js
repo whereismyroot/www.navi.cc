@@ -27,12 +27,14 @@ angular.module('app', [
 var DEVELOP = ((location.hostname === 'localhost') || (location.hostname === 'bigbrother'));
 var API_VERSION = "1.0";
 
+// 'http://new.navi.cc'
+
 angular.module('app').constant('SERVER', {
-  // api: (DEVELOP ? 'http://gpsapi05.navi.cc:8982/' : 'http://gpsapi04.navi.cc:8982/') + API_VERSION,
+  // api: "http://" + (DEVELOP ? "gpsapi05.navi.cc:8982" : location.hostname) + '/' + API_VERSION,
   api: (DEVELOP ? 'http://new.navi.cc/' : '/') + API_VERSION,
-  api_withCredentials: true,    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
-  // channel: DEVELOP ? 'ws://gpsapi05.navi.cc:8983/websocket' : 'http://gpsapi04.navi.cc:8888/socket'
-  channel: DEVELOP ? 'ws://new.navi.cc:8983/websocket' : 'ws://' + location.hostname + ':8983/websocket'
+  // channel: 'ws://' + (DEVELOP ? "gpsapi05.navi.cc" : location.hostname) + ':8983/websocket',
+  channel: 'ws://' + (DEVELOP ? "new.navi.cc" : location.hostname) + ':8983/websocket',
+  api_withCredentials: true    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
 });
 
 angular.module('app').constant('globals', {

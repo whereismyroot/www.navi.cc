@@ -443,6 +443,7 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       // console.log('tofuel/System', system);
       // account.account.systems[skey].dynamic.fuel
 
+      return System.$fuel(system, system.dynamic.fuel);
     }
 
     $scope.filtered = function(items) {
