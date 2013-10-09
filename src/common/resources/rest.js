@@ -82,7 +82,12 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
 
             if(that.models.hasOwnProperty(message.id)){
                 // console.log("extend");
-                angular.extend(that.models[message.id], message.data);
+                if(message.data === null){  // Неизвестна степень изменений, требуется перезагрузить данные
+                    console.log("Full update", that);
+                    that.get(message.id, true);
+                } else {
+                    angular.extend(that.models[message.id], message.data);
+                }
                 if(that.hasOwnProperty('$update')){
                     that.$update.call(that.models[message.id]);
                 }

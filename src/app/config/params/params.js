@@ -412,31 +412,34 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       return item.filter;
     };
 
-    $scope.onChangeValue = function(k) {
-      params.set(k); // Отправим значение в очередь на сервер
-    };
+    // $scope.onChangeValue = function(k) {
+    //   params.set(k); // Отправим значение в очередь на сервер
+    // };
 
-    $scope.setqueue = function(k, v) {
-      console.log('setqueue', k, v, params);
-      params.queue[k] = v;
-      params.data[k].newqueue = params.data[k].queue;
-      // params.$patch(skey, "queue", params.queue);  // Отправим очередь на сервер
-      params.$patch("queue"); // Сохраним очередь
+    // $scope.setqueue = function(k, v) {
+    //   console.log('setqueue', k, v, params);
+    //   params.queue = params.queue || {};
+    //   params.queue[k] = v;
+    //   params.data[k].newqueue = params.data[k].queue;
+    //   // params.$patch(skey, "queue", params.queue);  // Отправим очередь на сервер
+    //   params.$patch("queue"); // Сохраним очередь
 
-      // params.set(k); // Отправим значение в очередь на сервер
-      // params.$set({skey: skey, key: "aa", value: "bb"});  // Отправим очередь на сервер
+    //   // params.set(k); // Отправим значение в очередь на сервер
+    //   // params.$set({skey: skey, key: "aa", value: "bb"});  // Отправим очередь на сервер
 
-    }
+    // }
 
     $scope.cancelqueue = function(k) {
-      params.cancel(k); // Отправим на сервер команду отменить изменение параметра
+        console.log("cancelqueue", k);
+        delete params.queue[k];
+        params.$patch("queue"); // Сохраним очередь
+      // params.cancel(k); // Отправим на сервер команду отменить изменение параметра
     }
 
     $scope.stopqueue = function() {
-      params.cancelall($scope.skey); // Отправим на сервер команду отменить все изменения
-      /*for (var k in params.value) {
-      $scope.cancelqueue(k);
-    };*/
+      // params.cancelall($scope.skey); // Отправим на сервер команду отменить все изменения
+      params.queue = {};
+      params.$patch("queue"); // Сохраним очередь
     }
 
     $scope.tofuel = function() {
@@ -476,6 +479,33 @@ angular.module('config.system.params', ['ngRoute', '$strap', 'resources.params',
       // console.log("changeIcon");
       var options = {};
       $('#carIconsModal').modal(options);
+    }
+
+    $scope.param = {
+        key: null,
+        value: null
+    };
+
+    $('#changeParamModal').modal({show: false}).on('hidden.bs.modal', function () {
+        var key = $scope.param.key,
+            value = $scope.param.value;
+
+        params.queue = params.queue || {};
+        if(params.queue[key] === value) return; // Значение уже в очереди
+        if(angular.isUndefined(params.queue[key]) && (params.data[key].value === value)) return; // Значение не изменяется
+
+        params.queue[key] = value;
+        // params.data[key].newqueue = params.data[key].queue;
+        params.$patch("queue"); // Сохраним очередь
+    });
+
+    $scope.changeParam = function(key) {
+      params.queue = params.queue || {};
+      var param = params.data[key];
+      var queue = params.queue[key];
+      $scope.param.key = key;
+      $scope.param.value = queue || param.value;
+      $('#changeParamModal').modal('show');
     }
 
     $scope.setIcon = function(icon) {

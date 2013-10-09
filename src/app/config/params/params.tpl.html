@@ -104,12 +104,14 @@
                 <td>{{p.default}}</td>
                 <td>
                     {{ params.queue[k] }}
-                    <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
+                    <button class="btn btn-small" ng-click="changeParam(k)">...</button>
+<!--                     <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
                         <input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input>
                         <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button>
-                        <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
                     </form>
-                </td>
+ -->
+                    <i ng-show="params.queue[k] != null" class="btn btn-small btn-primary icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
+                 </td>
             </tr>
             </tbody>
         </table>
@@ -135,6 +137,24 @@
                 </div>
                 <div class="modal-body">
                     <a ng-repeat="i in caricons" ng-click="setIcon(i)" title="{{ i.class }}"><i class="{{ i.class }} icon-2x"></i></a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <div class="modal fade" id="changeParamModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Введите новое значение параметра</h4>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" ng-model="param.value" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
