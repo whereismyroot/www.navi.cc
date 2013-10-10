@@ -114,8 +114,8 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                         icon: {
                           // path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
                           path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                          strokeColor: 'blue',
-                          strokeWeight: 3,
+                          strokeColor: 'red',
+                          strokeWeight: 2,
                           scale: 3
                         },
                         offset: '50px',
