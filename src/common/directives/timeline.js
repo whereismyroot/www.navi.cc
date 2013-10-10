@@ -3,110 +3,114 @@ angular.module('directives.timeline', [])
 .directive('timeline', [function() {
     var link = function(scope, element, attrs) {
 
-            // svg = element[0].querySelector('svg');
-            // svg = d3.select(element[0].querySelector('svg'));
-            // draw_axes();
-            // parent = d3.select(element[0]).select(".timeline");
-            // parent = element;
-            // console.log("parent=", parent[0].clientWidth, parent.width());
         var data = null;
         var tz = (new Date()).getTimezoneOffset() / 60;
-        console.log(tz);
+        // console.log(tz);
 
-        var margin = {top: 0, right: 30, bottom: 0, left: 30},
-            width = element.width() - 60 - margin.left - margin.right,
-            height = 33 - margin.top - margin.bottom;
+        var margin = {top: 0, right: 32, bottom: 0, left: 32},
+            width = element.width() - 50 - margin.left - margin.right,
+            height = 32 - margin.top - margin.bottom;
 
-        var x = d3.time.scale.utc()
-            // .domain([new Date(tz * 1000 * 60 * 60), new Date(24 * 60 * 60 * 1000 + tz * 1000 * 60 * 60)])
-            .domain([new Date(+new Date() - 24 * 60 * 60 * 1000), new Date()])
-            .range([0, width]);
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .tickSubdivide(3)
-            .tickSize(15, 8, 0)
-            .orient("bottom")
-            // .tickSize(-height)
-            .ticks((width / 90) | 0)
-            // .ticks(15)
-            .tickFormat(d3.time.format("%H:%M:%S"));
-
-        var zoom = d3.behavior.zoom()
-            .x(x)
-            .scaleExtent([1, 1024])   // TODO: Необходимо также ограничить Pan
-            .on("zoom", zoomed);
-
-        // avar
         var svg = d3.select(element[0]).select(".timeline")
             .append("svg")
                 .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                    .call(zoom);
+                .attr("height", height + margin.top + margin.bottom);
 
-        svg.append("rect")          // Невидимый объект, чтобы получать события мыши и тача
-            .attr("style", "opacity: 0.1")
-            .attr("width", width)
-            .attr("height", height);
-
-            // svg.
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0,1)")
-            .call(xAxis);
-
-        svg.append("g")
-            .attr("class", "chart");
-
-        console.log("svg", svg);
+        var zoom, x, xAxis;
 
         function zoomed() {
-            console.log("zoomed", data);
-            console.dir(zoom);
-            console.log("scale=", zoom.scale());
-            console.log("translate=", zoom.translate());
-
-            var start = new Date(data[0].start.dt * 1000),
-                stop = new Date(data[data.length-1].stop.dt * 1000);
-
-            console.log("x.domain=", x.domain());
-            // Сместим ось времени
-            // x.domain([start, stop]);
-
+            // console.log("translate=", d3.event.translate);
+            // console.log("d3.event.scale=", d3.event.scale);
+            // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + d3.event.scale + ")");
+            // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)");
             // Ось времени
             svg.select(".x.axis").call(xAxis);
 
             // Данные
             var intervals = svg.select('.chart').selectAll(".interval")
                 .data(data);
-            intervals //.transition() //.duration(3000)
+            intervals
                 .select('rect')
                     .attr('x', function(d){
-                        // console.log("x d=", d.start.dt, x(new Date(d.start.dt * 1000)));
                         return x(new Date(d.start.dt * 1000));
                     })
                     .attr('width', function(d){
-                        return x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000));
+                        return d3.max([2, x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000))]);
                     });
-
         }
 
+        // TODO: Не нравится мне что при каждом draw пересоздается все.
+        // Нужно оценить на возможные утечки памяти
         function draw() {
-            console.log("draw", data);
-            // console.dir(x);
-            console.dir(zoom);
-            console.log("scale=", zoom.scale());
-            console.log("translate=", zoom.translate());
+            // console.log("draw", data);
             if(data == null) return;
 
             var start = new Date(data[0].start.dt * 1000),
                 stop = new Date(data[data.length-1].stop.dt * 1000);
 
-            console.log("x.domain=", x.domain());
-            // Сместим ось времени
-            x.domain([start, stop]);
+            x = d3.time.scale.utc()
+                .domain([start, stop])
+                .range([0, width]);
+
+            xAxis = d3.svg.axis()
+                .scale(x)
+                .tickSubdivide(3)
+                .tickSize(15, 8, 0)
+                .orient("bottom")
+                .ticks((width / 90) | 0)
+                .tickFormat(d3.time.format("%H:%M:%S"));
+
+            zoom = d3.behavior.zoom()
+                .x(x)
+                .scaleExtent([1, 1024])   // TODO: Необходимо также ограничить translate
+                .on("zoom", zoomed);
+
+            // avar
+            svg.select('g').remove();
+
+            var chart = svg
+                    .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        .call(zoom);
+
+            chart.append("rect")          // Невидимый объект, чтобы получать события мыши и тача
+                .attr("style", "opacity: 0")
+                .attr("class", "overlay")
+                .attr("width", width)
+                .attr("height", height);
+
+                // svg.
+            var axis = chart.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0,1)")
+                .call(xAxis);
+
+            var graph = chart.append("g")
+                .attr("class", "chart");
+
+            // console.log("svg", svg);
+
+            // function zoomed() {
+            //     // console.log("translate=", d3.event.translate);
+            //     // console.log("d3.event.scale=", d3.event.scale);
+            //     // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + d3.event.scale + ")");
+            //     // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)");
+            //     // Ось времени
+            //     svg.select(".x.axis").call(xAxis);
+
+            //     // Данные
+            //     var intervals = svg.select('.chart').selectAll(".interval")
+            //         .data(data);
+            //     intervals
+            //         .select('rect')
+            //             .attr('x', function(d){
+            //                 return x(new Date(d.start.dt * 1000));
+            //             })
+            //             .attr('width', function(d){
+            //                 return d3.max([2, x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000))]);
+            //             });
+            // }
+
             // svg.select("g.x.axis").transition() //.duration(10000)
             //     .attr("transform", "translate(0,1)")
             //     .call(xAxis);
@@ -129,76 +133,41 @@ angular.module('directives.timeline', [])
                     scope.hover()(d);
                 });
 
-            // $(g).tooltip();
-
             g.append("rect")
                 .attr('x', function(d){
-                    // console.log("x d=", d);
-                    // console.log("x d=", d.start.dt, x(new Date(d.start.dt * 1000)));
                     return x(new Date(d.start.dt * 1000));
                 })
                 .attr('width', function(d){
                     return x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000));
                 })
                 .attr("y", "2")
-                .attr("height", "16");
-
-            // intervals
-            //     .attr('title', "TBD");
+                .attr("height", "15");
 
             intervals.exit().remove();
 
-            zoomed();
+            var start = new Date(data[0].start.dt * 1000),
+                stop = new Date(data[data.length-1].stop.dt * 1000);
+
+            // console.log("x.domain=", x.domain());
         }
 
-        // // draw(scope.data);
-        // draw();
         scope.$watch("data", function(_data){
-            console.log(['timeline on data', _data]);
-            // if(data)
-                // draw_data(data);
+            // console.log(['timeline on data', _data]);
             data = _data;
             draw();
-            // redraw(data, scope);
         }, true);
 
+        var scaledelta = Math.pow(2, 120 * 0.002);
 
         element.find("#plusButton").on('click', function(){
-            // console.log("plusButton", zoom.scale());
-            zoom.scale(zoom.scale() * 1.1809926614295303);
+            zoom.scale(zoom.scale() * scaledelta);
             zoomed();
-            // width *= 1.2;
-            // d3.select(element[0]).select(".timeline svg")
-            //     .attr("width", width + margin.left + margin.right);
-            // x.range([0, width]);
-            // redraw(data, scope);
         });
 
         element.find("#minusButton").on('click', function(){
-            // console.log("minusButton");
-            zoom.scale(zoom.scale() / 1.1809926614295303);
+            zoom.scale(zoom.scale() / scaledelta);
             zoomed();
-            // width /= 1.2;
-            // d3.select(element[0]).select(".timeline svg")
-            //     .attr("width", width + margin.left + margin.right);
-            // x.range([0, width]);
-            // redraw(data, scope);
         });
-
-        if(0){
-            element.bind('mousewheel', function(e){
-                var e = window.event || e; // old IE support
-                var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-                console.log("zoom?", delta);
-                if(delta > 0){
-                    zoom_factor = zoom_factor * 2;
-                }else{
-                    zoom_factor = zoom_factor * 0.5;
-                }
-                draw_axes();
-                //draw_data(data);
-            });
-        }
     };
 
     return {
