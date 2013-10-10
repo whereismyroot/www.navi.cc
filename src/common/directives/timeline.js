@@ -1,18 +1,147 @@
-var width = 2500;
-var timescale = 24 * 3600 / 2500.0;
-
 angular.module('directives.timeline', [])
 
 .directive('timeline', [function() {
+
+    var margin = {top: 0, right: 30, bottom: 0, left: 30},
+        width = 2500 - margin.left - margin.right,
+        height = 33 - margin.top - margin.bottom;
+        // width = 2500 - ,
+        // height = 33;
+    var timescale = 24 * 3600 / 2500.0;
 
     var zoom_factor = 0.67;
     var svg;
 
     var tz = (new Date()).getTimezoneOffset() / 60;
 
-    var draw_data = function(data){
+    // var x = d3.scale.linear()
+    //     .range([0, width]);
+    // var parse = d3.time.format("%b %Y").parse;
 
+    var x = d3.time.scale.utc().range([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .tickSubdivide(3)
+        .tickSize(15, 8, 0)
+        .orient("bottom").tickFormat(d3.time.format("%H:%M:%S"));
+
+    // Init timeline
+    var draw = function(){
+        // if(!data) {
+        //     svg.select('g.axis').remove();
+        //     svg.select('g.chart').remove();
+        //     svg.append("text")
+        //         .attr("class", "chart")
+        //         .attr("x", 100)
+        //         .attr("y", 18)
+        //         .attr("dx", 0)
+        //         .attr("text-anchor", "middle")
+        //         .text("No data");
+        //     return;
+        // } else {
+        //     svg.select("text.chart").remove();
+        // }
+
+        // var start = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600,
+        //     stop =
+
+        // Ось X: время
+        x.domain([new Date(), new Date()]);
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0,1)")
+            .call(xAxis);
+
+        // console.log("x=", x(0.0), x(0.5), x(1.0));
+
+        svg.append("g")
+            .attr("class", "chart");
+
+    }
+
+    var redraw = function(data, scope) {
+        // console.log("redraw");
+        if(!data) {
+            // svg.select('g.axis').remove();
+            // svg.select('g.chart').remove();
+            svg.append("text")
+                .attr("class", "chart")
+                .attr("x", 100)
+                .attr("y", 18)
+                .attr("dx", 0)
+                .attr("text-anchor", "middle")
+                .text("No data");
+            return;
+        } else {
+            svg.select("text.chart").remove();
+        }
+
+        var start = new Date(data[0].start.dt * 1000),
+            stop = new Date(data[data.length-1].stop.dt * 1000);
+
+        // Сместим ось времени
+        x.domain([start, stop]);
+        svg.select("g.x.axis").transition() //.duration(10000)
+            .attr("transform", "translate(0,1)")
+            .call(xAxis);
+
+        // var ticks = x.ticks(d3.time.minute, 15);
+        // console.log("data=", data, start, stop);
+
+        // Данные
+        var intervals = svg.select('.chart').selectAll(".interval")
+            .data(data);
+
+        var g = intervals.enter().append("g")
+            // .attr("class", "interval")
+            .attr("class", function(d) {
+                return "interval " + d.type;
+            })
+            .attr("data-tooltip", "1")
+            .attr("rel", "tooltip")
+            .attr("bs-tooltip", "tooltip")
+            .on('click', function(d) {
+                // console.log("click=", scope);
+                scope.click()(d);
+            })
+            .on('mouseenter', function(d){
+                // var tooltip = $(this).tooltip();
+                // console.log("mouseenter=", scope.hover, d);
+                scope.hover()(d);
+            });
+
+        // $(g).tooltip();
+
+        g.append("rect")
+            .attr('x', function(d){
+                return x(new Date(d.start.dt * 1000));
+            })
+            .attr('width', function(d){
+                return x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000));
+            })
+            .attr("y", "2")
+            .attr("height", "16");
+
+        intervals.transition() //.duration(3000)
+            .select('rect')
+                .attr('x', function(d){
+                    return x(new Date(d.start.dt * 1000));
+                })
+                .attr('width', function(d){
+                    return x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000));
+                });
+
+        intervals
+            .attr('title', "TBD");
+
+        intervals.exit().remove();
+    }
+
+
+    var draw_data = function(data){
         var offset;
+
         // Начальное смещение. Предполагам что данные будут за одни сутки.
         if(data && (data.length > 0)){
             offset = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600;
@@ -122,13 +251,22 @@ angular.module('directives.timeline', [])
 
     var link = function(scope, element, attrs) {
 
-        svg = element[0].querySelector('svg');
-        draw_axes();
+        // svg = element[0].querySelector('svg');
+        // svg = d3.select(element[0].querySelector('svg'));
+        // draw_axes();
+        svg = d3.select(element[0]).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        // draw(scope.data);
+        draw();
         scope.$watch("data", function(data){
-            // console.log(['timeline on data', data]);
-            if(data)
-                draw_data(data);
+            console.log(['timeline on data', data]);
+            // if(data)
+                // draw_data(data);
+            redraw(data, scope);
         }, true);
 
         if(0){
@@ -153,9 +291,12 @@ angular.module('directives.timeline', [])
         //scope: {last_pos: '='},
         //template: '<div>List:<ul><li ng-repeat="l in list">{{l}}<i class="icon-arrow-right"></i><span>{{l}}</span></li></ul></div>',
         scope: {
-            data: "="
+            data: "=",
+            hover: "&onHover",
+            click: "&onClick"
         },
-        template: '<svg width="2500px" height="33px" class="timeline"></svg>',
+        // template: '<svg width="2500px" height="33px" class="timeline"></svg>',
+        template: '<div class="timeline"></div>',
         link: link
     };
 }]);
