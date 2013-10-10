@@ -4,13 +4,13 @@ angular.module('directives.timeline', [])
     var link = function(scope, element, attrs) {
 
         var data = null;
-        var tz = (new Date()).getTimezoneOffset() / 60;
-        // console.log(tz);
+        // var tz = (new Date()).getTimezoneOffset() / 60;
 
         var margin = {top: 0, right: 32, bottom: 0, left: 32},
             width = element.width() - 50 - margin.left - margin.right,
             height = 32 - margin.top - margin.bottom;
 
+        console.log(width);
         var svg = d3.select(element[0]).select(".timeline")
             .append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -23,6 +23,17 @@ angular.module('directives.timeline', [])
             // console.log("d3.event.scale=", d3.event.scale);
             // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + d3.event.scale + ")");
             // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)");
+
+
+            var t = zoom.translate(),
+                  tx = t[0],
+                  ty = t[1];
+
+            tx = Math.min(tx, 0);
+            tx = Math.max(tx, width - width * zoom.scale());
+            zoom.translate([tx, 0]);    // zoom.translate([tx, ty]);
+            // console.log(tx);
+
             // Ось времени
             svg.select(".x.axis").call(xAxis);
 
@@ -88,36 +99,6 @@ angular.module('directives.timeline', [])
             var graph = chart.append("g")
                 .attr("class", "chart");
 
-            // console.log("svg", svg);
-
-            // function zoomed() {
-            //     // console.log("translate=", d3.event.translate);
-            //     // console.log("d3.event.scale=", d3.event.scale);
-            //     // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + d3.event.scale + ")");
-            //     // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)");
-            //     // Ось времени
-            //     svg.select(".x.axis").call(xAxis);
-
-            //     // Данные
-            //     var intervals = svg.select('.chart').selectAll(".interval")
-            //         .data(data);
-            //     intervals
-            //         .select('rect')
-            //             .attr('x', function(d){
-            //                 return x(new Date(d.start.dt * 1000));
-            //             })
-            //             .attr('width', function(d){
-            //                 return d3.max([2, x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000))]);
-            //             });
-            // }
-
-            // svg.select("g.x.axis").transition() //.duration(10000)
-            //     .attr("transform", "translate(0,1)")
-            //     .call(xAxis);
-
-            // var ticks = x.ticks(d3.time.minute, 15);
-            // console.log("data=", data, start, stop);
-
             // Данные
             var intervals = svg.select('.chart').selectAll(".interval")
                 .data(data);
@@ -160,12 +141,20 @@ angular.module('directives.timeline', [])
         var scaledelta = Math.pow(2, 120 * 0.002);
 
         element.find("#plusButton").on('click', function(){
-            zoom.scale(zoom.scale() * scaledelta);
+            var tx = zoom.translate()[0];
+            var scale = zoom.scale();
+            var newscale = scale * scaledelta;
+            zoom.scale(newscale);
+            zoom.translate([tx + (width * scale - width * newscale)/2, 0]); // Не идеальное решение, но немного лучше чем ничего
             zoomed();
         });
 
         element.find("#minusButton").on('click', function(){
-            zoom.scale(zoom.scale() / scaledelta);
+            var tx = zoom.translate()[0];
+            var scale = zoom.scale();
+            var newscale = Math.max(1.0, zoom.scale() / scaledelta);
+            zoom.translate([tx - (width * newscale - width * scale)/2, 0]); // Не идеальное решение, но немного лучше чем ничего
+            zoom.scale(newscale);
             zoomed();
         });
     };
