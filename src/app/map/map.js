@@ -37,6 +37,7 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
     $scope.skey = $routeParams['skey'];
     $scope.day = $routeParams['day'] || 0;
     $scope.track = null;
+    // var fulltrack = null;
     //console.log('MapCtrl', account, systems);
     //$scope.systems = account.account.systems;
 
@@ -64,26 +65,26 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
         });
     });
 
-    var fake_timeline = function(){
-        // Пока сгенерируем фальшивые данные
-        var start = 0;
-        var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
-            var stop = start + ~~(Math.random() * 500);
-            var point = {
-                counter: i+1,
-                move: (i%2) === 1,
-                start: start,
-                stop: stop
-            };
-            start = stop;
-            return point;
-        });
-        if(data[data.length-1].stop < 2500){
-            data[data.length-1].stop = 2500;
-        }
-        // console.log("data=", data);
-        $scope.timeline = data;
-    }
+    // var fake_timeline = function(){
+    //     // Пока сгенерируем фальшивые данные
+    //     var start = 0;
+    //     var data = d3.range(~~(Math.random() * 10)+2).map(function(i){
+    //         var stop = start + ~~(Math.random() * 500);
+    //         var point = {
+    //             counter: i+1,
+    //             move: (i%2) === 1,
+    //             start: start,
+    //             stop: stop
+    //         };
+    //         start = stop;
+    //         return point;
+    //     });
+    //     if(data[data.length-1].stop < 2500){
+    //         data[data.length-1].stop = 2500;
+    //     }
+    //     // console.log("data=", data);
+    //     $scope.timeline = data;
+    // }
 
     // WARNING!!! Это грязный хак!!!
     // Это подавит перезагрузку ng-view и устранит мерцание страницы.
@@ -194,20 +195,34 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
             $scope.track = $scope.track_hide;
             $scope.timeline = $scope.timeLine_hide
             $scope.track_hide = null;
-            $scope.timeLine_hide = [];  
+            $scope.timeLine_hide = [];
             $scope.hideTrack = false;
-            
+
         } else {
             $scope.track_hide = $scope.track;
             $scope.timeLine_hide = $scope.timeline
             $scope.track = null;
-            $scope.timeline = [];  
+            $scope.timeline = [];
             $scope.hideTrack = true;
         }
-        
-        
+
+
     };
 
+    $scope.onTimelineHover = function(d){
+        // console.log("onTimelineHover", d);
+    }
+
+    $scope.onTimelineClick = function(d){
+        // console.log("onTimelineClick", d, $scope.track);
+        $scope.$apply(function(){
+            if($scope.track.select === d) {
+                delete $scope.track.select;
+            } else {
+                $scope.track.select = d;
+            }
+        });
+    }
 
     $scope.mapconfig = {
         autobounds: true,   // Автоматическая центровка трека при загрузке
@@ -215,7 +230,7 @@ angular.module('map', ['ngRoute', 'resources.account', 'directives.gmap', 'direc
         numbers: true,      // Нумерация стоянок/остановок
         centermarker: false // Не показывать маркер центра карты
     };
-    
+
     $scope.$watch('mapconfig.numbers', function(){
                 if ($scope.mapconfig.numbers) {
                     $(".eventmarker .track.STOP span").attr("class", "");

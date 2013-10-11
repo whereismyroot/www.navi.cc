@@ -6,9 +6,10 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
 .directive('gmap', ["Connect", "EventMarker", "LastMarker", function(Connect, EventMarker, LastMarker) {
 
     // TODO! Необходима унификация для поддержки как минимум Google Maps и Leaflet
-    
+
     var link = function(scope, element, attrs) {
-        var path = null;
+        var path = null,
+            select = null;
         var gmarker = null;
         // console.log('map directive: link', scope, element, Connect);
         //element.innerHTML="<div>map</div>";
@@ -101,12 +102,14 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         animateCircle();
 
         var showTrack = function(data){
+
+            // console.log("showTrack", data);
+
             path = new google.maps.Polyline({
                 path: data.track,
                 strokeColor: 'blue',
-                strokeOpacity: 0.5,
-                strokeWeight: 5,
-                clickable: true,
+                strokeOpacity: data.select ? 0.7 : 0.5,
+                strokeWeight: data.select ? 2 : 5,
                 // editable: true,
                 icons: [{
                         icon: {
@@ -121,13 +124,42 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                     }],
                 map: map
             });
+
             google.maps.event.addListener(path, 'click', function(event )
             {
                 console.log(event);
             });
-            // console.log("scope.autobounds=", scope.autobounds);
-            if(scope.config.autobounds){
-                map.fitBounds(data.bounds);
+
+
+            if(data.select){
+                var start = data.select.start_index;
+                var stop = data.select.stop_index;
+                var fragment = data.track.slice(start, stop);
+                var bounds = new google.maps.LatLngBounds(fragment[0], fragment[0]);
+
+                fragment.forEach(function(point){bounds.extend(point)});
+                // console.log("bounds=", bounds);
+                map.fitBounds(bounds);
+
+                if(select) {
+                    select.setPath(fragment);
+                } else {
+                    select = new google.maps.Polyline({
+                        path: fragment,
+                        strokeColor: 'green',
+                        strokeOpacity: 0.6,
+                        strokeWeight: 7,
+                        map: map
+                    });
+                }
+            } else {
+                if(select) {
+                    select.setPath([]);
+                }
+                // console.log("scope.autobounds=", scope.autobounds);
+                if(scope.config.autobounds){
+                    map.fitBounds(data.bounds);
+                }
             }
 
             var eventdata = [];
@@ -166,7 +198,10 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
             }
             if((data === null) || (data.points.length === 0) ) return;
             showTrack(data);
-        });
+        }, true);
+        // scope.$watch("track.select", function(data){
+        //     console.log(['MAP:track select', data]);
+        // });
 
         var lastmarker = new LastMarker(map);
         /*//TODO убрать это тестовые данные!!!
@@ -213,7 +248,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         }];
         lastmarker.setData(lastpos);
         ///////////////////////////////*/
-        
+
         scope.$watch("systems", function(systems){
             if(!systems) return;
             var lastpos = [];

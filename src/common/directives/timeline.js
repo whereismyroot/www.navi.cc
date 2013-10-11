@@ -1,150 +1,162 @@
-var width = 2500;
-var timescale = 24 * 3600 / 2500.0;
-
 angular.module('directives.timeline', [])
 
 .directive('timeline', [function() {
-
-    var zoom_factor = 0.67;
-    var svg;
-
-    var tz = (new Date()).getTimezoneOffset() / 60;
-
-    var draw_data = function(data){
-
-        var offset;
-        // Начальное смещение. Предполагам что данные будут за одни сутки.
-        if(data && (data.length > 0)){
-            offset = (Math.floor((data[0].start.dt / 3600 - tz) / 24) * 24 + tz) * 3600;
-        }
-        // console.log("timeline data=", data, offset);
-
-        var grid = d3.select(svg);
-
-        var days = grid.selectAll(".move")
-            .data(data);
-
-        var g = days.enter().append("g")
-            .on('click', function(d) {
-                console.log(d3.select(this), d);
-            });
-
-        g.append("rect")
-            // .attr("x", function(d) { return (d.start.dt - offset) * zoom_factor / timescale; })
-            .attr("y", "16")
-            // .attr("width", function(d) { return (d.stop - d.start) * zoom_factor; })
-            // .attr("width", function(d) { return 10; })
-            .attr("height", "16");
-
-        // g.append("text")
-        //     .attr("x", function(d) { return zoom_factor * (d.stop + d.start) / 2; })
-        //     .attr("y", "28")
-        //     // .attr("dx", "0")
-        //     .attr("text-anchor", "middle")
-        //     .text(function(d) { return (d.move?"Движение":"Стоянка") + d.counter; });
-
-        days.select("rect") //.transition().duration(500)
-            .attr("x", function(d) { return (d.start.dt - offset) * zoom_factor / timescale; })
-            .attr("width", function(d) { return (d.stop.dt - d.start.dt) * zoom_factor / timescale; });
-
-        // days.select("text").transition().duration(500)
-        //     .attr("x", function(d) { return zoom_factor * (d.stop + d.start)/2; });
-        //     // .attr("width", function(d) { return d.stop - d.start; });
-
-        days
-            .attr("class", function(d) {
-                return "move " + d.type;
-            });
-
-        days.exit().remove();
-
-    };
-
-    var draw_axes = function(){
-        // svg.width = "" + ~~(2500*zoom_factor) + "px";
-        d3.select(svg).attr("width", width * zoom_factor);
-
-        var data = d3.range(25).map(function(i){
-            return {
-                i: i,
-                title: i<24?("" + ((i<10)?"0":"") + i + ":00"):"23:59"
-            };
-        });
-
-        var grid = d3.select(svg);  //"#timeline svg"
-        var grid_days = grid.selectAll(".day")
-            .data(data);
-
-        var g = grid_days.enter()
-            .append("g")
-            .attr("class", "day")
-            .attr("transform", function(d) { return "translate(" + (d.i * 100 * zoom_factor) + ",0)";});
-
-        g.append("text")
-            .attr("x", 50 * zoom_factor)
-            .attr("y", 12)
-            .attr("dx", 0)
-            .attr("text-anchor", "middle")
-            .text(function(d) { return d.title; });
-
-        g.append("line")
-            .style("stroke", '#000')
-            .style("stroke-width", '1')
-            .attr("x1", 50 * zoom_factor)
-            .attr("y1", 14)
-            .attr("x2", 50 * zoom_factor)
-            .attr("y2", 48);
-
-        g.append("line")
-            .style("stroke", '#CCC')
-            .attr("x1", 75 * zoom_factor)
-            .attr("y1", 14)
-            .attr("x2", 75 * zoom_factor)
-            .attr("y2", 48);
-
-        g.append("line")
-            .style("stroke", '#888')
-            .attr("x1", 100 * zoom_factor)
-            .attr("y1", 14)
-            .attr("x2", 100 * zoom_factor)
-            .attr("y2", 48);
-
-        g.append("line")
-            .style("stroke", '#CCC')
-            .attr("x1", 125 * zoom_factor)
-            .attr("y1", 14)
-            .attr("x2", 125 * zoom_factor)
-            .attr("y2", 48);
-
-        // grid_days.select('line')
-        //     .attr("x1", function(d) { return zoom_factor; })
-    };
-
     var link = function(scope, element, attrs) {
 
-        svg = element[0].querySelector('svg');
-        draw_axes();
+        var data = null;
+        // var tz = (new Date()).getTimezoneOffset() / 60;
 
-        scope.$watch("data", function(data){
-            // console.log(['timeline on data', data]);
-            if(data)
-                draw_data(data);
+        var margin = {top: 0, right: 32, bottom: 0, left: 32},
+            width = element.width() - 50 - margin.left - margin.right,
+            height = 32 - margin.top - margin.bottom;
+
+        console.log(width);
+        var svg = d3.select(element[0]).select(".timeline")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+
+        var zoom, x, xAxis;
+
+        function zoomed() {
+            // console.log("translate=", d3.event.translate);
+            // console.log("d3.event.scale=", d3.event.scale);
+            // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)scale(" + d3.event.scale + ")");
+            // chart.attr("transform", "translate(" + d3.event.translate[0] + ", 0)");
+
+
+            var t = zoom.translate(),
+                  tx = t[0],
+                  ty = t[1];
+
+            tx = Math.min(tx, 0);
+            tx = Math.max(tx, width - width * zoom.scale());
+            zoom.translate([tx, 0]);    // zoom.translate([tx, ty]);
+            // console.log(tx);
+
+            // Ось времени
+            svg.select(".x.axis").call(xAxis);
+
+            // Данные
+            var intervals = svg.select('.chart').selectAll(".interval")
+                .data(data);
+            intervals
+                .select('rect')
+                    .attr('x', function(d){
+                        return x(new Date(d.start.dt * 1000));
+                    })
+                    .attr('width', function(d){
+                        return d3.max([2, x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000))]);
+                    });
+        }
+
+        // TODO: Не нравится мне что при каждом draw пересоздается все.
+        // Нужно оценить на возможные утечки памяти
+        function draw() {
+            // console.log("draw", data);
+            if(data == null) return;
+
+            var start = new Date(data[0].start.dt * 1000),
+                stop = new Date(data[data.length-1].stop.dt * 1000);
+
+            x = d3.time.scale.utc()
+                .domain([start, stop])
+                .range([0, width]);
+
+            xAxis = d3.svg.axis()
+                .scale(x)
+                .tickSubdivide(3)
+                .tickSize(15, 8, 0)
+                .orient("bottom")
+                .ticks((width / 90) | 0)
+                .tickFormat(d3.time.format("%H:%M:%S"));
+
+            zoom = d3.behavior.zoom()
+                .x(x)
+                .scaleExtent([1, 1024])   // TODO: Необходимо также ограничить translate
+                .on("zoom", zoomed);
+
+            // avar
+            svg.select('g').remove();
+
+            var chart = svg
+                    .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                        .call(zoom);
+
+            chart.append("rect")          // Невидимый объект, чтобы получать события мыши и тача
+                .attr("style", "opacity: 0")
+                .attr("class", "overlay")
+                .attr("width", width)
+                .attr("height", height);
+
+                // svg.
+            var axis = chart.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0,1)")
+                .call(xAxis);
+
+            var graph = chart.append("g")
+                .attr("class", "chart");
+
+            // Данные
+            var intervals = svg.select('.chart').selectAll(".interval")
+                .data(data);
+
+            var g = intervals.enter().append("g")
+                .attr("class", function(d) {
+                    return "interval " + d.type;
+                })
+                .on('click', function(d) {
+                    scope.click()(d);
+                })
+                .on('mouseenter', function(d){
+                    scope.hover()(d);
+                });
+
+            g.append("rect")
+                .attr('x', function(d){
+                    return x(new Date(d.start.dt * 1000));
+                })
+                .attr('width', function(d){
+                    return x(new Date(d.stop.dt * 1000)) - x(new Date(d.start.dt * 1000));
+                })
+                .attr("y", "2")
+                .attr("height", "15");
+
+            intervals.exit().remove();
+
+            var start = new Date(data[0].start.dt * 1000),
+                stop = new Date(data[data.length-1].stop.dt * 1000);
+
+            // console.log("x.domain=", x.domain());
+        }
+
+        scope.$watch("data", function(_data){
+            // console.log(['timeline on data', _data]);
+            data = _data;
+            draw();
         }, true);
 
-        if(0){
-            element.bind('mousewheel', function(e){
-                var e = window.event || e; // old IE support
-                var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-                console.log("zoom?", delta);
-                if(delta > 0){
-                    zoom_factor = zoom_factor * 2;
-                }else{
-                    zoom_factor = zoom_factor * 0.5;
-                }
-                draw_axes();
-                //draw_data(data);
-            });
-        }
+        var scaledelta = Math.pow(2, 120 * 0.002);
+
+        element.find("#plusButton").on('click', function(){
+            var tx = zoom.translate()[0];
+            var scale = zoom.scale();
+            var newscale = scale * scaledelta;
+            zoom.scale(newscale);
+            zoom.translate([tx + (width * scale - width * newscale)/2, 0]); // Не идеальное решение, но немного лучше чем ничего
+            zoomed();
+        });
+
+        element.find("#minusButton").on('click', function(){
+            var tx = zoom.translate()[0];
+            var scale = zoom.scale();
+            var newscale = Math.max(1.0, zoom.scale() / scaledelta);
+            zoom.translate([tx - (width * newscale - width * scale)/2, 0]); // Не идеальное решение, но немного лучше чем ничего
+            zoom.scale(newscale);
+            zoomed();
+        });
     };
 
     return {
@@ -153,9 +165,18 @@ angular.module('directives.timeline', [])
         //scope: {last_pos: '='},
         //template: '<div>List:<ul><li ng-repeat="l in list">{{l}}<i class="icon-arrow-right"></i><span>{{l}}</span></li></ul></div>',
         scope: {
-            data: "="
+            data: "=",
+            hover: "&onHover",
+            click: "&onClick"
         },
-        template: '<svg width="2500px" height="33px" class="timeline"></svg>',
+        // template: '<svg width="2500px" height="33px" class="timeline"></svg>',
+        template:
+            '<div>' +
+                '<div id="minusButton" style="position:absolute;left:0;top:0"><img src="img/minus_button.png" width="32" height="32"/></div>'+
+                '<div style="position:absolute;left:32px;top:0;right:32px;bottom:0px;overflow-x:hidden;overflow-y:hidden"><div class="timeline"></div></div>'+
+                '<div id="plusButton" style="position:absolute;right:0;top:0"><img src="img/plus_button.png" width="32" height="32"/></div>'+
+            '</div>',
+        replace: true,
         link: link
     };
 }]);

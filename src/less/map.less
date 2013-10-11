@@ -23,7 +23,7 @@ div[gmap="main"] {
     left: 0;
     right: 220px;
     /* height: 100%; */
-    bottom:48px;
+    bottom: 32px;
     margin: 0;
     padding: 0;
     /*border: 1px solid grey;*/
@@ -59,52 +59,6 @@ ul.map-control-tools {
 }
 
 
-.map-timeline {
-    z-index: 1;
-    position: absolute;
-    left: 0;
-    right: 220px;
-    // width: 99%;
-    padding: 0;
-    margin: 0;
-    bottom: 0px;
-    height: 48px;
-    border: 1px solid grey;
-    background-color: white;
-    overflow-x: scroll;
-    overflow-y: hidden;
-
-    svg {
-        float: left;
-        padding: 0;
-        margin: 0;
-
-        g.move {
-            cursor: pointer;
-        }
-
-        g.MOVE {
-            rect {
-                fill: #2CF306;
-                opacity: 0.9;
-            }
-            &:hover rect {
-                fill: #3CFF26;
-                opacity: 1.0;
-            }
-        }
-        g.STOP {
-            rect {
-                fill: #F57474;
-                opacity: 0.9;
-            }
-            &:hover rect {
-                fill: #FF9494;
-                opacity: 1.0;
-            }
-        }
-    }
-}
 
 div.mapsyslist {
 }
@@ -245,7 +199,7 @@ div.mapcalendar {
 
 .map-toolbar{
     position: absolute;
-    bottom: 50px;
+    bottom: 32px;
     left: 100px;
     // margin-left: -500px;
     min-width: 300px;
