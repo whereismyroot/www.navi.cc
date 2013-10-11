@@ -40,7 +40,7 @@ angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'reso
 
 }])
 
-.controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'systems', 'GeoGPS', function ($scope, $route, $routeParams, $location, account, systems, GeoGPS) {
+.controller('GPSViewCtrl', ['$scope', '$route', '$routeParams', '$location', 'account', 'systems', 'GeoGPS', '$filter', function ($scope, $route, $routeParams, $location, account, systems, GeoGPS, $filter) {
   var day = $scope.day = $routeParams['day'] || 0;
 
   $scope.skey = $routeParams['skey'];
@@ -107,11 +107,62 @@ angular.module('gps', ['ngRoute', 'resources.account', 'resources.params', 'reso
     GeoGPS.select($scope.skey);
     GeoGPS.getTrack(hourfrom, hourfrom+23)
         .then(function(data){
-            // console.log(["getTrack: ", data]);
             $scope.track = data;
             /*$scope.track = data;
             $scope.points = data.track.length;
             fake_timeline();*/
+            var tbody = d3.select('#geos_body table tbody');
+
+            var rows = tbody.selectAll('.row').data(data.points);
+            console.log(["getTrack: ", data, tbody, rows]);
+
+            var row = function(){
+                // console.log("d=", d, this);
+                // var r = this.append('tr');
+                this.append('td')
+                    .text(function(d){
+                        return $filter('datetime')(d.dt, true, "time")
+                    });
+                this.append('td')
+                    .text(function(d){
+                        return $filter('number')(d.lat, 3) + ',' + $filter('number')(d.lon, 3);
+                    });
+                this.append('td')
+                    .text(function(d){
+                        return d.sats;
+                    });
+                this.append('td')
+                    .text(function(d){
+                        return $filter('number')(d.speed, 1);
+                    });
+                this.append('td')
+                    .text(function(d){
+                        return $filter('number')(d.vout, 1);
+                    });
+                this.append('td')
+                    .text(function(d){
+                        return $filter('number')(d.vin, 1);
+                    });
+                this.append('td')
+                    .attr('title', function(d){
+                        return $filter('fsource')(d.fsource).title;
+                    })
+                    .attr('style', "color:grey")
+                        .append('i');
+                    // .text(function(d){
+                    //     return "<td ><i class="{{s}}" ng-repeat="s in (g.fsource | fsource).icons" style="padding-left:2px"></i></td>"
+                    // });
+
+            }
+
+            rows.enter()
+              .append('tr')
+                .call(row);
+
+            // rows.select('tr').call(row);
+
+            rows.exit().remove();
+
         });
 
     $scope.onMouseOver = function(g) {
