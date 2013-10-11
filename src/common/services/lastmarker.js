@@ -177,8 +177,8 @@ angular.module('services.lastmarker', ['newgps.services'])
             statsLine.append('td').text(function(d) { return 'Спутники';});
             statsLine.append('td').attr('class', 'lastmarkerSats').text(function(d) { return sysSats(d)});
             var fuelLine = tbody.append('tr');
-            fuelLine.append('td').text(function(d) { return 'Топливо';});
-            fuelLine.append('td').attr('class', 'lastmarkerFuel').text(function(d) { return sysFuel(d)});
+            fuelLine.append('td').attr('class', function(d) { return d.hasFuelSensor ? "" : "hide";}).text(function(d) { return 'Топливо';});
+            fuelLine.append('td').attr('class', function(d) { return d.hasFuelSensor ? "lastmarkerFuel" : "hide";}).text(function(d) { return sysFuel(d)});
             
             
 

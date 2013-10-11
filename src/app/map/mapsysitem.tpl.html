@@ -57,6 +57,6 @@
             Вход 3: ?<br>
             Выход 1: ?<br>
             Выход 2: ?<br>
-            Уровень топлива: {{ item.dynamic.fuel }} л<br>
+            <div ng-show="system.car.hasFuelSensor">Уровень топлива: {{ item.dynamic.fuel }} л<br></div>
     </div>
 </li>

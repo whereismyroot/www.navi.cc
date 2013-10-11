@@ -67,6 +67,7 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
 
         // Страница params
         'contenteditableTitle': 'Для изменения описания поместите курсор в поле',
+        'Has a fuel sensor': 'Имеет датчик уровня топлива',
 
         // report
         'Generate report': 'Сгенерировать отчет'

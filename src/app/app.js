@@ -30,10 +30,10 @@ var API_VERSION = "1.0";
 // 'http://new.navi.cc'
 
 angular.module('app').constant('SERVER', {
-  api: "http://" + (DEVELOP ? "gpsapi05.navi.cc:8982" : location.hostname) + '/' + API_VERSION,
-  // api: (DEVELOP ? 'http://new.navi.cc/' : '/') + API_VERSION,
-  channel: 'ws://' + (DEVELOP ? "gpsapi05.navi.cc" : location.hostname) + ':8983/websocket',
-  // channel: 'ws://' + (DEVELOP ? "new.navi.cc" : location.hostname) + ':8983/websocket',
+  //api: "http://" + (DEVELOP ? "gpsapi05.navi.cc:8982" : location.hostname) + '/' + API_VERSION,
+   api: (DEVELOP ? 'http://new.navi.cc/' : '/') + API_VERSION,
+  //channel: 'ws://' + (DEVELOP ? "gpsapi05.navi.cc" : location.hostname) + ':8983/websocket',
+   channel: 'ws://' + (DEVELOP ? "new.navi.cc" : location.hostname) + ':8983/websocket',
   api_withCredentials: true    // Должен быть установлен для использования withCredentials, в противном случае используется авторизация через Header:
 });
 

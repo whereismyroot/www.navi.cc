@@ -41,8 +41,8 @@
             <dt>Вход 3</dt><dd>?</dd>
             <dt>Выход 1</dt><dd>?</dd>
             <dt>Выход 2</dt><dd>?</dd>
-            <dt>
-                Уровень топлива</dt><dd>{{ system.dynamic.fuel }} л
+            <dt ng-show="system.car.hasFuelSensor">
+                Уровень топлива</dt><dd ng-show="system.car.hasFuelSensor">{{ system.dynamic.fuel }} л
                 <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a>
             </dd>
         </dl>
@@ -63,10 +63,11 @@
             <dt>№ двигателя</dt><dd contenteditable="true" ng-model="system.car.engine" ng-change="system.$patch('car')"></dd>
             <dt>№ кузова</dt><dd contenteditable="true" ng-model="system.car.vin" ng-change="system.$patch('car')"></dd>
             <dt>№ страхового полиса</dt><dd contenteditable="true" ng-model="system.car.insurance" ng-change="system.$patch('car')"></dd>
+            <dt translate>Has a fuel sensor</dt><dd><input type="checkbox" class="btn btn-primary" ng-model="system.car.hasFuelSensor" ng-change="system.$patch('car')"></dd>
         </dl>
 
         <!-- <a class="btn btn-primary" href="#drivers">Водители</a> -->
-        <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel">Расход топлива</a>
+        <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel"  ng-show="system.car.hasFuelSensor">Расход топлива</a>
         <!-- <a class="btn btn-primary" href="#tags">Ярлыки</a> -->
         <!-- <a class="btn btn-primary" href="#zones">Привязка к зонам</a> -->
 

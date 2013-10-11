@@ -102,6 +102,7 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         animateCircle();
 
         var showTrack = function(data){
+
             // console.log("showTrack", data);
 
             path = new google.maps.Polyline({
@@ -123,6 +124,12 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                     }],
                 map: map
             });
+
+            google.maps.event.addListener(path, 'click', function(event )
+            {
+                console.log(event);
+            });
+
 
             if(data.select){
                 var start = data.select.start_index;
@@ -255,7 +262,8 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                             key: sys.id,
                             title: sys.title,
                             icon: sys.icon,
-                            dynamic: sys.dynamic
+                            dynamic: sys.dynamic,
+                            hasFuelSensor: sys.car.hasFuelSensor
                         })
                     }
                 }

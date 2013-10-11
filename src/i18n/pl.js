@@ -65,6 +65,7 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
 
         // params
         'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu',
+        'Has a fuel sensor': 'Posiada czujnik poziomu paliwa',
 
         // report
         'Generate report': 'Generowanie raportu'
