@@ -39,16 +39,16 @@
             </tr>
         </thead>
         <tbody>
-<!--             <tr ng-repeat="g in track.points" ng-mouseover="onMouseOver(g)">
-                <td>{{ g.dt | datetime:true:"time" }}</td>
-                <td>{{ g.lat | number:3 }},{{ g.lon | number:3 }}</td>
-                <td>{{ g.sats }}</td>
-                <td>{{ g.speed | number:1 }}</td>
-                <td>{{ g.vout | number:1 }}</td>
-                <td>{{ g.vin | number:2 }}</td>
-                <td title="{{ (g.fsource | fsource).title }}" style="color:grey"><i class="{{s}}" ng-repeat="s in (g.fsource | fsource).icons" style="padding-left:2px"></i></td>
+            <tr bindonce ng-repeat="g in track.points" ng-mouseover="onMouseOver(g)">
+                <td bo-text="g.dt | datetime:true:'time'"></td>
+                <td><span bo-text="g.lat | number:3"></span>,<span bo-text="g.lon | number:3"></span></td>
+                <td bo-text="g.sats"></td>
+                <td bo-text="g.speed | number:1"></td>
+                <td bo-text="g.vout | number:1"></td>
+                <td bo-text="g.vin | number:2"></td>
+                <td bo-title="(g.fsource | fsource).title" style="color:grey"><i bo-class="s" ng-repeat="s in (g.fsource | fsource).icons" style="padding-left:2px"></i></td>
             </tr>
- -->        </tbody>
+        </tbody>
     </table>
 </div>
 
