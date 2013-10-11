@@ -60,6 +60,21 @@ angular.module('resources.rest', ['services.connect', 'ngResource'])
     Models.prototype.$add = function(data){
         // var model = new Model(that.name, data);
         var id = data.id;
+        if (data.dynamic) {
+            switch(data.dynamic.fsource){
+                case 2:
+                case 3:
+                case 4:   
+                case 7:
+                    data.dynamic.speed = 0;
+                    break;
+                default: 
+                    break; 
+             }
+        }
+        //if (angular.isUndefined(data.car.hasFuelSensor))
+        if (data.car && angular.isUndefined(data.car.hasFuelSensor))
+            data.car.hasFuelSensor = false;
         if(this.hasOwnProperty(id)){
             angular.extend(this[id], data);
         } else {

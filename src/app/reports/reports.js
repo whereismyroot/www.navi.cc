@@ -56,14 +56,13 @@ data: [
   $scope.account = account;
   $scope.systems = systems;
   $scope.geocoder = new google.maps.Geocoder();
-  
-  $scope.account.firstSystemKey = function () {
-    return $scope.account.account.systems[0];
-  }
+
   
   $scope.showReportWindow = function() {
       // console.log("showReportWIndow");
       // bs-modal="'modal.html'"
+      if ($scope.report.systemKey == "")
+          $scope.report.systemKey = $scope.account.account.skeys[0];
       var options = {};
       $('#reportSettingsModal').modal(options);
     };
@@ -94,7 +93,9 @@ data: [
       rows: [],
       days: [],
       summary: {}
-    }
+    },
+    "hasFuelSensor": false
+    
   };
   
   $scope.getFuel = function(data){
@@ -116,7 +117,7 @@ data: [
   }
   
   $scope.formatPosition = function(index){
-        if(index==$scope.report.reportData.rows.length)return;
+        if(index==$scope.report.reportData.rows.length || $scope.report.reportData.rows.length == 0)return;
       
       var fsource = $scope.report.reportData.rows[index].fsource;
       if(fsource==6||fsource==8) {
@@ -145,7 +146,7 @@ data: [
   
   //смена статуса
   $scope.zapravka = function(value,delta,str){
-    if(Math.abs(value)>delta){
+    if($scope.report.hasFuelSensor && Math.abs(value)>delta){
       if(value<0) return "Слив топлива"; 
       return "Заправка"; 
     }
@@ -179,10 +180,12 @@ data: [
      for(var i=0; i < $scope.report.reportData.days.length; ++i){
        days[$scope.report.reportData.days[i].str]=$scope.report.reportData.days[i];
      }
+      var tzdt = (new Date()).getTimezoneOffset() * 60;
        for(var i = 0; i < items.length; ++i){
-       var start = items[i].start
+       var start = items[i].start;
      var stop = points[items[i].stop_index-1];
      var item = items[i].start;
+
      //начало и конец сообытия
      item.startdt=item.dt;
      item.finishdt=stop.dt;
@@ -241,9 +244,7 @@ data: [
         default: item.event = item.fsource; 
             break;
      }
-     
-       
-     days[new Date(start.dt*1000).toDateString()].events.push(item);     
+     days[new Date((start.dt - tzdt)*1000).toDateString()].events.push(item);     
      $scope.report.reportData.rows.push(item);
       }
      
@@ -288,6 +289,7 @@ data: [
   $scope.report.generateReport = function () {
     var reportTable = $( "#reportT" );
     var sys = systems[$scope.report.systemKey];
+    $scope.report.hasFuelSensor = sys.car.hasFuelSensor;
     if((sys.params) && (sys.params.fuel)){
         $scope.fuelMap = sys.params.fuel;
     }
@@ -303,10 +305,10 @@ data: [
   $scope.report.interval.end.setHours(23)
   $scope.report.interval.end.setMinutes(59)
   $scope.report.interval.end.setSeconds(59)
-     
+      
   var tz = (new Date()).getTimezoneOffset()/60;
   var from = Math.floor(($scope.report.interval.start)/1000/3600 + tz);
-  var to = Math.floor(($scope.report.interval.end)/1000/3600 + tz);
+  var to = Math.floor(($scope.report.interval.end)/1000/3600 + tz);  
   GeoGPS.select($scope.report.systemKey);
   var items = GeoGPS.getTrack(from,to);
   
@@ -359,16 +361,30 @@ data: [
     
   var reportData =  []
   var reportDataPerDay =  []
-  var headers =[ 
-      "Событие",
-      "Координаты",
-      "Период",
-      "Изменение уровня топлива",
-      "Уровень топлива",
-      "Продолжительность",
-      "Средняя скорость",
-      "Пройдено"
-    ]
+  var headers =[];
+     if (report.hasFuelSensor) {
+        headers = [ 
+          "Событие",
+          "Координаты",
+          "Период",
+          "Изменение уровня топлива",
+          "Уровень топлива",
+          "Продолжительность",
+          "Средняя скорость",
+          "Пройдено"
+        ];
+     } else {
+        headers = [ 
+          "Событие",
+          "Координаты",
+          "Период",
+          /*"Изменение уровня топлива",
+          "Уровень топлива",*/
+          "Продолжительность",
+          "Средняя скорость",
+          "Пройдено"
+        ]; 
+     }
   
   
   reportData.push(headers)
@@ -383,36 +399,112 @@ data: [
     
     var rawData = days[i].events;
     for(var j = 0; j < rawData.length; ++j){
-        reportDataPerDay.push([ 
-        rawData[j].event,
-          rawData[j].address || rawData[j].position,
-          rawData[j].startdt+" - "+rawData[j].finishdt,
-        rawData[j].fuelChange,
-          rawData[j].fuel,
-          rawData[j].duration,
-          rawData[j].speed,
-          rawData[j].distance   
-        ])
-      
+        var item;
+        if (report.hasFuelSensor) {
+            item = [ 
+                      rawData[j].event,
+                      rawData[j].address || rawData[j].position,
+                      rawData[j].startdt+" - "+rawData[j].finishdt,
+                      rawData[j].fuelChange,
+                      rawData[j].fuel,
+                      rawData[j].duration,
+                      rawData[j].speed,
+                      rawData[j].distance   
+                    ];
+            
+        } else {
+            item = [ 
+                      rawData[j].event,
+                      rawData[j].address || rawData[j].position,
+                      rawData[j].startdt+" - "+rawData[j].finishdt,
+                      /*rawData[j].fuelChange,
+                      rawData[j].fuel,*/
+                      rawData[j].duration,
+                      rawData[j].speed,
+                      rawData[j].distance   
+                    ];
+            
+        }
+        reportDataPerDay.push(item)
     }
     }
   // отчет общий
     var rawData = report.reportData.rows;
     for(var i = 0; i < rawData.length; ++i){
-      
-      reportData.push([ 
-        rawData[i].event,
-          rawData[i].address || rawData[i].position,
-      rawData[i].startdt+" - "+rawData[i].finishdt,
-        rawData[i].fuelChange,
-          rawData[i].fuel,
-          rawData[i].duration,
-          rawData[i].speed,
-          rawData[i].distance   
-        ])
+        var item;
+        if (report.hasFuelSensor) {
+            item = [ 
+                      rawData[i].event,
+                      rawData[i].address || rawData[i].position,
+                      rawData[i].startdt+" - "+rawData[i].finishdt,
+                      rawData[i].fuelChange,
+                      rawData[i].fuel,
+                      rawData[i].duration,
+                      rawData[i].speed,
+                      rawData[i].distance   
+                    ];
+            
+        } else {
+            item = [ 
+                      rawData[i].event,
+                      rawData[i].address || rawData[i].position,
+                      rawData[i].startdt+" - "+rawData[i].finishdt,
+                      /*rawData[i].fuelChange,
+                      rawData[i].fuel,*/
+                      rawData[i].duration,
+                      rawData[i].speed,
+                      rawData[i].distance   
+                    ];
+            
+        }
+      reportData.push(item);
     }
   
-  
+  var _data;
+    if (report.hasFuelSensor) {
+        _data = [[
+                 "Контролируемые параметры ", 
+                   "Результат"
+                 ],[
+                 "Пройденная дистанция ", 
+                   report.reportData.summary.distance
+                 ],[
+                   "Общее время в пути ",
+                   report.reportData.summary.moveDuration,
+                 ],[
+                   "Средняя скорость движения ",
+                   report.reportData.summary.speed
+                 ],[ 
+                   "Общее время стоянок и остановок ",
+                    report.reportData.summary.stopDuration
+                 ],[
+                   "Максимальная скорость ",
+                   report.reportData.summary.maxspeed
+                 ],[
+              "Расход топлива",
+                  report.reportData.summary.fuel
+            ]]
+    } else {
+        _data = [[
+                 "Контролируемые параметры ", 
+                   "Результат"
+                 ],[
+                 "Пройденная дистанция ", 
+                   report.reportData.summary.distance
+                 ],[
+                   "Общее время в пути ",
+                   report.reportData.summary.moveDuration,
+                 ],[
+                   "Средняя скорость движения ",
+                   report.reportData.summary.speed
+                 ],[ 
+                   "Общее время стоянок и остановок ",
+                    report.reportData.summary.stopDuration
+                 ],[
+                   "Максимальная скорость ",
+                   report.reportData.summary.maxspeed
+                 ]]
+    }
   var sheet = xlsx({
       worksheets: [{
         data: reportData,
@@ -421,28 +513,7 @@ data: [
         data: reportDataPerDay,
         name: "Отчет по дням"
       },{
-        data:[[
-         "Контролируемые параметры ", 
-           "Результат"
-         ],[
-         "Пройденная дистанция ", 
-           report.reportData.summary.distance
-         ],[
-           "Общее время в пути ",
-           report.reportData.summary.moveDuration,
-         ],[
-           "Средняя скорость движения ",
-           report.reportData.summary.speed
-         ],[ 
-           "Общее время стоянок и остановок ",
-            report.reportData.summary.stopDuration
-         ],[
-           "Максимальная скорость ",
-           report.reportData.summary.maxspeed
-         ],[
-      "Расход топлива",
-          report.reportData.summary.fuel
-    ]],
+        data:_data,
         name: "Итог"
       }]
     });

@@ -101,25 +101,29 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
         animateCircle();
 
         var showTrack = function(data){
-
             path = new google.maps.Polyline({
                 path: data.track,
                 strokeColor: 'blue',
                 strokeOpacity: 0.5,
                 strokeWeight: 5,
+                clickable: true,
                 // editable: true,
                 icons: [{
                         icon: {
                           // path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
                           path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-                          strokeColor: 'blue',
-                          strokeWeight: 3,
+                          strokeColor: 'red',
+                          strokeWeight: 2,
                           scale: 3
                         },
                         offset: '50px',
                         repeat: '100px'
                     }],
                 map: map
+            });
+            google.maps.event.addListener(path, 'click', function(event )
+            {
+                console.log(event);
             });
             // console.log("scope.autobounds=", scope.autobounds);
             if(scope.config.autobounds){
@@ -223,7 +227,8 @@ angular.module('directives.gmap', ['services.connect', 'services.eventmarker', '
                             key: sys.id,
                             title: sys.title,
                             icon: sys.icon,
-                            dynamic: sys.dynamic
+                            dynamic: sys.dynamic,
+                            hasFuelSensor: sys.car.hasFuelSensor
                         })
                     }
                 }

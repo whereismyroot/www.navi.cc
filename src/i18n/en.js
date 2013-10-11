@@ -67,6 +67,7 @@ angular.module('i18n.en', ['pascalprecht.translate'])
 
         // params
         'contenteditableTitle': 'To change the description, place the cursor in the field',
+        'Has a fuel sensor': 'Has a fuel level sensor',
 
         // report
         'Generate report': 'Generate report'
