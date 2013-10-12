@@ -67,6 +67,22 @@ angular.module('i18n.en', ['pascalprecht.translate'])
 
         // params
         'contenteditableTitle': 'To change the description, place the cursor in the field',
+        'TrackerInfo': 'Information about tracker',
+        'Model': 'Model',
+        'SIMNumber': 'Number of SIM-card',
+        'RegistrationDate': 'Registered',
+        'Version': 'Software version',
+        'Undefined': 'Not defined',
+        'CopyTitle': "For copy to clipboard, right-click and select 'Copy'",
+        'StateInfo': 'State information',
+        'LastConection': 'Last conection',
+        'CurrentState': 'Current state',
+        'SatellitesCount': 'Number of satellites',
+        'GSMLevel': 'GSM signal level',
+        'GPSLevel': 'GPS signal level',
+        'MainPower': 'Main power',
+        'BackupPower': 'backup power',
+        'Coordinates': 'Coordinates',
 
         // report
         'Generate report': 'Generate report'

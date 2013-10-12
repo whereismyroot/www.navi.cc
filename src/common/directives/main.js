@@ -245,7 +245,7 @@ angular.module('directives.lists', [])
     }
 })
 
-.directive('clone', function() {
+.directive('clone', ['$filter', function($filter) {
     return {
         restrict: 'C',
         // template: null,
@@ -254,12 +254,12 @@ angular.module('directives.lists', [])
             // console.log('clone component');
             element.attr('readonly', 'readonly');
             element.attr('type', 'text');
-            element.attr('title', "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'");
+            element.attr('title', $filter('translate')('CopyTitle'));
             element.bind('mousedown', function(){this.select();});
             //element.bind('mouseover', function(){this.select();});
         }
     }
-})
+}])
 
 .directive('datetime', [function(){
     return {

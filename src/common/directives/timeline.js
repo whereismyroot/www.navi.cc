@@ -131,6 +131,7 @@ angular.module('directives.timeline', [])
                 draw_data(data);
         }, true);
 
+        /*
         if(0){
             element.bind('mousewheel', function(e){
                 var e = window.event || e; // old IE support
@@ -145,7 +146,75 @@ angular.module('directives.timeline', [])
                 //draw_data(data);
             });
         }
+        */
+
+        var minusTimeout = 0;
+        var plusTimeout = 0;
+        
+        var zoomSettings = {
+            zoomFactorMinValue : 0.525,
+            zoomFactorMaxValue : 14,
+            zoomOutStep : 0.94,
+            zoomInStep: 1.16
+        };
+
+        var zoom = function(zoomFactor, zoomSettings, zoomIn){
+            if(zoomIn){
+                if(zoomFactor < zoomSettings.zoomFactorMaxValue)
+                    return zoomFactor * zoomSettings.zoomInStep;
+                else
+                    return zoomFactor;
+            }
+            else if(zoomFactor > zoomSettings.zoomFactorMinValue)
+                return zoomFactor * zoomSettings.zoomOutStep;
+            else
+                return zoomFactor;
+        };
+
+        var zoomOutTimeline = function(){
+            zoom_factor = zoom(zoom_factor, zoomSettings, false);
+            redrawTimeline(scope);
+        };
+
+        var zoomInTimeline = function(){
+            zoom_factor = zoom(zoom_factor, zoomSettings, true);
+            redrawTimeline(scope);
+        };
+
+        $('#minusButton').mousedown(function(){
+            zoomOutTimeline();
+            minusTimeout = setInterval(function(){
+                zoomOutTimeline();
+            }, 100);
+            console.log('DOWN MINUS');
+            return false;
+        });
+
+        $('#plusButton').mousedown(function(){
+            zoomInTimeline();
+            plusTimeout = setInterval(function(){                
+                    zoomInTimeline();
+            }, 100);
+            console.log('DOWN PLUS');
+            return false;
+        });
+
+        $(document).mouseup(function(){
+            clearInterval(minusTimeout);
+            clearInterval(plusTimeout);
+            console.log('UP');
+            return false;
+        });
+
+
     };
+
+    var redrawTimeline = function(scope){
+        var svg = document.querySelector('svg[class=timeline]');
+        $(svg.children).remove();
+        draw_axes();
+        draw_data(scope.data);
+    }
 
     return {
         restrict: 'A',
@@ -155,7 +224,10 @@ angular.module('directives.timeline', [])
         scope: {
             data: "="
         },
-        template: '<svg width="2500px" height="33px" class="timeline"></svg>',
+        template: 
+        '<div id="minusButton" style="float:left;"><img src="img/_button.png" width="25" height="25"/></div>' +
+        '<svg width="2500px" height="33px" class="timeline"></svg>' +
+        '<div id="plusButton" style="float:right;"><img src="img/+button.png" width="25" height="25"/><div>',
         link: link
     };
 }]);

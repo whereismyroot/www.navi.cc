@@ -45,8 +45,19 @@ filter('datetime', function(){
 
 filter('fromnow', function(){
     return function (text, length, end) {
+        var momentLangs = {
+            'ua_UA': 'uk',
+            'ru_RU': 'ru',
+            'en_EN': 'en',
+            'pl_PL': 'pl'
+        };
         var d = new Date(parseInt(text, 10)*1000);
-        return moment(parseInt(text, 10)*1000).fromNow();
+        var lang = momentLangs[localStorage.language];
+        
+        if(lang != undefined)
+            return moment(parseInt(text, 10)*1000).lang(lang).fromNow();
+        else
+            return moment(parseInt(text, 10)*1000).fromNow();
     };
 }).
 

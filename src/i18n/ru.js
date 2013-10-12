@@ -67,6 +67,22 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
 
         // Страница params
         'contenteditableTitle': 'Для изменения описания поместите курсор в поле',
+        'TrackerInfo': 'Информация о трекере',
+        'Model': 'Модель',
+        'SIMNumber': 'Номер SIM-карты',
+        'RegistrationDate': 'Заергистрирован',
+        'Version': 'Версия ПО',
+        'Undefined': 'Не определен',
+        'CopyTitle': "Для копирования в буффер обмена нажмите правую кнопку и выберите 'Копировать'",
+        'StateInfo': 'Сведения о состоянии',
+        'LastConection': 'Выход на связь',
+        'CurrentState': 'Текущее состояние',
+        'SatellitesCount': 'Количество спутников',
+        'GSMLevel': 'Уровень сигнала GSM',
+        'GPSLevel': 'Уровень сигнала GPS',
+        'MainPower': 'Основное питание',
+        'BackupPower': 'Резервное питание',
+        'Coordinates': 'Координаты',
 
         // report
         'Generate report': 'Сгенерировать отчет'

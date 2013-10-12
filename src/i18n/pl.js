@@ -65,6 +65,22 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
 
         // params
         'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu',
+        'TrackerInfo': 'Informacje o trackerze.',
+        'Model': 'Model',
+        'SIMNumber': 'Liczba kart SIM',
+        'RegistrationDate': 'Zarejestrowany',
+        'Version': 'Wersja',
+        'Undefined': 'Nie zdefiniowano',
+        'CopyTitle': 'Na kopiowanie do schowka, kliknij prawym przyciskiem myszy i wybierz opcję "Kopiuj"',
+        'StateInfo': 'Informacja o stanie',
+        'LastConection': 'Status związku',
+        'CurrentState': 'Obecny stan',
+        'SatellitesCount': 'Liczba satelitów',
+        'GSMLevel': 'Sygnał GSM',
+        'GPSLevel': 'Sygnał GPS',
+        'MainPower': 'Zasilanie',
+        'BackupPower': 'Zasilanie',
+        'Coordinates': 'Koordynuje',
 
         // report
         'Generate report': 'Generowanie raportu'
