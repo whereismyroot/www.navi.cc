@@ -92,8 +92,11 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'FuelLevel': 'Уровень топлива',
         'Events': 'События',
         'ExportGPS': 'Экспорт GPS',
+
         'LitersShort': 'л',
         'MetersShort': 'м',
+        'VoltsShort': 'в',
+
         'EventsTitle': 'Нажмите чтобы посмотреть события трекера',
         'ExportGPSTitle': 'Нажмите чтобы посмотреть подробности GPS',
         'VehicleInfo': 'Информация о транспортном средстве',
@@ -113,6 +116,9 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'ChangeTo': 'Изменить на',
         'CancelTitle': 'Отменить',
         'CancelChanges': 'Undo changes',
+        'UnsavedTryLater': 'Трекер еще не сохранил конфигурацию. Попробуйте позже или отправьте на номер карточки трекера SMS:',
+        'ChooseIcon': 'Выберите иконку для',
+        'CloseBtn': 'Закрыть',
 
         //params descs
         'AccelerometerSensitivity': 'Чувствительность акселерометра, mg (20-200)',
@@ -124,7 +130,6 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'RegStopBackup': 'Период регистрации координат при остановке объекта / резервное питание, сек',
         'RegParkMain': 'Период регистрации координат при стоянке объекта / основное питание, сек',
         'RegParkBackup': 'Период регистрации координат при стоянке объекта / резервное питание, сек',
-
         'InputConfiguration': 'Конфигурация входа',
         'Output1State': 'Состояние выхода 1: 0-выключен / 1-включен (активный уровень - низкий)',
         'Output2State': 'Состояние выхода 2: 0-выключен / 1-включен (активный уровень - низкий)',
@@ -137,6 +142,16 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'StopRegSpeed': 'Скорость, ниже которой регистрируется остановка объекта × 0,01852 км/ч',
         'FlushMove': 'Период отправки данных на сервер при движении, сек',
         'FlushStop': 'Период отправки данных на сервер при стоянке, сек',
+
+        //params/fuel
+        'FuelSensorSettings': 'Настройки датчика топлива.',
+        'FuelVolume': 'Объем топлива (л)',
+        'Voltage': 'Напряжение (в)',
+        'DeleteBtn': 'Удалить',
+        'SaveBtn': 'Сохранить',
+        'AddRowBtn': 'Добавить строку',
+        'DragChangeOrderTitle': 'Нажмите и тяните чтобы изменить порядок отображения объектов',
+
         // report
         'Generate report': 'Сгенерировать отчет'
     });

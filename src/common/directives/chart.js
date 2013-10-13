@@ -1,7 +1,9 @@
 angular.module('directives.chart', ['i18n'])
 
-.directive('chart', [function(){
+.directive('chart', ['$filter', function($filter){
     var path = null;
+
+    var translateFilter = $filter('translate');
 
     var margin = {top: 20, right: 20, bottom: 30, left: 35},
         width = 650 - margin.left - margin.right,
@@ -33,6 +35,9 @@ angular.module('directives.chart', ['i18n'])
 
     var svg;
 
+
+    var fuelCapacity = translateFilter('FuelVolume');
+    var voltage = translateFilter('Voltage');
     var draw = function(element, data){
 
         x.domain(d3.extent(data, function(d) { return d.liters; }));
@@ -53,7 +58,7 @@ angular.module('directives.chart', ['i18n'])
                     .attr("x", width)
                     .attr("y", -6)
                     .style("text-anchor", "end")
-                    .text("Объем топлива (л)");
+                    .text(fuelCapacity);
 
         // var range = d3.range([0, 4]);
         // console.log('range', range);
@@ -74,7 +79,7 @@ angular.module('directives.chart', ['i18n'])
                     .attr("y", 6)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
-                    .text("Напряжение (В)");
+                    .text(voltage);
 
         svg.append("path")
             .datum(data)
@@ -83,6 +88,8 @@ angular.module('directives.chart', ['i18n'])
 
     }
 
+    var liter = translateFilter('LitersShort');
+    var volt = translateFilter('VoltsShort');
     var redraw = function(element, data){
 
         x.domain(d3.extent(data, function(d) { return d.liters; }));
@@ -115,7 +122,7 @@ angular.module('directives.chart', ['i18n'])
             .attr("cx", function(d) { return x(d.liters); })
             .attr("cy", function(d) { return y(d.voltage); })
             .select('title')
-                .text(function(d) { return d.liters + " л -> " + d.voltage + " B"; })
+                .text(function(d) { return d.liters + " " + liter + " -> " + d.voltage + " " + volt; })
 
         dots.exit().remove();
 

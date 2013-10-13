@@ -91,8 +91,11 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'FuelLevel': 'Рівень палива',
         'Events': 'Події',
         'ExportGPS': 'Експорт GPS',
+
         'LitersShort': 'л',
         'MetersShort': 'м',
+        'VoltsShort': 'в',
+
         'EventsTitle': 'Натисніть щоб подивитись події трекера',
         'ExportGPSTitle': 'Натисніть щоб подивитись подробиці GPS',
         'VehicleInfo': 'Інформація про транспортний засіб',
@@ -112,6 +115,9 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'ChangeTo': 'Змінити на',
         'CancelTitle': 'Відмінити',
         'CancelChanges': 'Undo changes',
+        'UnsavedTryLater': 'Трекер ще не зберіг конфігурацію. Спробуйте пізніше або відправте на номер картки трекера SMS:',
+        'ChooseIcon': 'Виберіть іконку для',
+        'CloseBtn': 'Закрити',
 
         //params descs
         'AccelerometerSensitivity': 'Чутливість акселерометра, mg (20-200)',
@@ -123,7 +129,6 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'RegStopBackup': "Період реєстрації координат при зупинці об'єкта / резервне живлення, сек",
         'RegParkMain': "Період реєстрації координат при стоянці об'єкта / основне живлення, сек",
         'RegParkBackup': "Період реєстрації координат при стоянці об'єкта / резервне живлення, сек",
-
         'InputConfiguration': 'Конфігурація входу',
         'Output1State': 'Стан входу 1: 0-вимкнений / 1-увімкнений (активний рівень - низький)',
         'Output2State': 'Стан входу 2: 0-вимкнений / 1-увімкнений (активний рівень - низький)',
@@ -136,6 +141,16 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'StopRegSpeed': 'Швидкість, нижче якої реєструється початок руху × 0,01852 км/год',
         'FlushMove': 'Період відправки даних на сервер при русі, сек',
         'FlushStop': 'Період відправки даних на сервер при стоянці, сек',
+
+        //params/fuel
+        'FuelSensorSettings': 'Налаштування датчика палива.',
+        'FuelVolume': 'Обсяг палива(л)',
+        'Voltage': 'Напруга (в)',
+        'DeleteBtn': 'Видалити',
+        'SaveBtn': 'Зберегти',
+        'AddRowBtn': 'Додати рядок',
+        'DragChangeOrderTitle': "Натисніть і тягніть щоб змінити порядок відображення об'єктів",
+
         // report
         'Generate report': 'Згенерувати звіт'
     });

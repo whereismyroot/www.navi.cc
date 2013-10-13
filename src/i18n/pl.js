@@ -90,8 +90,11 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'FuelLevel': 'Poziom paliwa',
         'Events': 'Wydarzenia',
         'ExportGPS': 'Eksport GPS',
+
         'LitersShort': 'l',
         'MetersShort': 'm',
+        'VoltsShort': 'v',
+
         'EventsTitle': 'Szczękńcie tu, żeby obserwować za tracker wydarzeniami',
         'ExportGPSTitle': 'Naciśnijcie żeby popatrzeć szczegóły GPS',
         'VehicleInfo': 'Informacje o pojeździe.',
@@ -111,6 +114,9 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'ChangeTo': 'Zmieni się na',
         'CancelTitle': 'Anulować',
         'CancelChanges': 'Cofnąć zmiany',
+        'UnsavedTryLater': 'Konfiguracja Tracker nie jest zapisywany. Spróbuj ponownie później lub wysłać numer karty tracker SMS:',
+        'ChooseIcon': 'Wybierz ikonę dla',
+        'CloseBtn': 'Zamknąć',
 
         //params descs
         'AccelerometerSensitivity': 'Czułość akcelerometru',
@@ -122,7 +128,6 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'RegStopBackup': 'Okres rejestracji współrzędnych, gdy obiekt jest przystanki (zasilanie awaryjne) s',
         'RegParkMain': 'Okres rejestracji współrzędnych, gdy obiekt jest zaparkowany (zasilanie) sek',
         'RegParkBackup': 'Okres rejestracji współrzędnych, gdy obiekt jest zaparkowany (moc backup) sek',
-
         'InputConfiguration': 'Konfiguracja wejścia',
         'Output1State': 'Stan wyjścia 1: 0-wyłączony / 1-włączony (aktywny poziom - niski)',
         'Output2State': 'Stan wyjścia 2: 0-wyłączony / 1-włączony (aktywny poziom - niski)',
@@ -135,6 +140,16 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'StopRegSpeed': 'Prędkość poniżej której obiekt jest zarejestrowany jako zatrzymał × 0,01852 km/h',
         'FlushMove': 'Okres wysyłania danych do serwera, gdy obiekt jest w ruchu, sec',
         'FlushStop': 'Okres wysyłania danych do serwera, gdy obiekt jest zaparkowany, sec',
+
+        //params/fuel
+        'FuelSensorSettings': 'Ustawienia czujnika paliwa.',
+        'FuelVolume': 'Objętość paliwa (l)',
+        'Voltage': 'Napięcie (v)',
+        'DeleteBtn': 'Usunąć',
+        'SaveBtn': 'Zapisz',
+        'AddRowBtn': 'Dodaj wiersz',
+        'DragChangeOrderTitle': 'Kliknij i przeciągnij, aby zmienić obiekty',
+
         // report
         'Generate report': 'Generowanie raportu'
     });

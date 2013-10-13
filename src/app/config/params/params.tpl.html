@@ -121,9 +121,9 @@
             <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
         </div>
     </div>
-    <div class="alert" ng-show="params.$isEmpty(params.data)">
+    <div class="alert" ng-show="params.$isEmpty(params.data)" translate>
         <i class="icon-warning-sign"></i>
-        Трекер еще не сохранил конфигурацию. Попробуйте позже или отправьте на номер карточки трекера SMS:
+        {{'UnsavedTryLater' | translate}}
         <b>saveconfig</b>
     </div>
 <!--/div-->
@@ -134,13 +134,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Выберите значек для {{ system.title }}</h4>
+                    <h4 class="modal-title">{{'ChooseIcon' | translate}} {{ system.title }}</h4>
                 </div>
                 <div class="modal-body">
                     <a ng-repeat="i in caricons" ng-click="setIcon(i)" title="{{ i.class }}"><i class="{{ i.class }} icon-2x"></i></a>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate>Close</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

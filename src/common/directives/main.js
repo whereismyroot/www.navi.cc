@@ -65,7 +65,6 @@ angular.module('directives.lists', [])
             if (!ngModel) {
                 return;
             }
-            var translate = $filter('translate');
             element.attr('title', translate('contenteditableTitle'));
             ngModel.$render = function() {
                 return element.text(ngModel.$viewValue);

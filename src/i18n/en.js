@@ -92,8 +92,11 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'FuelLevel': 'Fuel level',
         'Events': 'Events',
         'ExportGPS': 'Export GPS',
+
         'LitersShort': 'l',
         'MetersShort': 'm',
+        'VoltsShort': 'v',
+
         'EventsTitle': 'Click here to watch tracker events',
         'ExportGPSTitle': 'Click here to watch GPS details',
         'VehicleInfo': 'Information about vehicle',
@@ -113,6 +116,9 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'ChangeTo': 'Change to',
         'CancelTitle': 'Cancel',
         'CancelChanges': 'Undo changes',
+        'UnsavedTryLater': 'Tracker configuration is not saved. Please try again later or send the card number tracker SMS:',
+        'ChooseIcon': 'Choose icon for',
+        'CloseBtn': 'Close',
 
         //params descs
         'AccelerometerSensitivity': 'Accelerometer sensitivity, (20-200)',
@@ -137,6 +143,14 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'FlushMove': 'The period of sending data to the server when object is moving, sec',
         'FlushStop': 'The period of sending data to the server when object is parked, sec',
 
+        //params/fuel
+        'FuelSensorSettings': 'Fuel sensor settings.',
+        'FuelVolume': 'Fuel volume (l)',
+        'Voltage': 'Voltage (v)',
+        'DeleteBtn': 'Delete',
+        'SaveBtn': 'Save',
+        'AddRowBtn': 'Add row',
+        'DragChangeOrderTitle': 'Click and drag to rearrange the objects',
 
         // report
         'Generate report': 'Generate report'
