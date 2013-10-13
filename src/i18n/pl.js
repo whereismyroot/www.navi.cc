@@ -49,6 +49,39 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         "Config": "Ustawienia",
         "Help": "Pomoc",
         "User": "Użytkownik",
+        'MainActions': 'Główne działania',
+        'AdditionalActions': 'Dodatkowe działania',
+        'Logout': 'Wyloguj się ze swojego konta',
+        'JoinedGroups': 'Uczestnictwo w grupach',
+        'ConfigureTitle': 'Skonfigurować',
+        'Language': 'Język',
+
+        //Registration
+        'RegisterNew': 'Zarejestruj nowe konto',
+        'UsernamePlaceholder': 'Użyj tego, aby wprowadzić',
+        'PasswordPlaceholder': 'Zalecamy co najmniej 6 znaków',
+        'DisplayedName': 'Wyświetlona nazwa użytkownika',
+        'DisplayedNamePlaceholder': 'Inni użytkownicy będą widzieć cię z tą nazwą',
+        'Email': 'Email',
+        'EmailPlaceholder': 'Określ, czy chcesz być w stanie odzyskać hasła',
+        'GroupInfo': 'Aby móc stworzyć wspólną listę pojazdów, obiektów na mapie, szablony, raporty, i więcej, należy utworzyć grupę użytkowników (firma) lub dołączyć do istniejącej grupy.',
+        'CreateGroup': 'Utwórz grupę',
+        'CreateGroupInfo': 'To stworzy grupę użytkowników{{groupname}}, a staniesz się jego administrator. Aby zaprosić użytkowników do grupy, niech wiedzą, nazwę grupy, a słowo weryfikacja {{grouppassword}}.',
+        'JoinGroup': 'Dołącz do grupy',
+        'JoinGroupInfo': 'Aby przyłączyć się do istniejącej grupy, należy podać poprawną nazwę grupy i weryfikację tekstów.',
+        'Group': 'Grupa',
+        'GroupPlaceholder': "To może być używany do połączenia grupy użytkowników",
+        'CheckWord': 'Słowo weryfikacja',
+        'CheckWordPlaceholder': 'Potrzebujesz za przybycie do grupy użytkowników',
+        'CreateUser': 'Tworzenie użytkownika',
+        'UserAlreadyExists': 'Użytkownik o nazwie {{username}} już istnieje.',
+        'GroupAlreadyExists': 'Grupa o nazwie {{groupname}} już istnieje.',
+        'GroupNotExists': 'Grupa o nazwie {{groupname}} nie istnieje.',
+        'WrongCheckWord': 'Złe słowo weryfikacja {{groupname}} group.',
+        'SuccessRegister': '{{username}} powiodło się zarejestrował. Teraz możesz zamknąć bieżącą kartę, a następnie wrócić do wejścia. Lub zamknąć okno i zarejestrować jeden więcej instrukcji.',
+        'SuccessRegisterTitle': 'Rejestracja jest skuteczne',
+        'RegisterMore': 'Zarejestruj się jeden użytkownik',
+        'CloseWindow': 'Zamknij okno.',
 
         // Map
         "Display Settings": "Ustawienia ekranu",
@@ -61,7 +94,14 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'STOP_NUMBERS': 'Numeracja przystanków / parki',
 
         // Config page
-        'add_system': 'Add system (translate)',
+        'add_system': 'Dodać systemu',
+        'SystemsList': 'Lista systemów',
+        'Deleting': 'Usuwanie',
+        'DeletingWoutConfTitle': 'Usuwanie systemu z obserwowanych listy (bez potwierdzenia)',
+        'DeletingTitle': 'Usuwania system',
+        'SettingsTitle': 'Naciśnij, aby wyregulować tracker',
+        'DisableObservation': 'Wyłącz system monitoringu',
+        'PhoneNumberTitle': 'Numer telefonu',
 
         // params
         'contenteditableTitle': 'Aby zmienić opis, umieść kursor w polu',
@@ -94,6 +134,7 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'LitersShort': 'l',
         'MetersShort': 'm',
         'VoltsShort': 'v',
+        'KMPerHour': 'km/h',
 
         'EventsTitle': 'Szczękńcie tu, żeby obserwować za tracker wydarzeniami',
         'ExportGPSTitle': 'Naciśnijcie żeby popatrzeć szczegóły GPS',
@@ -149,6 +190,17 @@ angular.module('i18n.pl', ['pascalprecht.translate'])
         'SaveBtn': 'Zapisz',
         'AddRowBtn': 'Dodaj wiersz',
         'DragChangeOrderTitle': 'Kliknij i przeciągnij, aby zmienić obiekty',
+
+        //addtracker directive
+        'Add': 'Dodać',
+        'AddAllTitle': 'Dodaj wszystkie trackery firmy',
+
+        //fileload directive
+        'FromFile': 'Z pliku...',
+
+        //navtool directive
+        'Back': 'Nazad',
+        'Settings': 'Ustawienia',
 
         // report
         'Generate report': 'Generowanie raportu'

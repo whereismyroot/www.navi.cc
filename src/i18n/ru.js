@@ -50,6 +50,39 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         "Config": "Настройки",
         "Help": "Помощь",
         "User": "Пользователь",
+        'MainActions': 'Основные действия',
+        'AdditionalActions': 'Дополнительные действия',
+        'Logout': 'Выйти из Вашей учетной записи',
+        'JoinedGroups': 'Состоит в группах',
+        'ConfigureTitle': 'Настроить',
+        'Language': 'Язык',
+
+        //Registration
+        'RegisterNew': 'Регистрация нового пользователя',
+        'UsernamePlaceholder': 'Используется для входа',
+        'PasswordPlaceholder': 'Рекомендуется не менее 6-ти символов',
+        'DisplayedName': 'Отображаемое имя',
+        'DisplayedNamePlaceholder': 'Так вас будут видеть другие пользователи',
+        'Email': 'Электронный адрес',
+        'EmailPlaceholder': 'Укажите, если хотите иметь возможность восстановления пароля',
+        'GroupInfo': 'Чтобы иметь возможность создавать общие списки транспортных средств, объекты на карте, шаблоны отчетов и многое другое, необходимо создать группу пользователей (компанию) или присоединиться к существующей группе.',
+        'CreateGroup': 'Создать группу',
+        'CreateGroupInfo': 'Будет создана группа пользователей {{groupname }}, и вы станете ее администратором. Для приглашения пользователей в группу, сообщите им название группы и проверочное слово {{grouppassword }}.',
+        'JoinGroup': 'Присоединиться к группе',
+        'JoinGroupInfo': 'Чтобы присоединиться к существующей группе вы должны правильно указать название группы и проверочное слово.',
+        'Group': 'Группа',
+        'GroupPlaceholder': 'Используется для объединения группы пользователей',
+        'CheckWord': 'Проверочное слово',
+        'CheckWordPlaceholder': 'Необходимо для вступления в группу пользователей',
+        'CreateUser': 'Создать пользователя',
+        'UserAlreadyExists': 'Пользователь с именем {{username }} уже существует.',
+        'GroupAlreadyExists': 'Группа с именем {{groupname}} уже существует.',
+        'GroupNotExists': 'Группа с именем {{groupname}} не существует.',
+        'WrongCheckWord': 'Проверочное слово для группы {{groupname}} не верно.',
+        'SuccessRegister': 'Регистрация пользователя {{username }} прошла успешно. Теперь вы можете закрыть текущую вкладку и вернуться на вкладку входа. Или закрыть окно и зарегистрировать еще одного пользователя.',
+        'SuccessRegisterTitle': 'Регистрация успешна',
+        'RegisterMore': 'Зарегистрировать еще одного пользователя',
+        'CloseWindow': 'Закрыть окно.',
 
         // Карта
         "Display Settings": "Настройки отображения",
@@ -64,6 +97,13 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
 
         // Страница настроек
         'add_system': 'Добавить трекер',
+        'SystemsList': 'Список систем',
+        'Deleting': 'Удаление',
+        'DeletingWoutConfTitle': 'Удалить систему из списка наблюдения (без подтверждения)',
+        'DeletingTitle': 'Удаление систем',
+        'SettingsTitle': 'Нажмите, чтобы настроить трекер',
+        'DisableObservation': 'Отключить наблюдение за системой',
+        'PhoneNumberTitle': 'Номер телефона',
 
         // Страница params
         'contenteditableTitle': 'Для изменения описания поместите курсор в поле',
@@ -96,6 +136,7 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'LitersShort': 'л',
         'MetersShort': 'м',
         'VoltsShort': 'в',
+        'KMPerHour': 'км/ч',
 
         'EventsTitle': 'Нажмите чтобы посмотреть события трекера',
         'ExportGPSTitle': 'Нажмите чтобы посмотреть подробности GPS',
@@ -151,6 +192,17 @@ angular.module('i18n.ru', ['pascalprecht.translate'])
         'SaveBtn': 'Сохранить',
         'AddRowBtn': 'Добавить строку',
         'DragChangeOrderTitle': 'Нажмите и тяните чтобы изменить порядок отображения объектов',
+
+        //addtracker directive
+        'Add': 'Добавить',
+        'AddAllTitle': 'Добавить все трекеры компании',
+
+        //fileload directive
+        'FromFile': 'Из файла...',
+
+        //navtool directive
+        'Back': 'Назад',
+        'Settings': 'Настройки',
 
         // report
         'Generate report': 'Сгенерировать отчет'

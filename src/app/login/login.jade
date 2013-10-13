@@ -2,7 +2,7 @@ div.container
     h4 {{'enter_as' | translate:{value: account.account.title} }}
     //- | {{ account }}
     dl.dl-horizontal
-        dt Язык<br> (Language, Мова, Język)
+        dt {{'Language' | translate}}
         dd
             chooselang
         br
@@ -13,17 +13,17 @@ div.container
         dd {{ account.account.date | fromnow }}
         //- dt(translate) Administrator
         //- dd {{ account.account.admin | yesno }}
-        dt Состоит в группах
+        dt {{'JoinedGroups' | translate}}
         dd
             span.label.label-primary(ng-repeat="g in account.account.groups")
                 i.icon-group
                 | &nbsp;{{ g }}
             | &nbsp;
-            a(title="Настроить", href="#/login/groups")
+            a(title="{{'ConfigureTitle' | translate}}", href="#/login/groups")
                 i.icon-wrench
         dt(translate) Observed systems
         dd {{ account.account.skeys.length }}
-        dt(title="{{ 'for_recovery' | translate}}") email
+        dt(title="{{ 'for_recovery' | translate}}") Email
         dd
             span(ng-click="hideemail = !hideemail")
                 span(ng-show="hideemail") {{ account.account.email }}
@@ -44,7 +44,7 @@ div.container
                     addtracker(account="account", systems="systems")
 
     div.container(ng-hide="account.account.skeys.length === 0")
-        h4 Основные действия:
+        h4 {{'MainActions' | translate}}:
         a.btn.btn-primary(href="#/map")
             i.icon-map-marker
             span(translate) Map
@@ -69,7 +69,7 @@ div.container
             i.icon-medkit
             span(translate) Help
 
-    h4 Дополнительные действия
+    h4 {{'AdditionalActions' | translate}}
     button.btn.btn-warning(ng-click="onLogout();")
         i.icon-off
-        | Выйти из учетной записи
+        | {{'Logout' | translate}}

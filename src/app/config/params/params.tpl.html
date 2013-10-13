@@ -25,11 +25,11 @@
 
         <dl class="dl-horizontal">
             <dt translate>LastConection</dt><dd><datetime datetime="{{ system.dynamic.lastping }}"></datetime></dd>
-            <dt translate>CurrentState</dt><dd>{{ system.dynamic.speed | number:1 }} км/ч</dd>
+            <dt translate>CurrentState</dt><dd>{{ system.dynamic.speed | number:1 }} {{'KMPerHour' | translate}}</dd>
             <dt translate>SatellitesCount</dt><dd>{{ system.dynamic.sats || '?'}}</dd>
             <dt translate>GSMLevel</dt><dd>{{ system.dynamic.csq * 100 / 32 | number:0}}%</dd>
             <dt translate>GPSLevel</dt><dd>{{ system.dynamic.sats * 100 / 12 | number:0}}%</dd>
-            <dt translate>MainPower</dt><dd>{{ system.dynamic.vout }} В</dd>
+            <dt translate>MainPower</dt><dd>{{ system.dynamic.vout }} {{'VoltsShort' | translate}}</dd>
             <dt translate>BackupPower</dt><dd>{{ system.dynamic.vin | vin }}</dd>
             <dt translate>Coordinates</dt><dd><input class="clone" value="{{ system.dynamic.latitude | number:4 }}, {{ system.dynamic.longitude | number:4}}"/></dd>
             <dt translate>MarkerDate</dt><dd><datetime datetime="{{ system.dynamic.dt }}"></datetime></dd>

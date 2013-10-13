@@ -32,7 +32,7 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         "user_name": "Ім'я користувача.",
         "user_password": "Пароль",
         "enter_cmd": "Увійти",
-        "register_cmd": "Зарегестрітоваться",
+        "register_cmd": "Зареєструватися",
         "enter_as": "Ви увійшли як {{ value }}",
         "Display name": "Екранне ім'я",
         "Register date": "Дата реєстрації",
@@ -49,6 +49,39 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         "Config": "Налаштування",
         "Help": "Допомога",
         "User": "Користувач",
+        'MainActions': 'Основні дії',
+        'AdditionalActions': 'Додаткові дії',
+        'Logout': 'Вихід з вашого облікового запису',
+        'JoinedGroups': 'Перебування в групах',
+        'ConfigureTitle': 'Налаштувати',
+        'Language': 'Мова',
+
+        //Registration
+        'RegisterNew': 'Зареєструвати ще одного користувача.',
+        'UsernamePlaceholder': 'Використовується для входу',
+        'PasswordPlaceholder': 'Рекомендується не менше 6-ти символів',
+        'DisplayedName': "Відображуване ім'я",
+        'DisplayedNamePlaceholder': 'Так вас будуть бачити інші користувачі',
+        'Email': 'Електронна адреса',
+        'EmailPlaceholder': 'Вкажіть, якщо хочете мати можливість відновлення пароля',
+        'GroupInfo': "Щоб мати можливість створювати спільні списки транспортних засобів, об'єкти на мапі, шаблони звітів і багато іншого, необхідно створити групу користувачів (компанію) або приєднатися до існуючої групи.",
+        'CreateGroup': 'Створити групу',
+        'CreateGroupInfo': 'Буде створена група користувачів {{groupname}}, і ви станете її адміністратором. Для запрошення користувачів до групи, повідомте їм назву групи і перевірочне слово {{grouppassword}}.',
+        'JoinGroup': 'Приєднатися до групи',
+        'JoinGroupInfo': 'Щоб приєднатися до існуючої групи ви повинні правильно вказати назву групи і перевірочне слово.',
+        'Group': 'Група',
+        'GroupPlaceholder': "Використовується для об'єднання групи користувачів",
+        'CheckWord': 'Перевірочне слово',
+        'CheckWordPlaceholder': 'Необхідно для вступу до групи користувачів',
+        'CreateUser': 'Створити користувача',
+        'UserAlreadyExists': 'Користувач з іменем {{username }} уже існує.',
+        'GroupAlreadyExists': 'Група з назвою {{groupname}} уже існує.',
+        'GroupNotExists': 'Група з назвою {{groupname}} не існує.',
+        'WrongCheckWord': 'Перевірочне слово для групи {{groupname}} не вірно.',
+        'SuccessRegister': 'Реєстрація користувача {{username }} пройшла успішно. Тепер ви можете закрити цю вкладку і повернутися на вкладку входу. Або закрити вікно і зареєструвати ще одного користувача.',
+        'SuccessRegisterTitle': 'Реєстрація успішна',
+        'RegisterMore': 'Зареєструвати ще одного користувача',
+        'CloseWindow': 'Закрити вікно.',
 
         // Map
         "Display Settings": "Налаштування відображення",
@@ -62,6 +95,13 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
 
         // Config page
         'add_system': 'Add system (translate)',
+        'SystemsList': 'Перелік систем',
+        'Deleting': 'Видалення',
+        'DeletingWoutConfTitle': 'Видалити систему зі списку спостереження (без підтвердження)',
+        'DeletingTitle': 'Видалення систем',
+        'SettingsTitle': 'Натисніть, щоб налаштувати трекер',
+        'DisableObservation': 'Вимкнути спостереження за системою',
+        'PhoneNumberTitle': 'Номер телефону',
 
         // params
         'contenteditableTitle': 'Для зміни опису помістіть курсор в полі',
@@ -95,6 +135,7 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'LitersShort': 'л',
         'MetersShort': 'м',
         'VoltsShort': 'в',
+        'KMPerHour': 'км/ч',
 
         'EventsTitle': 'Натисніть щоб подивитись події трекера',
         'ExportGPSTitle': 'Натисніть щоб подивитись подробиці GPS',
@@ -150,6 +191,17 @@ angular.module('i18n.ua', ['pascalprecht.translate'])
         'SaveBtn': 'Зберегти',
         'AddRowBtn': 'Додати рядок',
         'DragChangeOrderTitle': "Натисніть і тягніть щоб змінити порядок відображення об'єктів",
+
+        //addtracker directive
+        'Add': 'Додати',
+        'AddAllTitle': 'Додати всі трекери компанії',
+
+        //fileload directive
+        'FromFile': 'З файлу...',
+
+        //navtool directive
+        'Back': 'Назад',
+        'Settings': 'Налаштування',
 
         // report
         'Generate report': 'Згенерувати звіт'

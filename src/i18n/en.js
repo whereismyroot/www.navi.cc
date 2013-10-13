@@ -51,6 +51,40 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         "Config": "Config",
         "Help": "Help",
         "User": "User",
+        'MainActions': 'Main actions',
+        'AdditionalActions': 'Additional actions',
+        'Logout': 'Log out from your account',
+        'JoinedGroups': 'Joined groups',
+        'ConfigureTitle': 'Configure',
+        'Language': 'Language',
+
+        //Registration
+        'RegisterNew': 'Register new account',
+        'UsernamePlaceholder': 'Use this to enter',
+        'PasswordPlaceholder': 'We recommend at least 6 characters',
+        'DisplayedName': 'Displayed user name',
+        'DisplayedNamePlaceholder': 'Other users will see you with this name',
+        'Email': 'Email',
+        'EmailPlaceholder': 'Specify, if you want to be able to recover your password',
+        'GroupInfo': 'To be able to create shared lists of vehicles, objects on the map, templates, reports, and more, you must create a user group (company) or join an existing group.',
+        'CreateGroup': 'Create group',
+        'CreateGroupInfo': 'This will create a group of users {{groupname}}, and you will become its administrator. To invite a users to a group, let them know the name of the group, and the verification word {{grouppassword}}.',
+        'JoinGroup': 'Join group',
+        'JoinGroupInfo': 'To join an existing group, you must specify the correct group name and the word verification.',
+        'Group': 'Group',
+        'GroupPlaceholder': "It's can used to combine a group of users",
+        'CheckWord': 'Verification word',
+        'CheckWordPlaceholder': 'Need for coming into the group of users',
+        'CreateUser': 'Create user',
+        'UserAlreadyExists': 'User with name {{username }} already exists.',
+        'GroupAlreadyExists': 'Group with name {{groupname }} already exists.',
+        'GroupNotExists': 'Group with name {{groupname }} does not exists.',
+        'WrongCheckWord': 'Wrong verification word for {{groupname}} group.',
+        'SuccessRegister': '{{username}} was successful registered. Now you can close the current tab and then return to the entrance. Or close the window and register one more user.',
+        'SuccessRegisterTitle': 'Registration is successful',
+        'RegisterMore': 'Register one more user',
+        'CloseWindow': 'Close window.',
+
 
         // Map
         "Display Settings": "Display Settings",
@@ -64,6 +98,14 @@ angular.module('i18n.en', ['pascalprecht.translate'])
 
         // Config page
         'add_system': 'Add system',
+        'SystemsList': 'Systems list',
+        'Deleting': 'Deleting',
+        'DeletingWoutConfTitle': 'Delete system from observation list (without confirmation)',
+        'DeletingTitle': 'Deleting systems',
+        'SettingsTitle': 'Press to configure tracker',
+        'DisableObservation': 'Disable system observation',
+        'PhoneNumberTitle': 'Phone number',
+
 
         // params
         'contenteditableTitle': 'To change the description, place the cursor in the field',
@@ -96,6 +138,7 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'LitersShort': 'l',
         'MetersShort': 'm',
         'VoltsShort': 'v',
+        'KMPerHour': 'km/h',
 
         'EventsTitle': 'Click here to watch tracker events',
         'ExportGPSTitle': 'Click here to watch GPS details',
@@ -151,6 +194,17 @@ angular.module('i18n.en', ['pascalprecht.translate'])
         'SaveBtn': 'Save',
         'AddRowBtn': 'Add row',
         'DragChangeOrderTitle': 'Click and drag to rearrange the objects',
+
+        //addtracker directive
+        'Add': 'Add',
+        'AddAllTitle': 'Add all company trackers',
+
+        //fileload directive
+        'FromFile': 'From file...',
+
+        //navtool directive
+        'Back': 'Back',
+        'Settings': 'Settings',
 
         // report
         'Generate report': 'Generate report'

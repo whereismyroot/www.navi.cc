@@ -137,7 +137,7 @@ angular.module('directives.lists', [])
         require: '?ngModel',
         template: '<span class="btn btn-success fileinput-button">' +
                   '  <i class="icon-plus icon-white"></i>' +
-                  '  <span>Из файла...</span>' +
+                  '  <span translate>FromFile</span>' +
 //                  ' <input type="file" name="files[]" multiple="" ng-model="files" ng-change="onFileAdd()">' +
                   ' <input type="file">' +
                   '</span>',
@@ -200,8 +200,8 @@ angular.module('directives.lists', [])
                     '   <br><form class="form-inline" style="display: inline-block; margin:0;" name="form" ng-submit="onAdd(newimei)">' +
                     '        <label style="display:inline">IMEI</label>' +
                     '       <input class="form-control" type="text" ng-model="newimei" required autofocus></input>' +
-                    '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\'>Добавить</button>' +
-                    '        <a class="btn btn-primary" ng-click="onGroupSyss()" title="Добавить все трекеры компании"><i class="icon-group" style="margin:0"></i></a>' +
+                    '        <button class="btn btn-primary login" id="login" ng-show=\'!form.$invalid\' translate>Add</button>' +
+                    '        <a class="btn btn-primary" ng-click="onGroupSyss()" title="{{\'AddAllTitle\' | translate}}"><i class="icon-group" style="margin:0"></i></a>' +
                     '       <fileload ng-model="files" ng-change="onFromFiles()"></fileload>' +
                     '    </form>' +
                     '</span></div>',
@@ -312,10 +312,10 @@ angular.module('directives.lists', [])
     return {
         restrict: 'E',
         template: '<div class="btn-group">' +
-                    '<a type="button" class="btn btn-info" ng-click="back()" title="Назад">&lt;</a>' +
-                    '<a type="button" class="btn btn-info" href="#/map" title="Карта"><i class="icon-map-marker" style="margin:0"></i></a>' +
-                    '<a type="button" class="btn btn-info" href="#/config" title="Настройки"><i class="icon-gears" style="margin:0"></i></a>' +
-                    '<a type="button" class="btn btn-info" href="#/help" title="Помощь"><i class="icon-medkit" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" ng-click="back()" title="{{\'Back\' | translate}}">&lt;</a>' +
+                    '<a type="button" class="btn btn-info" href="#/map" title="{{\'Map\' | translate}}"><i class="icon-map-marker" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/config" title="{{\'Settings\' | translate}}"><i class="icon-gears" style="margin:0"></i></a>' +
+                    '<a type="button" class="btn btn-info" href="#/help" title="{{\'Help\' | translate}}"><i class="icon-medkit" style="margin:0"></i></a>' +
                   '</div>',
         controller: ["$scope", "$window", function($scope, $window){
             $scope.back = function(){
