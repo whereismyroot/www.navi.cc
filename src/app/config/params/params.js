@@ -5,7 +5,8 @@ var params_descs = {
         "max": 10
     },
     "accel.lvl": {
-        "desc": "Чувствительность акселерометра, mg (20-200)",
+        //"desc": "Чувствительность акселерометра, mg (20-200)",
+        "desc": "AccelerometerSensitivity",
         "comment": "INT 30 30"
     },
     "accel.time": {
@@ -96,7 +97,7 @@ var params_descs = {
         "comment": " - INT 1309 1309"
     },
     "gps.A1.0": {
-        "desc": "Минимальный регистрируемый угол поворота (градусы) INT 5 5",
+        "desc": "MinimumAngle",
         "primary": true
     },
     "gps.A1.1": {
@@ -109,12 +110,12 @@ var params_descs = {
         "comment": " - INT 15 15"
     },
     "gps.AOFF.0": {
-        "desc": "Выключение GPS для экономии основного питания при стоянке объекта, мин",
+        "desc": "GPSEconomyMain",
         "primary": true,
         "comment": "INT 1440 1440"
     },
     "gps.AOFF.1": {
-        "desc": "Выключение GPS для экономии резервного питания при стоянке объекта, мин",
+        "desc": "GPSEconomyBackup",
         "primary": true,
         "comment": "INT 30 30"
     },
@@ -146,28 +147,28 @@ var params_descs = {
         "comment": " - INT 1000 1000"
     },
     "gps.TF.MOVE": {
-        "desc": "Период принудительной регистрации координат при движении объекта, сек",
+        "desc": "ForcedRegMov",
         "primary": true,
         "min": 30,
         "comment": " INT 60 60"
     },
     "gps.TF.STOP.0": {
-        "desc": "Период регистрации координат при остановке объекта / основное питание, сек",
+        "desc": "RegStopMain",
         "primary": true,
         "comment": " INT 60 60"
     },
     "gps.TF.STOP.1": {
-        "desc": "Период регистрации координат при остановке объекта / резервное питание, сек",
+        "desc": "RegStopBackup",
         "primary": true,
         "comment": " INT 60 60"
     },
     "gps.TF.STOP.ACC.0": {
-        "desc": "Период регистрации координат при стоянке объекта / основное питание, сек",
+        "desc": "RegParkMain",
         "primary": true,
         "comment": " INT 600 600"
     },
     "gps.TF.STOP.ACC.1": {
-        "desc": "Период регистрации координат при стоянке объекта / резервное питание, сек",
+        "desc": "RegParkBackup",
         "primary": true,
         "comment": " INT 600 600"
     },
@@ -211,23 +212,23 @@ var params_descs = {
         "comment": " - INT 4000 4000"
     },
     "gps.VSTART": {
-        "desc": "Скорость, выше которой регистрируется начало движения × 0,01852 км/ч",
+        "desc": "MovementRegSpeed",
         "primary": true,
         "comment": " INT 400 400"
     },
     "gps.VSTOP": {
-        "desc": "Скорость, ниже которой регистрируется остановка объекта × 0,01852 км/ч",
+        "desc": "StopRegSpeed",
         "primary": true,
         "comment": " INT 54 54"
     },
     "gps.flush.move": {
-        "desc": "Период отправки данных на сервер при движении, сек",
+        "desc": "FlushMove",
         "primary": true,
         "min": 30,
         "comment": " INT 60 60 180"
     },
     "gps.flush.stop": {
-        "desc": "Период отправки данных на сервер при стоянке, сек",
+        "desc": "FlushStop",
         "primary": true,
         "min": 30,
         "comment": " INT 60 60"
@@ -278,46 +279,49 @@ var params_descs = {
         "comment": " - STR32"
     },
     "in.foo.1": {
-        "desc": "Конфигурация входа 1: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
+        "desc": "InputConfiguration",
+        "number": "1",
         "primary": true,
         "select": [
-            {"value": 0, "title": "выключен"},
-            {"value": 1, "title": "тревожная кнопка"},
-            {"value": 2, "title": "шлейф"},
-            {"value": 3, "title": "зажигание"}
+            {"value": 0, "title": "TurnedOff"},
+            {"value": 1, "title": "AlarmBtn"},
+            {"value": 2, "title": "Loop"},
+            {"value": 3, "title": "Ignition"}
         ],
         "comment": " INT 0 0"
     },
     "in.foo.2": {
-        "desc": "Конфигурация входа 2: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание",
+        "desc": "InputConfiguration",
+        "number": "2",
         "primary": true,
         "select": [
-            {"value": 0, "title": "выключен"},
-            {"value": 1, "title": "тревожная кнопка"},
-            {"value": 2, "title": "шлейф"},
-            {"value": 3, "title": "зажигание"}
+            {"value": 0, "title": "TurnedOff"},
+            {"value": 1, "title": "AlarmBtn"},
+            {"value": 2, "title": "Loop"},
+            {"value": 3, "title": "Ignition"}
         ],
         "comment": " INT 0 0"
     },
     "in.foo.3": {
-        "desc": "Конфигурация входа 3: 0-выключен / 1-Тревога / 2-Шлейф / 3-Зажигание / 4-Датчик топлива",
+        "desc": "InputConfiguration",
+        "number": "3",
         "primary": true,
         "select": [
-            {"value": 0, "title": "выключен"},
-            {"value": 1, "title": "тревожная кнопка"},
-            {"value": 2, "title": "шлейф"},
-            {"value": 3, "title": "зажигание"},
-            {"value": 4, "title": "датчик топлива"}
+            {"value": 0, "title": "TurnedOff"},
+            {"value": 1, "title": "AlarmBtn"},
+            {"value": 2, "title": "Loop"},
+            {"value": 3, "title": "Ignition"},
+            {"value": 4, "title": "FuelSensor"}
         ],
         "comment": " INT 0 0"
     },
     "out.1": {
-        "desc": "Состояние выхода 1: 0-выключен / 1-включен (активный уровень - низкий)",
+        "desc": "Output1State",
         "primary": true,
         "comment": " INT 1 1"
     },
     "out.2": {
-        "desc": "Состояние выхода 2: 0-выключен / 1-включен (активный уровень - низкий)",
+        "desc": "Output2State",
         "primary": true,
         "comment": " INT 0 0"
     },

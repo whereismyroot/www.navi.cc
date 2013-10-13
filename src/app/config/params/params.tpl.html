@@ -32,38 +32,41 @@
             <dt translate>MainPower</dt><dd>{{ system.dynamic.vout }} В</dd>
             <dt translate>BackupPower</dt><dd>{{ system.dynamic.vin | vin }}</dd>
             <dt translate>Coordinates</dt><dd><input class="clone" value="{{ system.dynamic.latitude | number:4 }}, {{ system.dynamic.longitude | number:4}}"/></dd>
-            <dt>Дата метки</dt><dd><datetime datetime="{{ system.dynamic.dt }}"></datetime></dd>
-            <dt>Высота над ур.моря</dt><dd>? м</dd>
-            <dt>Температура</dt><dd>? &deg;С</dd>
-            <dt>Корпус</dt><dd>?</dd>
-            <dt>Вход 1</dt><dd>?</dd>
-            <dt>Вход 2</dt><dd>?</dd>
-            <dt>Вход 3</dt><dd>?</dd>
-            <dt>Выход 1</dt><dd>?</dd>
-            <dt>Выход 2</dt><dd>?</dd>
-            <dt>Уровень топлива</dt><dd>{{ systems.params.fuelarray[system.dynamic.fuel] | number:2 }} л <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a> </dd>
+            <dt translate>MarkerDate</dt><dd><datetime datetime="{{ system.dynamic.dt }}"></datetime></dd>
+            <dt translate>Altitude</dt><dd>? {{'MetersShort' | translate}}</dd>
+            <dt translate>Temperature</dt><dd>? &deg;С</dd>
+            <dt translate>Body</dt><dd>?</dd>
+            <dt>{{'Input' | translate}} 1</dt><dd>?</dd>
+            <dt>{{'Input' | translate}} 2</dt><dd>?</dd>
+            <dt>{{'Input' | translate}} 3</dt><dd>?</dd>
+            <dt>{{'Output' | translate}} 1</dt><dd>?</dd>
+            <dt>{{'Output' | translate}} 2</dt><dd>?</dd>
+            <dt translate>FuelLevel</dt>
+                <dd>{{ systems.params.fuelarray[system.dynamic.fuel] | number:2 }} {{'LitersShort' | translate}}
+                    <a href="#/config/{{skey}}/params/fuel"><i class="icon-wrench"></i></a>
+                </dd>
         </dl>
-            <a class="btn btn-primary" title="Нажмите чтобы посмотреть события трекера" href="#/logs/{{skey}}"><i class="icon-eye-open"></i> События</a>
-            <a class="btn btn-primary" title="Нажмите чтобы посмотреть подробности GPS" href="#/gps/{{skey}}"><i class="icon-film"></i> Экспорт GPS</a>
+            <a class="btn btn-primary" title="{{'EventsTitle' | translate}}" href="#/logs/{{skey}}"><i class="icon-eye-open"></i> {{'Events' | translate}}</a>
+            <a class="btn btn-primary" title="{{'ExportGPSTitle' | translate}}" href="#/gps/{{skey}}"><i class="icon-film"></i> {{'ExportGPS' | translate}}</a>
 
         <!--button class="btn btn-small" ng-click="update()">Обновить</button-->
     </div>
 
     <div class="well well-small span4 col-lg-4">
-        <h4>Информация о транспортном средстве</h4>
 
+        <h4 translate>VehicleInfo</h4>
         <dl class="dl-horizontal">
-            <dt>Значек</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ system.icon || 'caricon-truck'}} icon-large"></i></a></dd>
-            <dt>Наименование ТС</dt><dd contenteditable="true" ng-model="system.title" ng-change="system.$patch('title')"></dd>
-            <dt>Гос номер</dt><dd contenteditable="true" ng-model="system.car.number" ng-change="system.$patch('car')"></dd>
-            <dt>Год выпуска</dt><dd contenteditable="true" ng-model="system.car.year" ng-change="system.$patch('car')"></dd>
-            <dt>№ двигателя</dt><dd contenteditable="true" ng-model="system.car.engine" ng-change="system.$patch('car')"></dd>
-            <dt>№ кузова</dt><dd contenteditable="true" ng-model="system.car.vin" ng-change="system.$patch('car')"></dd>
-            <dt>№ страхового полиса</dt><dd contenteditable="true" ng-model="system.car.insurance" ng-change="system.$patch('car')"></dd>
+            <dt translate>Icon</dt><dd><a class="caricon" ng-click="changeIcon()"><i class="{{ system.icon || 'caricon-truck'}} icon-large"></i></a></dd>
+            <dt translate>VehicleName</dt><dd contenteditable="true" ng-model="system.title" ng-change="system.$patch('title')"></dd>
+            <dt translate>LicensePlate</dt><dd contenteditable="true" ng-model="system.car.number" ng-change="system.$patch('car')"></dd>
+            <dt translate>Year</dt><dd contenteditable="true" ng-model="system.car.year" ng-change="system.$patch('car')"></dd>
+            <dt translate>EngineNumber</dt><dd contenteditable="true" ng-model="system.car.engine" ng-change="system.$patch('car')"></dd>
+            <dt translate>BodyNumber</dt><dd contenteditable="true" ng-model="system.car.vin" ng-change="system.$patch('car')"></dd>
+            <dt translate>Insurance</dt><dd contenteditable="true" ng-model="system.car.insurance" ng-change="system.$patch('car')"></dd>
         </dl>
 
         <!-- <a class="btn btn-primary" href="#drivers">Водители</a> -->
-        <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel">Расход топлива</a>
+        <a class="btn btn-primary" href="#/config/{{skey}}/params/fuel" translate>FuelConsuption</a>
         <!-- <a class="btn btn-primary" href="#tags">Ярлыки</a> -->
         <!-- <a class="btn btn-primary" href="#zones">Привязка к зонам</a> -->
 
@@ -72,19 +75,18 @@
 </div>
 
 <div class="well well-small">
-    <h4>Программирование параметров системы</h4>
+    <h4 translate>ParamsProgramming</h4>
     <!-- a href="/#/config/{{skey}}/params/master" class="btn btn-primary"><i class="icon-magic icon-large"></i> Мастер настройки</a-->
-
     <div ng-hide="params.$isEmpty(params.data)">
         <table class="table table-bordered table-condensed table-striped table-hover">
             <thead>
             <tr>
-                <th><i class="icon-filter cmd" data-tooltip="1" rel="tooltip" bs-tooltip="tooltip.title" ng-click="showall =! showall"></i>Имя</th>
-                <th>Описание</th>
+                <th translate><i class="icon-filter cmd" data-tooltip="1" rel="tooltip" bs-tooltip="tooltip.title" ng-click="showall =! showall"></i>Name</th>
+                <th translate>Description</th>
                 <!-- <th>Тип</th> -->
-                <th>Значение</th>
-                <th>Заводское</th>
-                <th>Изменить на</th>
+                <th translate>Value</th>
+                <th translate>Default</th>
+                <th translate>ChangeTo</th>
             </tr>
             </thead>
             <tbody>
@@ -94,7 +96,11 @@
             <!-- <tr ng-repeat="(k, p) in filtered(params.data)"> -->
             <tr ng-repeat="(k, p) in params.data">
                 <td>{{k}}</td>
-                <td>{{extend(k).desc}}</td>
+                <td>{{(extend(k).desc | translate) + ' ' + extend(k).number}}<br>
+                    <span ng-repeat='x in extend(k).select'>
+                        &#149 {{x.title}}: {{x.value}}<br>
+                    </span>
+                </td>
                 <!-- <td>{{p.type}}</td> -->
                 <!-- <td contenteditable ng-model="p.newvalue" ng-change="onChangeValue(k)"></td> -->
                 <td>{{p.value}}</td>
@@ -104,14 +110,14 @@
                     <form class="form form-inline" ng-submit="setqueue(k, p.queue)" style="margin:0">
                         <input class="form-control input-small" type="text" ng-model="p.queue" style="width: 50%"></input>
                         <button class="btn btn-small btn-primary" ng-show="p.queue != p.newqueue"><i class="icon-ok"></i>Ok</button>
-                        <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="Отменить" ng-click="cancelqueue(k)"></i>
+                        <i ng-show="p.queue != null" class="icon-trash icon-large" style="float:right" title="{{'CancelTitle' | translate}}" ng-click="cancelqueue(k)"></i>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="" style="text-align: right;">
-            <button class="btn btn-danger" ng-click="stopqueue()"><i class="icon-trash icon-white"></i> Отменить внесенные изменения</button>
+            <button class="btn btn-danger" ng-click="stopqueue()" translate><i class="icon-trash icon-white"></i>CancelChanges</button>
             <!--button class="btn btn-warning" ng-click="resetdefaults()"><i class="icon-adjust icon-white"></i> Установить все значения в заводское</button-->
         </div>
     </div>
